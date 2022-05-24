@@ -2,6 +2,7 @@ package com.coen390.abreath;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -54,10 +55,10 @@ public class MainActivity extends AppCompatActivity {
             //https://stackoverflow.com/questions/57529211/intercept-navigationui-onnavdestinationselected-to-make-backstack-pop-with-in
             //Properly navigate from FAB to another fragment using user-defined onNavDestinationSelected behavior
             NavOptions options = new NavOptions.Builder().setPopUpTo(Objects.requireNonNull(navController.getCurrentDestination()).getId(), true).setLaunchSingleTop(true).build();
-
             navController.navigate(R.id.to_navigation_dashboard, null, options);
 
         });
+
 
     }
 
