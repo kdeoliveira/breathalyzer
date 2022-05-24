@@ -15,10 +15,6 @@ Specification
 Hardware Overview
 -----------------
 
-This is an Analog output sensor. This needs to be connected to any one Analog socket in [Grove Base Shield](/Base_Shield_V2). The examples used in this tutorial makes uses of A0 analog pin. Connect this module to the A0 port of Base Shield.
-
-It is possible to connect the Grove module to Arduino directly by using jumper wires by using the connection as shown in the table below:
-
 | Arduino   | Gas Sensor |
 |-----------|------------|
 | 5V        | VCC        |
