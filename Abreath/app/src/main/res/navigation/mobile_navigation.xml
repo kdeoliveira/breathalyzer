@@ -14,8 +14,8 @@
         app:destination="@id/navigation_home" />
 
     <action
-        android:id="@+id/to_navigation_notifications"
-        app:destination="@id/navigation_notifications" />
+        android:id="@+id/to_navigation_settings"
+        app:destination="@id/navigation_settings" />
 
     <fragment
         android:id="@+id/navigation_home"
@@ -32,8 +32,8 @@
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
+        android:id="@+id/navigation_settings"
         android:name="com.coen390.abreath.ui.settings.SettingsFragment"
-        android:label="@string/title_notifications"
+        android:label="@string/title_settings"
         tools:layout="@layout/fragment_settings" />
 </navigation>
