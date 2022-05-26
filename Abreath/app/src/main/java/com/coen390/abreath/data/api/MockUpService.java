@@ -1,6 +1,6 @@
-package com.coen390.abreath.api;
+package com.coen390.abreath.data.api;
 
-import com.coen390.abreath.model.SampleEntity;
+import com.coen390.abreath.data.model.SampleEntity;
 
 import java.util.List;
 
@@ -14,13 +14,13 @@ public interface MockUpService {
     Call<List<SampleEntity>> getAll();
 
 
-    @GET("api/vi/bac_results/{id}")
+    @GET("api/v1/bac_results/{id}")
     Call<SampleEntity> getById(@Path("id") int id);
 
-    @GET("api/vi/bac_results/?search={val}")
+    @GET("api/v1/bac_results/?search={val}")
     Call<List<SampleEntity>> search(@Path("val") String val);
 
-    @GET("api/vi/bac_results/?name={name}")
+    @GET("api/v1/bac_results/?name={name}")
     Call<List<SampleEntity>> getByName(@Path("name") String name);
 
 }

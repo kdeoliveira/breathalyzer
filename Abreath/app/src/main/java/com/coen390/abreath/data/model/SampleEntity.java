@@ -1,4 +1,4 @@
-package com.coen390.abreath.model;
+package com.coen390.abreath.data.model;
 
 import com.google.gson.annotations.SerializedName;
 

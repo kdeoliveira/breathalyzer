@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.coen390.abreath.api.MockUpController;
 import com.coen390.abreath.databinding.FragmentSettingsBinding;
 
 public class SettingsFragment extends Fragment {
