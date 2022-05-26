@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.coen390.abreath.databinding.FragmentDashboardBinding;
-import com.coen390.abreath.model.SampleData;
+import com.coen390.abreath.model.SampleViewModel;
 
 public class DashboardFragment extends Fragment {
 
@@ -19,19 +19,21 @@ public class DashboardFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        DashboardViewModel dashboardViewModel =
-                new ViewModelProvider(this).get(DashboardViewModel.class);
+//        DashboardViewModel dashboardViewModel =
+//                new ViewModelProvider(this).get(DashboardViewModel.class);
 
-        SampleData sampleModel = new ViewModelProvider(this).get(SampleData.class);
-
-
+        SampleViewModel sampleModel = new ViewModelProvider(this).get(SampleViewModel.class);
 
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         final TextView textView = binding.textDashboard;
-        dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+//        dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        sampleModel.getSamples().observe(getViewLifecycleOwner(), samples -> {
+            textView.setText(samples.getLast_name());
+        });
         return root;
+
     }
 
     @Override

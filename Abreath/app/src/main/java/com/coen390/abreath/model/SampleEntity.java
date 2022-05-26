@@ -1,11 +1,19 @@
 package com.coen390.abreath.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 
 public class SampleEntity {
     private String username;
     private float bac;
+    @SerializedName("createdAt")
     private Date created_at;
+
+    private int id;
+    private String name;
+    @SerializedName("lastName")
+    private String last_name;
 
     public int getId() {
         return id;
@@ -40,9 +48,7 @@ public class SampleEntity {
         this.last_name = last_name;
     }
 
-    private int id;
-    private String name;
-    private String last_name;
+
 
 
 
