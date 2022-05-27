@@ -1,45 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.home.HomeFragment"
-    android:padding="25dp">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_baseline_android_24"
-            app:tint="@color/primaryDarkColor"
-            android:layout_marginEnd="16dp"/>
-
-        <TextView
-            android:id="@+id/text_home"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textAlignment="textStart"
-            android:textSize="20sp"
-
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </LinearLayout>
-
-
-
-
+    tools:context=".ui.home.HomeFragment">
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="155dp"
@@ -121,9 +87,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profile_height" />
 
-    <androidx.fragment.app.FragmentContainerView
+    <FrameLayout
         android:id="@+id/fragmentContainerView"
-        android:name="com.coen390.abreath.ui.home.ProfileGraph"
+        android:name="com.coen390.abreath.ui.home.ProfileGraphFragment"
         android:layout_width="350dp"
         android:layout_height="270dp"
         android:layout_marginTop="15dp"
@@ -134,4 +100,3 @@
         app:layout_constraintTop_toBottomOf="@+id/profile_weight" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
