@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -41,7 +42,11 @@ import java.util.Random;
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
-    private BarChart chart;
+
+    private ProfileGraph graph;
+    public TextView nameTextView, ageTextView, heightTextView, weightTextView;
+    private ImageView profileImage;
+    private String name, age, height;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -50,6 +55,13 @@ public class HomeFragment extends Fragment {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+
+        nameTextView = binding.profileName;
+        ageTextView = binding.profileAge;
+        heightTextView = binding.profileHeight;
+        profileImage = binding.profileImage;
+
 
         UserDataViewModel sampleModel = new ViewModelProvider(this, new ViewModelFactory(new MockUpRepository(MockUpServiceBuilder.create(MockUpService.class)))).get(UserDataViewModel.class);
 
@@ -68,7 +80,10 @@ public class HomeFragment extends Fragment {
 
         final TextView textView = binding.textHome;
         homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+
         return root;
+
+
     }
 
     private BarData createChartData() {
