@@ -4,6 +4,10 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
+/**
+ * Entity representing the data fetched from mock API
+ * The response body will be serialized to this class
+ */
 public class SampleEntity {
     private String username;
     private float bac;

@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 import com.coen390.abreath.R;
 import com.coen390.abreath.data.api.MockUpRepository;
 import com.coen390.abreath.data.model.SampleEntity;
-import com.coen390.abreath.util.Tuple;
+import com.coen390.abreath.common.Tuple;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Observable;
 
+/**
+ * Business logic for each Use Case that application should provide
+ */
 public class GetHistoryUseCase extends Observable implements UseCase {
 
     private final MockUpRepository repository;

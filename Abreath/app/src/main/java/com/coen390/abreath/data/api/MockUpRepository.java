@@ -17,6 +17,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Repository class providing handlers to access mock API via retrofit
+ * Requests are made asynchronously
+ */
 public class MockUpRepository {
 
     private final MockUpService service;

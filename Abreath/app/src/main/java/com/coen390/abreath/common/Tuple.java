@@ -1,4 +1,4 @@
-package com.coen390.abreath.util;
+package com.coen390.abreath.common;
 
 public class Tuple <T,S>{
     private T first;

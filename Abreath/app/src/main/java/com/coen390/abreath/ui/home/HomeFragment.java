@@ -3,7 +3,6 @@ package com.coen390.abreath.ui.home;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +14,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.coen390.abreath.R;
 import com.coen390.abreath.databinding.FragmentHomeBinding;
-import com.coen390.abreath.util.Tuple;
+import com.coen390.abreath.common.Tuple;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.Chart;
-import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -26,7 +24,6 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
-import com.github.mikephil.charting.renderer.AxisRenderer;
 import com.github.mikephil.charting.renderer.XAxisRenderer;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.Utils;
@@ -35,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import okhttp3.internal.Util;
 
 public class HomeFragment extends Fragment {
 
@@ -56,9 +52,6 @@ public class HomeFragment extends Fragment {
         chart = binding.fragmentVerticalbarchartChart;
 
 
-
-
-//        BarData chart_data = createChartData();
 
         sampleModel.getSamples().observe(getViewLifecycleOwner(), this::onChanged);
 
@@ -100,7 +93,6 @@ public class HomeFragment extends Fragment {
 
     //https://getridbug.com/android/plot-data-value-on-timeline-axis-in-bar-chart-using-mpandroidchart/
     private void onChanged(Tuple<List<String>, BarData> dataTuple) {
-        Log.d("inapp", "onChanged");
         XAxis xAxis = chart.getXAxis();
         xAxis.enableGridDashedLine(10f, 10f, 0f);
         xAxis.setTextColor(R.color.primaryTextColor);
