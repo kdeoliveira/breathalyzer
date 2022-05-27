@@ -9,7 +9,7 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
-import com.coen390.abreath.data.model.SampleEntity;
+import com.coen390.abreath.data.entity.UserDataEntity;
 
 import java.util.List;
 
@@ -29,14 +29,14 @@ public class MockUpRepository {
         this.service = service;
     }
 
-    public void fetchSample(ControllerListener<SampleEntity> controllerListener){
-        Call<SampleEntity> samples = this.service.getById(1);
+    public void fetchSample(ControllerListener<UserDataEntity> controllerListener){
+        Call<UserDataEntity> samples = this.service.getById(1);
 
         samples.enqueue(
-                new Callback<SampleEntity>() {
+                new Callback<UserDataEntity>() {
                     @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
-                    public void onResponse(Call<SampleEntity> call, Response<SampleEntity> response) {
+                    public void onResponse(Call<UserDataEntity> call, Response<UserDataEntity> response) {
                         if(response.isSuccessful()){
                             assert response.body() != null;
                             //Requires a listener to advise when data is fetched since it is done asynchronously
@@ -48,7 +48,7 @@ public class MockUpRepository {
 
                     }
                     @Override
-                    public void onFailure(Call<SampleEntity> call, Throwable t) {
+                    public void onFailure(Call<UserDataEntity> call, Throwable t) {
                         Log.d("inapp - failure", t.toString());
                     }
                 }
@@ -57,14 +57,14 @@ public class MockUpRepository {
     }
 
 
-    public void fetchAllSamples(ControllerListener<List<SampleEntity>> controllerListener){
-        Call<List<SampleEntity>> samples = this.service.getAll();
+    public void fetchAllSamples(ControllerListener<List<UserDataEntity>> controllerListener){
+        Call<List<UserDataEntity>> samples = this.service.getAll();
 
         samples.enqueue(
-                new Callback<List<SampleEntity>>() {
+                new Callback<List<UserDataEntity>>() {
                     @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
-                    public void onResponse(Call<List<SampleEntity>> call, Response<List<SampleEntity>> response) {
+                    public void onResponse(Call<List<UserDataEntity>> call, Response<List<UserDataEntity>> response) {
                         if(response.isSuccessful()){
                             assert response.body() != null;
                             //Requires a listener to advise when data is fetched since it is done asynchronously
@@ -76,7 +76,7 @@ public class MockUpRepository {
 
                     }
                     @Override
-                    public void onFailure(Call<List<SampleEntity>> call, Throwable t) {
+                    public void onFailure(Call<List<UserDataEntity>> call, Throwable t) {
                         Log.d("inapp - failure", t.toString());
                     }
                 }

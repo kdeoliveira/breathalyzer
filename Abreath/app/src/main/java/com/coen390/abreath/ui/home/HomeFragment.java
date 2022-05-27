@@ -13,8 +13,13 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.coen390.abreath.R;
+import com.coen390.abreath.data.api.MockUpRepository;
+import com.coen390.abreath.data.api.MockUpService;
+import com.coen390.abreath.data.api.MockUpServiceBuilder;
 import com.coen390.abreath.databinding.FragmentHomeBinding;
 import com.coen390.abreath.common.Tuple;
+import com.coen390.abreath.ui.model.UserDataViewModel;
+import com.coen390.abreath.ui.model.ViewModelFactory;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.components.XAxis;
@@ -46,14 +51,14 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        SampleViewModel sampleModel = new ViewModelProvider(this).get(SampleViewModel.class);
+        UserDataViewModel sampleModel = new ViewModelProvider(this, new ViewModelFactory(new MockUpRepository(MockUpServiceBuilder.create(MockUpService.class)))).get(UserDataViewModel.class);
 
 
         chart = binding.fragmentVerticalbarchartChart;
 
 
 
-        sampleModel.getSamples().observe(getViewLifecycleOwner(), this::onChanged);
+        sampleModel.getUserData().observe(getViewLifecycleOwner(), this::onChanged);
 
         chart.setNoDataText("Loading");
         Paint p = chart.getPaint(Chart.PAINT_INFO);

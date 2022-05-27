@@ -1,4 +1,4 @@
-package com.coen390.abreath.ui.home;
+package com.coen390.abreath.ui.model;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -15,20 +15,20 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-public class SampleViewModel extends ViewModel implements Observer {
+public class UserDataViewModel extends ViewModel implements Observer {
     private MutableLiveData<Tuple<List<String>, BarData>> samples;
     private final GetHistoryUseCase getHistoryUseCase;
 
-    public SampleViewModel() {
+    public UserDataViewModel(MockUpRepository mockUpRepository) {
         samples = new MutableLiveData<>();
-        MockUpRepository mockUpRepository = new MockUpRepository(MockUpServiceBuilder.create(MockUpService.class));
+//        MockUpRepository mockUpRepository = new MockUpRepository(MockUpServiceBuilder.create(MockUpService.class));
         getHistoryUseCase = new GetHistoryUseCase(mockUpRepository);
         //Async call. Check https://developer.android.com/topic/libraries/architecture/livedata#java for for specific implementation
         getHistoryUseCase.addObserver(this);
         getHistoryUseCase.call(null);
     }
 
-    public LiveData<Tuple<List<String>, BarData>> getSamples(){
+    public LiveData<Tuple<List<String>, BarData>> getUserData(){
         if(samples != null){
             return this.samples;
         }

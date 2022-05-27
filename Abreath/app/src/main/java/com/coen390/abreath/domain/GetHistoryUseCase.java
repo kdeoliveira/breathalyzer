@@ -5,7 +5,7 @@ import androidx.annotation.Nullable;
 
 import com.coen390.abreath.R;
 import com.coen390.abreath.data.api.MockUpRepository;
-import com.coen390.abreath.data.model.SampleEntity;
+import com.coen390.abreath.data.entity.UserDataEntity;
 import com.coen390.abreath.common.Tuple;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -32,9 +32,9 @@ public class GetHistoryUseCase extends Observable implements UseCase {
     public Object call(@Nullable Object payload) {
         ArrayList<BarEntry> values = new ArrayList<>();
         List<String> timeline = new ArrayList<>();
-        this.repository.fetchAllSamples(new MockUpRepository.ControllerListener<List<SampleEntity>>() {
+        this.repository.fetchAllSamples(new MockUpRepository.ControllerListener<List<UserDataEntity>>() {
             @Override
-            public void onCompleted(List<SampleEntity> data) {
+            public void onCompleted(List<UserDataEntity> data) {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-DD", Locale.CANADA);
                 for(int k = 0; k < data.size(); k++){
                     values.add(new BarEntry(k+1, data.get(k).getBac()));

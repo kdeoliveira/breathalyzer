@@ -1,7 +1,6 @@
 package com.coen390.abreath.ui.dashboard;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.coen390.abreath.databinding.FragmentDashboardBinding;
-import com.coen390.abreath.ui.home.SampleViewModel;
 
 public class DashboardFragment extends Fragment {
 

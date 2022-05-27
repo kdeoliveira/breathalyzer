@@ -1,4 +1,4 @@
-package com.coen390.abreath.data.model;
+package com.coen390.abreath.data.entity;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -8,7 +8,7 @@ import java.util.Date;
  * Entity representing the data fetched from mock API
  * The response body will be serialized to this class
  */
-public class SampleEntity {
+public class UserDataEntity {
     private String username;
     private float bac;
     @SerializedName("createdAt")
@@ -23,7 +23,7 @@ public class SampleEntity {
         return id;
     }
 
-    public SampleEntity(String username, float bac, Date created_at, int id, String name, String last_name) {
+    public UserDataEntity(String username, float bac, Date created_at, int id, String name, String last_name) {
         this.username = username;
         this.bac = bac;
         this.created_at = created_at;
