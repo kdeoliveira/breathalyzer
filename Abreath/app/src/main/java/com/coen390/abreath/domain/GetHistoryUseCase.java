@@ -10,6 +10,7 @@ import com.coen390.abreath.common.Tuple;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,13 +44,7 @@ public class GetHistoryUseCase extends Observable implements UseCase {
                 timeline.add("");
 
                 BarDataSet dataSet = new BarDataSet(values, "Previous Samples");
-
-                dataSet.setColor(R.color.primaryDarkColor);
-                dataSet.setFormSize(15f);
-                dataSet.setDrawValues(false);
-                dataSet.setValueTextSize(12f);
-
-
+                dataSet.setColor(ColorTemplate.rgb("#0288d1"));
                 BarData barData = new BarData(dataSet);
 
                 setChanged();

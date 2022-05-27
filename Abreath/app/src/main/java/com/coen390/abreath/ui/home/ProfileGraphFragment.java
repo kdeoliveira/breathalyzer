@@ -93,77 +93,53 @@ public class ProfileGraphFragment extends Fragment {
         sampleModel.getUserData().observe(getViewLifecycleOwner(), this::onChanged);
 
 
-//        BarData data = createChartData();
-//        configureChartAppearance();
+        configureChartAppearance();
 //        prepareChartData(data);
 
         return view;
     }
     private void prepareChartData(BarData data) {
+
+
         data.setValueTextSize(12f);
         chart.setData(data);
         chart.invalidate();
     }
 
     private void configureChartAppearance() {
-        chart.getDescription().setEnabled(false);
-        chart.setDrawValueAboveBar(false);
-
         XAxis xAxis = chart.getXAxis();
-        xAxis.setValueFormatter(new ValueFormatter() {
-            @Override
-            public String getFormattedValue(float value) {
-                return DAYS[(int) value];
-            }
-        });
 
-        YAxis axisLeft = chart.getAxisLeft();
-        axisLeft.setGranularity(10f);
-        axisLeft.setAxisMinimum(0);
-        axisLeft.setAxisLineColor(Color.BLUE);
-
-        YAxis axisRight = chart.getAxisRight();
-        axisRight.setGranularity(10f);
-        axisRight.setAxisMinimum(0);
-    }
-    //https://getridbug.com/android/plot-data-value-on-timeline-axis-in-bar-chart-using-mpandroidchart/
-    private void onChanged(Tuple<List<String>, BarData> dataTuple) {
-        XAxis xAxis = chart.getXAxis();
-        xAxis.enableGridDashedLine(10f, 10f, 0f);
-        xAxis.setTextColor(R.color.primaryTextColor);
-        xAxis.setTextSize(14);
-        xAxis.setDrawAxisLine(true);
+        xAxis.setTextSize(12);
+        xAxis.setAxisLineColor(R.color.primaryDarkColor);
+        xAxis.setDrawAxisLine(false);
         xAxis.setGranularity(1f);
         xAxis.setGranularityEnabled(true);
-        xAxis.setLabelCount(dataTuple.getFirst().size() / 4, true);
+        xAxis.setDrawGridLines(false);
+
+
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setXOffset(0f); //labels x offset in dps
         xAxis.setYOffset(0f); //labels y offset in dps
-        xAxis.setCenterAxisLabels(true);
-        xAxis.setValueFormatter(new ValueFormatter() {
-            @Override
-            public String getFormattedValue(float value) {
-                return dataTuple.getFirst().get((int) value);
-            }
-        });
+        xAxis.setCenterAxisLabels(false);
+
 
 
         YAxis yAxis = chart.getAxisRight();
         yAxis.setTextColor(R.color.primaryDarkColor);
-        yAxis.setTextSize(14);
-        yAxis.setDrawAxisLine(true);
+        yAxis.setTextSize(12);
+
         yAxis.setAxisLineColor(R.color.primaryDarkColor);
         yAxis.setDrawGridLines(true);
         yAxis.setGranularity(1f);
         yAxis.setGranularityEnabled(true);
         yAxis.setAxisMinimum(0);
-        yAxis.setAxisMaximum(1500f);
+        yAxis.setDrawAxisLine(false);
         yAxis.setLabelCount(4, true); //labels (Y-Values) for 4 horizontal grid lines
         yAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
 
         YAxis leftAxis = chart.getAxisLeft();
         leftAxis.setAxisMinimum(0);
-        leftAxis.setDrawAxisLine(true);
+        leftAxis.setDrawAxisLine(false);
         leftAxis.setLabelCount(0, true);
         leftAxis.setValueFormatter(new ValueFormatter() {
             @Override
@@ -172,15 +148,42 @@ public class ProfileGraphFragment extends Fragment {
             }
         });
 
-        chart.setXAxisRenderer(new XAxisRenderer(chart.getViewPortHandler(), xAxis, chart.getTransformer(YAxis.AxisDependency.LEFT)){
+        chart.setDrawGridBackground(false);
+        chart.setDrawBorders(false);
+        chart.setScaleEnabled(false);
+        chart.setPinchZoom(false);
+        chart.getDescription().setEnabled(false);
+        chart.getLegend().setEnabled(false);
+
+    }
+    //https://getridbug.com/android/plot-data-value-on-timeline-axis-in-bar-chart-using-mpandroidchart/
+    private void onChanged(Tuple<List<String>, BarData> dataTuple) {
+        chart.getXAxis().setLabelCount(dataTuple.getFirst().size() / 4, true);
+        chart.getXAxis().setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return dataTuple.getFirst().get((int) value);
+            }
+        });
+
+        chart.setXAxisRenderer(new XAxisRenderer(chart.getViewPortHandler(), this.chart.getXAxis(), chart.getTransformer(YAxis.AxisDependency.LEFT)){
             @Override
             protected void drawLabel(Canvas c, String formattedLabel, float x, float y, MPPointF anchor, float angleDegrees) {
                 Utils.drawXAxisValue(c, formattedLabel, x+Utils.convertDpToPixel(5f), y+Utils.convertDpToPixel(1f), mAxisLabelPaint, anchor, 90f);
             }
         });
+
+
+        dataTuple.getSecond().setDrawValues(false);
+
+        dataTuple.getSecond().setBarWidth(0.5f);
+
         chart.setData(dataTuple.getSecond());
-        chart.setScaleEnabled(true);
-        chart.setPinchZoom(false);
+
+
+
+        chart.animateX(1000);
+        chart.animateY(1000);
         chart.invalidate();
     }
 }

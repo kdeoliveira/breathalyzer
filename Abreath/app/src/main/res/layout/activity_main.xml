@@ -5,6 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/primaryBgColor"
 
     >
 <!--    android:paddingTop="?attr/actionBarSize" -->
@@ -15,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
 
-            android:backgroundTint="@color/primaryColor"
+            android:backgroundTint="@android:color/transparent"
 
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"

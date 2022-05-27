@@ -19,17 +19,48 @@ public class UserDataEntity {
     @SerializedName("lastName")
     private String last_name;
 
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
+    public float getHeight() {
+        return height;
+    }
+
+    public void setHeight(float height) {
+        this.height = height;
+    }
+
+    private int age;
+    private int weight;
+    private float height;
+
     public int getId() {
         return id;
     }
 
-    public UserDataEntity(String username, float bac, Date created_at, int id, String name, String last_name) {
+    public UserDataEntity(String username, float bac, Date created_at, int id, String name, String last_name, int age, int weight, float height) {
         this.username = username;
         this.bac = bac;
         this.created_at = created_at;
         this.id = id;
         this.name = name;
         this.last_name = last_name;
+        this.age = age;
+        this.weight = weight;
+        this.height = height;
     }
 
     public void setId(int id) {

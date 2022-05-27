@@ -11,7 +11,7 @@
         android:layout_width="155dp"
         android:layout_height="155dp"
         android:layout_marginTop="24dp"
-        app:cardBackgroundColor="@color/white"
+
         app:cardCornerRadius="250dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,6 +35,7 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:background="@drawable/gradient_header"
@@ -57,46 +58,60 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
-    <TextView
-        android:id="@+id/profile_age"
-        android:layout_width="wrap_content"
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/textContainer"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="11dp"
-        android:text="Age:"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_name" />
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:background="@drawable/round_container"
+        android:elevation="2dp"
+        android:backgroundTint="@color/secondaryBgColor"
+        app:layout_constraintTop_toBottomOf="@+id/profile_name">
 
-    <TextView
-        android:id="@+id/profile_height"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="11dp"
-        android:text="Height: "
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_age" />
+        <TextView
+            android:id="@+id/profile_age"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="Age:"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_name" />
 
-    <TextView
-        android:id="@+id/profile_weight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="11dp"
-        android:text="Weight:"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_height" />
+        <TextView
+            android:id="@+id/profile_height"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="11dp"
+            android:text="Height: "
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_age" />
+
+        <TextView
+            android:id="@+id/profile_weight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="11dp"
+            android:text="Weight:"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_height" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
 
     <FrameLayout
         android:id="@+id/fragmentContainerView"
         android:name="com.coen390.abreath.ui.home.ProfileGraphFragment"
-        android:layout_width="350dp"
-        android:layout_height="270dp"
-        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+
         android:layout_marginBottom="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_weight" />
+        app:layout_constraintTop_toBottomOf="@+id/textContainer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

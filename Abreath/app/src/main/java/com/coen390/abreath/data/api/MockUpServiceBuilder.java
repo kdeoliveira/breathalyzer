@@ -26,7 +26,7 @@ public class MockUpServiceBuilder {
         try {
             date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSS'Z'", Locale.CANADA).parse(jsonObject.get("createdAt").getAsString());
 
-            return new UserDataEntity(jsonObject.get("username").getAsString(), jsonObject.get("bac").getAsFloat(), date,jsonObject.get("id").getAsInt(),jsonObject.get("name").getAsString(),jsonObject.get("lastName").getAsString());
+            return new UserDataEntity(jsonObject.get("username").getAsString(), jsonObject.get("bac").getAsFloat(), date,jsonObject.get("id").getAsInt(),jsonObject.get("name").getAsString(),jsonObject.get("lastName").getAsString(), jsonObject.get("age").getAsInt(), jsonObject.get("weight").getAsInt(), jsonObject.get("height").getAsFloat()/100.0f);
         } catch (ParseException e) {
             e.printStackTrace();
         }

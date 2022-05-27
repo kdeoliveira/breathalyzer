@@ -1,6 +1,7 @@
 package com.coen390.abreath.ui.home;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,9 +54,17 @@ public class HomeFragment extends Fragment {
         ageTextView = binding.profileAge;
         heightTextView = binding.profileHeight;
         profileImage = binding.profileImage;
+        weightTextView = binding.profileWeight;
 
 
         UserDataViewModel sampleModel = new ViewModelProvider(this, new ViewModelFactory(new MockUpRepository(MockUpServiceBuilder.create(MockUpService.class)))).get(UserDataViewModel.class);
+
+        sampleModel.getUserInfo().observe(getViewLifecycleOwner(), userDataEntity -> {
+            nameTextView.setText(userDataEntity.getName().concat(" ").concat(userDataEntity.getLast_name()));
+            ageTextView.setText("Age: "+String.valueOf(userDataEntity.getAge()));
+            heightTextView.setText("Height: "+ Float.valueOf(userDataEntity.getHeight()));
+            weightTextView.setText("Weight: "+String.valueOf(userDataEntity.getWeight()));
+        });
 
 
 
