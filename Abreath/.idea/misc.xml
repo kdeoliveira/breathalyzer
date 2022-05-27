@@ -8,9 +8,10 @@
         <entry key="app/src/main/res/drawable/ic_baseline_settings_24.xml" value="0.384" />
         <entry key="app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.303" />
         <entry key="app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.29" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.303" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_dashboard.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.16587677725118483" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.5359375" />
         <entry key="app/src/main/res/layout/fragment_profile_graph.xml" value="0.23125" />
         <entry key="app/src/main/res/layout/fragment_settings.xml" value="0.2994791666666667" />
