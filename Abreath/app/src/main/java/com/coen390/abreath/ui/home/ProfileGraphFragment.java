@@ -71,9 +71,7 @@ public class ProfileGraphFragment extends Fragment {
         ArrayList<IBarDataSet> dataSets = new ArrayList<>();
         dataSets.add(set1);
 
-        BarData data = new BarData(dataSets);
-
-        return data;
+        return new BarData(dataSets);
     }
 
     @Override
@@ -87,6 +85,11 @@ public class ProfileGraphFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile_graph, container, false);
 
         chart = view.findViewById(R.id.fragment_verticalbarchart_chart);
+
+        RoundBarRender roundBarRender = new RoundBarRender(chart, chart.getAnimator(), chart.getViewPortHandler());
+//        roundBarRender.initBuffers();
+        roundBarRender.setRadius(20);
+        chart.setRenderer(roundBarRender);
 
         UserDataViewModel sampleModel = new ViewModelProvider(requireParentFragment(), new ViewModelFactory(new MockUpRepository(MockUpServiceBuilder.create(MockUpService.class)))).get(UserDataViewModel.class);
 
@@ -109,31 +112,50 @@ public class ProfileGraphFragment extends Fragment {
     private void configureChartAppearance() {
         XAxis xAxis = chart.getXAxis();
 
-        xAxis.setTextSize(12);
-        xAxis.setAxisLineColor(R.color.primaryDarkColor);
+
+
         xAxis.setDrawAxisLine(false);
+        xAxis.setLabelCount(0, true);
+       xAxis.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return "";
+            }
+        });
+        xAxis.setAxisMinimum(0);
+        xAxis.setLabelCount(0, true);
+
+//        xAxis.setTextSize(12);
+//        xAxis.setAxisLineColor(R.color.primaryDarkColor);
         xAxis.setGranularity(1f);
-        xAxis.setGranularityEnabled(true);
-        xAxis.setDrawGridLines(false);
-
-
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+//        xAxis.setGranularityEnabled(true);
+//        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setXOffset(0f); //labels x offset in dps
         xAxis.setYOffset(0f); //labels y offset in dps
         xAxis.setCenterAxisLabels(false);
 
 
 
+
+
         YAxis yAxis = chart.getAxisRight();
+
         yAxis.setTextColor(R.color.primaryDarkColor);
         yAxis.setTextSize(12);
-
         yAxis.setAxisLineColor(R.color.primaryDarkColor);
         yAxis.setDrawGridLines(true);
         yAxis.setGranularity(1f);
         yAxis.setGranularityEnabled(true);
+
         yAxis.setAxisMinimum(0);
         yAxis.setDrawAxisLine(false);
+//        yAxis.setValueFormatter(new ValueFormatter() {
+//            @Override
+//            public String getFormattedValue(float value) {
+//                return "";
+//            }
+//        });
+
         yAxis.setLabelCount(4, true); //labels (Y-Values) for 4 horizontal grid lines
         yAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
 
@@ -158,13 +180,13 @@ public class ProfileGraphFragment extends Fragment {
     }
     //https://getridbug.com/android/plot-data-value-on-timeline-axis-in-bar-chart-using-mpandroidchart/
     private void onChanged(Tuple<List<String>, BarData> dataTuple) {
-        chart.getXAxis().setLabelCount(dataTuple.getFirst().size() / 4, true);
-        chart.getXAxis().setValueFormatter(new ValueFormatter() {
-            @Override
-            public String getFormattedValue(float value) {
-                return dataTuple.getFirst().get((int) value);
-            }
-        });
+//        chart.getXAxis().setLabelCount(dataTuple.getFirst().size() / 2, true);
+//        chart.getXAxis().setValueFormatter(new ValueFormatter() {
+//            @Override
+//            public String getFormattedValue(float value) {
+//                return dataTuple.getFirst().get((int) value);
+//            }
+//        });
 
         chart.setXAxisRenderer(new XAxisRenderer(chart.getViewPortHandler(), this.chart.getXAxis(), chart.getTransformer(YAxis.AxisDependency.LEFT)){
             @Override

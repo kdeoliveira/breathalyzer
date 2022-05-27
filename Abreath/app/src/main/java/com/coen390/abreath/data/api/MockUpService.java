@@ -10,7 +10,7 @@ import retrofit2.http.Path;
 
 public interface MockUpService extends Service {
 
-    @GET("api/v1/bac_results")
+    @GET("api/v1/bac_results?sortBy=createdAt&order=desc")
     Call<List<UserDataEntity>> getAll();
 
 

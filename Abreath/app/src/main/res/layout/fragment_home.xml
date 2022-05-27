@@ -62,14 +62,15 @@
         android:id="@+id/textContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/round_container"
+        android:backgroundTint="@color/secondaryBgColor"
+        android:elevation="2dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:orientation="vertical"
         android:padding="10dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:background="@drawable/round_container"
-        android:elevation="2dp"
-        android:backgroundTint="@color/secondaryBgColor"
-        app:layout_constraintTop_toBottomOf="@+id/profile_name">
+        app:layout_constraintTop_toBottomOf="@+id/profile_name"
+        tools:layout_editor_absoluteX="5dp">
 
         <TextView
             android:id="@+id/profile_age"
