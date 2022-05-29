@@ -1,9 +1,11 @@
 package com.coen390.abreath.ui.settings;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -11,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.coen390.abreath.AboutPage;
 import com.coen390.abreath.Category;
 import com.coen390.abreath.R;
 import com.coen390.abreath.SettingsAdapter;
@@ -43,6 +46,19 @@ public class SettingsFragment extends Fragment {
 
         SettingsAdapter sa = new SettingsAdapter(getActivity().getApplicationContext(), R.layout.row, al);
         list.setAdapter(sa);
+
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                switch(i)
+                {
+                    case 5:
+                        openAboutPage();
+                    default:
+                        break;
+                }
+            }
+        });
         return root;
     }
 
@@ -50,5 +66,12 @@ public class SettingsFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private void openAboutPage()
+    {
+        Intent intent = new Intent(getActivity(), AboutPage.class);
+        startActivity(intent);
+
     }
 }
