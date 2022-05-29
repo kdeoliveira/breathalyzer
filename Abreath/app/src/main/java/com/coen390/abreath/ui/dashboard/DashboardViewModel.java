@@ -22,7 +22,7 @@ public class DashboardViewModel extends ViewModel {
         DisplayData.setValue(userdata + "mg/L");
         Username.setValue(username + ", the results are out :");
 
-        if(userdata > threshold)
+        if(userdata => threshold)
         {
             mText.setValue(username + ", you are above the legal limit! \n Please do not take the wheel.");
         }
