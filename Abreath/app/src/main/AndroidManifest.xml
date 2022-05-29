@@ -14,7 +14,7 @@
         android:theme="@style/Theme.Abreath"
         tools:targetApi="31">
         <activity
-            android:name=".AboutPage"
+            android:name=".ui.settings.pages.AboutPage"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

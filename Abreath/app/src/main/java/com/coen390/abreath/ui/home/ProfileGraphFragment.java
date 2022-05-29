@@ -120,7 +120,7 @@ public class ProfileGraphFragment extends Fragment {
                 return "";
             }
         });
-        xAxis.setAxisMinimum(0);
+
         xAxis.setLabelCount(0, true);
 
 //        xAxis.setTextSize(12);
@@ -146,7 +146,7 @@ public class ProfileGraphFragment extends Fragment {
         yAxis.setGranularityEnabled(true);
 
 
-        yAxis.setAxisMinimum(0);
+
         yAxis.setDrawAxisLine(false);
 //        yAxis.setValueFormatter(new ValueFormatter() {
 //            @Override
@@ -159,7 +159,7 @@ public class ProfileGraphFragment extends Fragment {
         yAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
 
         YAxis leftAxis = chart.getAxisLeft();
-        leftAxis.setAxisMinimum(0);
+
 
         leftAxis.setDrawAxisLine(false);
         leftAxis.setLabelCount(0, true);

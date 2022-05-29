@@ -7,17 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.coen390.abreath.AboutPage;
-import com.coen390.abreath.Category;
 import com.coen390.abreath.R;
-import com.coen390.abreath.SettingsAdapter;
 import com.coen390.abreath.databinding.FragmentSettingsBinding;
+import com.coen390.abreath.ui.model.SettingsViewModel;
+import com.coen390.abreath.ui.settings.pages.AboutPage;
 
 import java.util.ArrayList;
 

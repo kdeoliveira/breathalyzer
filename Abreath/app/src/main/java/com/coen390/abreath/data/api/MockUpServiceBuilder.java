@@ -1,5 +1,8 @@
 package com.coen390.abreath.data.api;
 
+import android.util.Log;
+
+import com.coen390.abreath.common.Utility;
 import com.coen390.abreath.data.entity.UserDataEntity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -25,8 +28,9 @@ public class MockUpServiceBuilder {
         Date date = null;
         try {
             date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSS'Z'", Locale.CANADA).parse(jsonObject.get("createdAt").getAsString());
-
-            return new UserDataEntity(jsonObject.get("username").getAsString(), jsonObject.get("bac").getAsFloat(), date,jsonObject.get("id").getAsInt(),jsonObject.get("name").getAsString(),jsonObject.get("lastName").getAsString(), jsonObject.get("age").getAsInt(), jsonObject.get("weight").getAsInt(), jsonObject.get("height").getAsFloat()/100.0f);
+            float mapped_bac = Utility.map(jsonObject.get("bac").getAsFloat(), 0.0f, 103172f, 0.0f, 0.2f);
+            Log.d("inapp", Float.toString(mapped_bac));
+            return new UserDataEntity(jsonObject.get("username").getAsString(),  mapped_bac, date,jsonObject.get("id").getAsInt(),jsonObject.get("name").getAsString(),jsonObject.get("lastName").getAsString(), jsonObject.get("age").getAsInt(), jsonObject.get("weight").getAsInt(), jsonObject.get("height").getAsFloat()/100.0f);
         } catch (ParseException e) {
             e.printStackTrace();
         }

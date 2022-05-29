@@ -1,4 +1,4 @@
-package com.coen390.abreath;
+package com.coen390.abreath.ui.settings;
 
 public class Category {
     int image;

@@ -45,9 +45,11 @@
 
         android:backgroundTint="@color/primaryColor"
         android:contentDescription="@string/title_dashboard"
-        android:src="@drawable/ic_dashboard_black_24dp"
+        android:src="@drawable/logo"
         app:fabCustomSize="75dp"
         app:fabSize="normal"
+        android:scaleType="center"
+        app:maxImageSize="56dp"
         app:layout_anchor="@id/nav_view"
         tools:ignore="ImageContrastCheck" />
 

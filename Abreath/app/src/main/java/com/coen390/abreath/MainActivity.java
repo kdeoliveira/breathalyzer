@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_settings)
                 .build();
 
-        getSupportActionBar().setElevation(0f);
+        Objects.requireNonNull(getSupportActionBar()).setElevation(0f);
 
 
 

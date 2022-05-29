@@ -1,9 +1,13 @@
-package com.coen390.abreath;
+package com.coen390.abreath.ui.settings.pages;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.widget.TextView;
+
+import com.coen390.abreath.R;
+
+import java.util.Objects;
 
 public class AboutPage extends AppCompatActivity {
 
@@ -24,5 +28,7 @@ public class AboutPage extends AppCompatActivity {
                 "KunYi Wang, Noah Louvet, Li Xingze\n" +
                 "\n\n\n\n\n\n" +
                 "All icons used on the settings page are from Google Icons and are free to use under the Apache Licence Version 2.0.");
+
+        Objects.requireNonNull(getSupportActionBar()).setElevation(0f);
     }
 }

@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.coen390.abreath.databinding.FragmentDashboardBinding;
+import com.coen390.abreath.ui.model.DashboardViewModel;
 
 public class DashboardFragment extends Fragment {
 

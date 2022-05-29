@@ -1,16 +1,16 @@
-package com.coen390.abreath.ui.settings;
+package com.coen390.abreath.ui.model;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class SettingsViewModel extends ViewModel {
+public class DashboardViewModel extends ViewModel {
 
     private final MutableLiveData<String> mText;
 
-    public SettingsViewModel() {
+    public DashboardViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is the settings fragment");
+        mText.setValue("This is dashboard fragment");
     }
 
     public LiveData<String> getText() {
