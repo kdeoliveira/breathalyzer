@@ -82,6 +82,7 @@ public class HomeFragment extends Fragment {
 
 //        final TextView textView = binding.textHome;
 //        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+>>>>>>> sprint1-release
 
         return root;
 
