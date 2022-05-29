@@ -43,8 +43,6 @@ import java.util.Random;
  */
 
 //https://learntodroid.com/how-to-display-a-bar-chart-in-your-android-app/#:~:text=To%20display%20a%20bar%20chart%20in%20your%20Android%20app%20you,appearance%20of%20the%20bar%20chart
-
-
 public class ProfileGraphFragment extends Fragment {
 
 
@@ -147,6 +145,7 @@ public class ProfileGraphFragment extends Fragment {
         yAxis.setGranularity(1f);
         yAxis.setGranularityEnabled(true);
 
+
         yAxis.setAxisMinimum(0);
         yAxis.setDrawAxisLine(false);
 //        yAxis.setValueFormatter(new ValueFormatter() {
@@ -161,6 +160,7 @@ public class ProfileGraphFragment extends Fragment {
 
         YAxis leftAxis = chart.getAxisLeft();
         leftAxis.setAxisMinimum(0);
+
         leftAxis.setDrawAxisLine(false);
         leftAxis.setLabelCount(0, true);
         leftAxis.setValueFormatter(new ValueFormatter() {
@@ -169,7 +169,7 @@ public class ProfileGraphFragment extends Fragment {
                 return "";
             }
         });
-
+        chart.getXAxis().setEnabled(false);
         chart.setDrawGridBackground(false);
         chart.setDrawBorders(false);
         chart.setScaleEnabled(false);

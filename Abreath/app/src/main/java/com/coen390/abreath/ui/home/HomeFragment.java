@@ -28,6 +28,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Random;
 
 //https://developer.android.com/guide/fragments/communicate
@@ -61,9 +62,9 @@ public class HomeFragment extends Fragment {
 
         sampleModel.getUserInfo().observe(getViewLifecycleOwner(), userDataEntity -> {
             nameTextView.setText(userDataEntity.getName().concat(" ").concat(userDataEntity.getLast_name()));
-            ageTextView.setText("Age: "+String.valueOf(userDataEntity.getAge()));
-            heightTextView.setText("Height: "+ Float.valueOf(userDataEntity.getHeight()));
-            weightTextView.setText("Weight: "+String.valueOf(userDataEntity.getWeight()));
+            ageTextView.setText(String.format(Locale.CANADA,"Age: %d", userDataEntity.getAge()));
+            heightTextView.setText(String.format(Locale.CANADA,"Height: %.2f", userDataEntity.getHeight()));
+            weightTextView.setText(String.format(Locale.CANADA,"Weight: %d", userDataEntity.getWeight()));
         });
 
 

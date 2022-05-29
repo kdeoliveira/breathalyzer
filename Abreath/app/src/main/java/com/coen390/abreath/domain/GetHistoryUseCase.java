@@ -44,7 +44,7 @@ public class GetHistoryUseCase extends Observable implements UseCase {
                 timeline.add("");
 
                 BarDataSet dataSet = new BarDataSet(values, "Previous Samples");
-                dataSet.setColor(ColorTemplate.rgb("#0288d1"));
+
                 BarData barData = new BarData(dataSet);
 
                 setChanged();

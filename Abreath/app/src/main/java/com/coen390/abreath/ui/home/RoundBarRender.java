@@ -15,6 +15,7 @@ import com.github.mikephil.charting.interfaces.dataprovider.BarDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.model.GradientColor;
 import com.github.mikephil.charting.renderer.BarChartRenderer;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
@@ -45,9 +46,12 @@ public class RoundBarRender extends BarChartRenderer {
 
         BarData barData = mChart.getBarData();
 
+
         for (Highlight high : indices) {
 
             IBarDataSet set = barData.getDataSetByIndex(high.getDataSetIndex());
+
+
 
             if (set == null || !set.isHighlightEnabled())
                 continue;
@@ -98,7 +102,7 @@ public class RoundBarRender extends BarChartRenderer {
     @Override
     protected void drawDataSet(Canvas c, IBarDataSet dataSet, int index) {
         Transformer trans = mChart.getTransformer(dataSet.getAxisDependency());
-
+        ((BarDataSet) dataSet).setColor(ColorTemplate.rgb("#0288d1"));
         mBarBorderPaint.setColor(dataSet.getBarBorderColor());
         mBarBorderPaint.setStrokeWidth(Utils.convertDpToPixel(dataSet.getBarBorderWidth()));
 
