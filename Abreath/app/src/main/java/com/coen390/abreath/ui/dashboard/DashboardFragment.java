@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.coen390.abreath.R;
 import com.coen390.abreath.databinding.FragmentDashboardBinding;
+<<<<<<< HEAD
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -26,6 +27,9 @@ import com.github.mikephil.charting.data.PieEntry;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
+=======
+import com.coen390.abreath.ui.model.DashboardViewModel;
+>>>>>>> sprint1-release
 
 public class DashboardFragment extends Fragment {
 
@@ -82,6 +86,7 @@ public class DashboardFragment extends Fragment {
         View root = binding.getRoot();
 
         final TextView textView = binding.textDashboard;
+<<<<<<< HEAD
         final TextView UserView = binding.textUsername;
         final TextView DataView = binding.resultsDisplay;
 
@@ -115,7 +120,14 @@ public class DashboardFragment extends Fragment {
         pieChart.setHoleRadius(60);
         Legend none = pieChart.getLegend();
         none.setEnabled(false);
+=======
+
+
+        dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+
+>>>>>>> sprint1-release
         return root;
+
     }
 
     @Override

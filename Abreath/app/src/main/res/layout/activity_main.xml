@@ -5,6 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/primaryBgColor"
 
     >
 <!--    android:paddingTop="?attr/actionBarSize" -->
@@ -14,7 +15,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:backgroundTint="@color/purple_200"
+
+            android:backgroundTint="@android:color/transparent"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -39,11 +42,14 @@
         android:id="@+id/fab_dashboard"
         android:layout_width="75dp"
         android:layout_height="75dp"
-        android:backgroundTint="@color/purple_200"
+
+        android:backgroundTint="@color/primaryColor"
         android:contentDescription="@string/title_dashboard"
-        android:src="@drawable/ic_dashboard_black_24dp"
+        android:src="@drawable/logo"
         app:fabCustomSize="75dp"
         app:fabSize="normal"
+        android:scaleType="center"
+        app:maxImageSize="56dp"
         app:layout_anchor="@id/nav_view"
         tools:ignore="ImageContrastCheck" />
 
@@ -58,6 +64,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginBottom="?attr/actionBarSize"
+        android:backgroundTint="@color/primaryColor"
 
             app:navGraph="@navigation/mobile_navigation" />
 
