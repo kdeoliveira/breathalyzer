@@ -23,7 +23,7 @@
         android:layout_marginTop="5dp"
         android:layout_toRightOf="@+id/image"
         android:layout_marginLeft="5dp"
-        android:textColor="@color/black"/>
+        android:textColor="#000000"/>
 
     <ImageView
         android:id="@+id/arrow"
