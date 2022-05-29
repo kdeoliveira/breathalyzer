@@ -28,9 +28,7 @@ public class SettingsFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        SettingsViewModel settingsViewModel =
-                new ViewModelProvider(this).get(SettingsViewModel.class);
-
+        SettingsViewModel settingsViewModel = new ViewModelProvider(this).get(SettingsViewModel.class);
         binding = FragmentSettingsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         list = binding.listView;
@@ -59,6 +57,7 @@ public class SettingsFragment extends Fragment {
                 }
             }
         });
+
         return root;
     }
 
