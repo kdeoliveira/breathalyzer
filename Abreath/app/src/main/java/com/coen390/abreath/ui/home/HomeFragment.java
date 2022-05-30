@@ -71,19 +71,6 @@ public class HomeFragment extends Fragment {
 
 
 
-
-//        sampleModel.getUserData().observe(getViewLifecycleOwner(), this::onChanged);
-
-//        chart.setNoDataText("Loading");
-//        Paint p = chart.getPaint(Chart.PAINT_INFO);
-//        p.setTextSize(12f);
-
-
-
-//        final TextView textView = binding.textHome;
-//        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
->>>>>>> sprint1-release
-
         return root;
 
 
