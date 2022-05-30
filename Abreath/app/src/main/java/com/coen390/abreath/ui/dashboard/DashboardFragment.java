@@ -90,6 +90,7 @@ public class DashboardFragment extends Fragment {
 
 
         dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+
         dashboardViewModel.getUsername().observe(getViewLifecycleOwner(), UserView::setText);
         dashboardViewModel.getData().observe(getViewLifecycleOwner(), DataView::setText);
         dashboardViewModel.Data();

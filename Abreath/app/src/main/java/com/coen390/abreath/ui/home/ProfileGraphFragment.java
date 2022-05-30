@@ -89,6 +89,7 @@ public class ProfileGraphFragment extends Fragment {
         roundBarRender.setRadius(20);
         chart.setRenderer(roundBarRender);
 
+        //Note that this should be moved into onViewCreated to ensure parent activity or this view has been created before setting ViewModels
         UserDataViewModel sampleModel = new ViewModelProvider(requireParentFragment(), new ViewModelFactory(new MockUpRepository(MockUpServiceBuilder.create(MockUpService.class)))).get(UserDataViewModel.class);
 
         sampleModel.getUserData().observe(getViewLifecycleOwner(), this::onChanged);

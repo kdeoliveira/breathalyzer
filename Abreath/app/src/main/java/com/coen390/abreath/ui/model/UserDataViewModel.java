@@ -57,6 +57,7 @@ public class UserDataViewModel extends ViewModel implements Observer {
 
     @Override
     public void update(Observable observable, Object o) {
+
         if(o instanceof Tuple){
             samples.postValue( (Tuple<List<String>, BarData>) o );
         }else if(o instanceof UserDataEntity){

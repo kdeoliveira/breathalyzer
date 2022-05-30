@@ -26,11 +26,11 @@ public class DashboardViewModel extends ViewModel {
         {
             mText.setValue(username + ", you are above the legal limit! \n Please do not take the wheel.");
         }
-        if(userdata < threshold)
+        else if(userdata < threshold)
         {
             mText.setValue(username + ", you are under the legal limit. \n You are good to drive! ");
         }
-        if (userdata < 0)
+        else
         {
             mText.setValue("Test Unsuccessful.\n Please try again.");
         }

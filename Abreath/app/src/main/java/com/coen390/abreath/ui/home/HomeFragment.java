@@ -57,7 +57,7 @@ public class HomeFragment extends Fragment {
         profileImage = binding.profileImage;
         weightTextView = binding.profileWeight;
 
-
+        //Note that this should be moved into onViewCreated to ensure parent activity or this view has been created before setting ViewModels
         UserDataViewModel sampleModel = new ViewModelProvider(this, new ViewModelFactory(new MockUpRepository(MockUpServiceBuilder.create(MockUpService.class)))).get(UserDataViewModel.class);
 
         sampleModel.getUserInfo().observe(getViewLifecycleOwner(), userDataEntity -> {
