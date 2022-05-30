@@ -1,4 +1,4 @@
-package com.coen390.abreath.ui.model;
+package com.coen390.abreath.ui.settings;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
