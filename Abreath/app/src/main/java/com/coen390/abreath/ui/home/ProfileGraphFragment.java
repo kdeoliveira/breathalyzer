@@ -86,7 +86,8 @@ public class ProfileGraphFragment extends Fragment {
 
         RoundBarRender roundBarRender = new RoundBarRender(chart, chart.getAnimator(), chart.getViewPortHandler());
 //        roundBarRender.initBuffers();
-        roundBarRender.setRadius(20);
+//        roundBarRender.setRadius(20);
+        roundBarRender.setThreashold(0.2f);
         chart.setRenderer(roundBarRender);
 
         //Note that this should be moved into onViewCreated to ensure parent activity or this view has been created before setting ViewModels
@@ -114,15 +115,15 @@ public class ProfileGraphFragment extends Fragment {
 
 
         xAxis.setDrawAxisLine(false);
-        xAxis.setLabelCount(0, true);
-       xAxis.setValueFormatter(new ValueFormatter() {
-            @Override
-            public String getFormattedValue(float value) {
-                return "";
-            }
-        });
 
-        xAxis.setLabelCount(0, true);
+//       xAxis.setValueFormatter(new ValueFormatter() {
+//            @Override
+//            public String getFormattedValue(float value) {
+//                return "";
+//            }
+//        });
+
+
 
 //        xAxis.setTextSize(12);
 //        xAxis.setAxisLineColor(R.color.primaryDarkColor);
@@ -131,7 +132,10 @@ public class ProfileGraphFragment extends Fragment {
 //        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setXOffset(0f); //labels x offset in dps
         xAxis.setYOffset(0f); //labels y offset in dps
-        xAxis.setCenterAxisLabels(false);
+        xAxis.setDrawGridLines(false);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+
 
 
 
@@ -170,7 +174,7 @@ public class ProfileGraphFragment extends Fragment {
                 return "";
             }
         });
-        chart.getXAxis().setEnabled(false);
+
         chart.setDrawGridBackground(false);
         chart.setDrawBorders(false);
         chart.setScaleEnabled(false);
@@ -181,18 +185,18 @@ public class ProfileGraphFragment extends Fragment {
     }
     //https://getridbug.com/android/plot-data-value-on-timeline-axis-in-bar-chart-using-mpandroidchart/
     private void onChanged(Tuple<List<String>, BarData> dataTuple) {
-//        chart.getXAxis().setLabelCount(dataTuple.getFirst().size() / 2, true);
-//        chart.getXAxis().setValueFormatter(new ValueFormatter() {
-//            @Override
-//            public String getFormattedValue(float value) {
-//                return dataTuple.getFirst().get((int) value);
-//            }
-//        });
+        chart.getXAxis().setLabelCount(dataTuple.getFirst().size() / 2, true);
+        chart.getXAxis().setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return dataTuple.getFirst().get((int) value);
+            }
+        });
 
         chart.setXAxisRenderer(new XAxisRenderer(chart.getViewPortHandler(), this.chart.getXAxis(), chart.getTransformer(YAxis.AxisDependency.LEFT)){
             @Override
             protected void drawLabel(Canvas c, String formattedLabel, float x, float y, MPPointF anchor, float angleDegrees) {
-                Utils.drawXAxisValue(c, formattedLabel, x+Utils.convertDpToPixel(5f), y+Utils.convertDpToPixel(1f), mAxisLabelPaint, anchor, 90f);
+                Utils.drawXAxisValue(c, formattedLabel, x+Utils.convertDpToPixel(5f), y+Utils.convertDpToPixel(2f), mAxisLabelPaint, anchor, 0);
             }
         });
 

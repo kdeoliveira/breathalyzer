@@ -37,7 +37,7 @@
         android:padding="10dp"
         android:orientation="horizontal"
         android:gravity="bottom"
-        android:layout_marginTop="-30dp"
+        android:layout_marginTop="-60dp"
         >
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="wrap_content"
@@ -154,7 +154,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
-
+        android:visibility="gone"
         android:orientation="vertical"
         android:gravity="bottom"
 
@@ -179,6 +179,7 @@
             />
     </androidx.appcompat.widget.LinearLayoutCompat>
     <FrameLayout
+        android:visibility="gone"
         android:id="@+id/fragmentContainerView"
         android:name="com.coen390.abreath.ui.home.ProfileGraphFragment"
         android:layout_width="match_parent"

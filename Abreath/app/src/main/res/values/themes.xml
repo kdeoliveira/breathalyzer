@@ -11,7 +11,19 @@
         <item name="colorSecondaryVariant">@color/secondaryDarkColor</item>
         <item name="colorOnSecondary">@color/secondaryTextColor</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
+        <item name="android:statusBarColor" >?attr/colorPrimary</item>
+
+
         <!-- Customize your theme here. -->
+        <item name="android:textViewStyle">@font/nunito_sans_light</item>
+        <item name="fontFamily">@font/nunito_sans_light</item>
+        <item name="android:fontFamily">@font/nunito_sans_light</item>
     </style>
+<!--    https://stackoverflow.com/questions/19691530/valid-values-for-androidfontfamily-and-what-they-map-to-->
+    <style name="TextAppearance" parent="android:TextAppearance">
+        <item name="android:textViewStyle">@font/nunito_sans_light</item>
+        <item name="fontFamily">@font/nunito_sans_light</item>
+        <item name="android:fontFamily">@font/nunito_sans_light</item>
+    </style>
+
 </resources>

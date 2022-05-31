@@ -14,6 +14,7 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Observable;
@@ -36,8 +37,11 @@ public class GetHistoryUseCase extends Observable implements UseCase {
         this.repository.fetchAllSamples(new MockUpRepository.ControllerListener<List<UserDataEntity>>() {
             @Override
             public void onCompleted(List<UserDataEntity> data) {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-DD", Locale.CANADA);
+                long yearTime = 365L *24*60*60*1000;
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMM-dd", Locale.CANADA);
                 for(int k = 0; k < data.size(); k++){
+                    //Discard data that was created later than a year ago
+                    if(data.get(k).getCreated_at().getTime() < (new Date().getTime() - yearTime)) continue;
                     values.add(new BarEntry(k+1, data.get(k).getBac()));
                     timeline.add(simpleDateFormat.format(data.get(k).getCreated_at()));
                 }
