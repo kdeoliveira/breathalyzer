@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.coen390.abreath.R;
+import com.coen390.abreath.SensorActivity;
 import com.coen390.abreath.databinding.FragmentSettingsBinding;
 import com.coen390.abreath.ui.model.SettingsViewModel;
 import com.coen390.abreath.ui.settings.pages.AboutPage;
@@ -48,8 +49,13 @@ public class SettingsFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 switch(i)
                 {
+                    case 2:
+                        Intent intent = new Intent(getActivity(), SensorActivity.class);
+                        startActivity(intent);
+                        break;
                     case 5:
                         openAboutPage();
+                        break;
                     default:
                         break;
                 }
