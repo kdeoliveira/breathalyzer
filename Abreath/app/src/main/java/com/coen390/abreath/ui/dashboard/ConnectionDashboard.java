@@ -26,7 +26,8 @@ public class ConnectionDashboard extends Fragment {
 
     private FragmentConnectionDashboardBinding binding;
     private Button connect_button;
-    private Boolean is_bluetooth_connected = true;
+    //This must be set through sharedPreferences or background services
+    private Boolean is_bluetooth_connected = false;
 
 
     public ConnectionDashboard() {}
@@ -59,6 +60,7 @@ public class ConnectionDashboard extends Fragment {
         connect_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                is_bluetooth_connected = true;
                 Navigation.findNavController(binding.getRoot()).navigate(R.id.action_connectionDashboard_to_navigation_dashboard);
             }
         });
