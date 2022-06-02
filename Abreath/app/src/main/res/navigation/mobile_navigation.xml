@@ -7,7 +7,8 @@
 
     <action
         android:id="@+id/to_navigation_dashboard"
-        app:destination="@id/navigation_dashboard" />
+        app:destination="@id/connectionDashboard" />
+
 
     <action
         android:id="@+id/to_navigation_home"
@@ -36,4 +37,13 @@
         android:name="com.coen390.abreath.ui.settings.SettingsFragment"
         android:label="@string/title_settings"
         tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/connectionDashboard"
+        android:name="com.coen390.abreath.ui.dashboard.ConnectionDashboard"
+        android:label="@string/title_dashboard"
+        tools:layout="@layout/fragment_connection_dashboard" >
+        <action
+            android:id="@+id/action_connectionDashboard_to_navigation_dashboard"
+            app:destination="@id/navigation_dashboard" />
+    </fragment>
 </navigation>

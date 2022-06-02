@@ -16,6 +16,9 @@ import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
+import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
@@ -50,9 +53,11 @@ import android.widget.Toast;
 
 import com.coen390.abreath.service.BleService;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -61,20 +66,21 @@ public class SensorActivity extends AppCompatActivity {
     private Button scan;
     private ProgressBar progressBar;
     private ListView listView;
-
+    private ArrayAdapter<String> adapter;
     private static final String TAG = "com.coen390.abreath.BLUETOOTH";
     private static final int REQUEST_CODE = 71567;
+    private static final int REQUEST_CODE_CONNECTION = 4352;
     private static final String DEVICE_NAME = "com.coen390.abreath.SENSOR";
     private BluetoothAdapter mBluetoothAdapter;
-    private BluetoothLeScanner mBluetoothScanner;
-    private Set<BluetoothDevice> mDevices;
+
+    private List<BluetoothDevice> mDevices;
 
     private List<String> mDeviceNames;
-    private BluetoothGatt mConnectedGatt;
 
     private BleService bluetoothService;
     //https://developer.android.com/guide/topics/connectivity/bluetooth/connect-gatt-server
     //https://developer.android.com/guide/topics/connectivity/bluetooth/transfer-ble-data#notification
+    //https://www.youtube.com/watch?v=x1y4tEHDwk0
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
@@ -85,12 +91,7 @@ public class SensorActivity extends AppCompatActivity {
                 //unable to connect
 
             }
-
-
-            bluetoothService.connectTo(mDeviceNames.size() > 0 ? mDeviceNames.get(0) : null);
-
-
-
+            bluetoothService.connectTo(mDevices.size() > 0 ? mDevices.get(0).getAddress() : null);
         }
 
         @Override
@@ -108,37 +109,14 @@ public class SensorActivity extends AppCompatActivity {
                 Log.d("Activity inapp", "connected");
             }else if(BleService.ACTION_GATT_DISCONNECTED.equals(action)){
                 Log.d("Activity inapp", "disconnected");
+            }else if(BleService.ACTION_GATT_SUCCESS_DISCOVERED.equals(action)){
+
+                displayGattServices(bluetoothService.getSupportedGattServices());
             }
         }
     };
 
 
-    private ScanCallback scanCallback = new ScanCallback() {
-        @Override
-        public void onScanResult(int callbackType, ScanResult result) {
-            super.onScanResult(callbackType, result);
-
-            Toast.makeText(SensorActivity.this, "Founded: " + result.toString(), Toast.LENGTH_SHORT).show();
-
-            if (result.getDevice() == null) return;
-
-            mDevices.add(result.getDevice());
-            mDeviceNames.add(result.getDevice().getAddress());
-
-
-        }
-
-        @Override
-        public void onBatchScanResults(List<ScanResult> results) {
-            super.onBatchScanResults(results);
-        }
-
-        @Override
-        public void onScanFailed(int errorCode) {
-            Log.d("inapp", String.valueOf(errorCode));
-            super.onScanFailed(errorCode);
-        }
-    };
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -150,20 +128,31 @@ public class SensorActivity extends AppCompatActivity {
 
 
 
-        mDevices = new HashSet<>();
+        mDevices = new ArrayList<>();
         mDeviceNames = new ArrayList<>();
         sensorReading = findViewById(R.id.sensorReading);
         sensorStatus = findViewById(R.id.statusBluetooth);
         scan = findViewById(R.id.sensorScan);
         listView = findViewById(R.id.listOfBle);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mDeviceNames);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mDeviceNames);
         listView.setAdapter(adapter);
         progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
 
         BluetoothManager manager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
         mBluetoothAdapter = manager.getAdapter();
-        mBluetoothScanner = manager.getAdapter().getBluetoothLeScanner();
+
+        @SuppressLint("MissingPermission") Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+
+        for(BluetoothDevice x : pairedDevices){
+            try{
+                Method m = x.getClass().getMethod("removeBond", (Class[]) null);
+                m.invoke(x, (Object[]) null);
+            }catch(Exception e){
+                Log.e("inapp", "error calling removeBond");
+            }
+        }
+
 
 
 
@@ -172,7 +161,7 @@ public class SensorActivity extends AppCompatActivity {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             BluetoothDeviceFilter  deviceFilter = new BluetoothDeviceFilter.Builder().build();
 
-            AssociationRequest pairingRequest = new AssociationRequest.Builder().addDeviceFilter(deviceFilter).setSingleDevice(true).build();
+            AssociationRequest pairingRequest = new AssociationRequest.Builder().addDeviceFilter(deviceFilter).setSingleDevice(false).build();
 
             CompanionDeviceManager deviceManager = (CompanionDeviceManager) getSystemService(Context.COMPANION_DEVICE_SERVICE);
 
@@ -183,7 +172,7 @@ public class SensorActivity extends AppCompatActivity {
                     try {
                         Log.d("inapp", deviceManager.getAssociations().toString());
                         startIntentSenderForResult(
-                                intentSender, REQUEST_CODE, null, 0, 0, 0
+                                intentSender, REQUEST_CODE_CONNECTION, null, 0, 0, 0
                         );
 
                     } catch (IntentSender.SendIntentException e) {
@@ -224,10 +213,22 @@ public class SensorActivity extends AppCompatActivity {
                 if (deviceToPair != null) {
                     if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {}
 //                    deviceToPair.createBond();
-                    mDeviceNames.add(deviceToPair.getAddress());
+//                    mDeviceNames.add(deviceToPair.getAddress());
                 }
             }
-        }else
+        }else if(requestCode == REQUEST_CODE_CONNECTION){
+            if(resultCode == Activity.RESULT_OK && data != null){
+                BluetoothDevice deviceToPair = data.getParcelableExtra(CompanionDeviceManager.EXTRA_DEVICE);
+
+                if (deviceToPair != null) {
+
+                    mDevices.add(deviceToPair);
+                }
+
+            }
+        }
+
+        else
             super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -250,25 +251,39 @@ public class SensorActivity extends AppCompatActivity {
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(BleService.ACTION_GATT_CONNECTED);
         intentFilter.addAction(BleService.ACTION_GATT_DISCONNECTED);
+        intentFilter.addAction(BleService.ACTION_GATT_SUCCESS_DISCOVERED);
         registerReceiver(gattUpdateReceiver, intentFilter);
     }
 
+    private void displayGattServices(List<BluetoothGattService> services){
+        if(services == null) return;
+        for(BluetoothGattService x : services){
+            String uuid = x.getUuid().toString();
+
+            mDeviceNames.add(
+                    String.format(Locale.CANADA, "UUID - %s", uuid)
+            );
+            if(x.getCharacteristic(x.getUuid()) == null) continue;
+            for(BluetoothGattDescriptor y : x.getCharacteristic(x.getUuid()).getDescriptors()) {
+                mDeviceNames.add(
+                        String.format(Locale.CANADA, "Characteristic - %s & UUID - %s", y.toString(), y.getUuid().toString())
+                );
+            }
+        }
+        adapter.notifyDataSetChanged();
+    }
 
     @Override
     protected void onStop() {
         super.onStop();
-        unbindService(serviceConnection);
+        Log.d("inapp", "onStop Activity");
+        if(bluetoothService != null)
+            unbindService(serviceConnection);
 
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        mBluetoothScanner.stopScan(scanCallback);
-
     }
 }
