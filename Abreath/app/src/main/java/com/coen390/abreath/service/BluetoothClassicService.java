@@ -1,21 +1,32 @@
 package com.coen390.abreath.service;
 
+import static androidx.activity.result.ActivityResultCallerKt.registerForActivityResult;
+
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.companion.AssociationRequest;
+import android.companion.BluetoothDeviceFilter;
+import android.companion.CompanionDeviceManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.IntentSenderRequest;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import java.io.IOException;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 
 public class BluetoothClassicService extends Service {
@@ -25,11 +36,16 @@ public class BluetoothClassicService extends Service {
     private ConnThread mConnThread;
     private int SERVICE_STATE;
 
+
+    @SuppressLint("MissingPermission")
+    ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForResult;
+
     private static final int STATE_INIT = 0;
     private static final int STATE_CONN = 1;
     private static final int STATE_CONNECTED = 2;
     private static final int STATE_LISTENING = 3;
 
+    public static String deviceNameToConnect = "kdeoliveira";
 
 
     @Nullable
@@ -37,9 +53,15 @@ public class BluetoothClassicService extends Service {
     public IBinder onBind(Intent intent) {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         SERVICE_STATE = STATE_INIT;
-
-
         return binder;
+    }
+
+    @SuppressLint("MissingPermission")
+    @Override
+    public boolean onUnbind(Intent intent) {
+//        if(mBluetoothAdapter != null)
+//            mBluetoothAdapter.disable();
+        return super.onUnbind(intent);
     }
 
     public boolean isBluetoothSupported(){
@@ -47,6 +69,48 @@ public class BluetoothClassicService extends Service {
         return mBluetoothAdapter != null;
     }
 
+    public boolean isBluetoothEnabled(){
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        return mBluetoothAdapter != null && mBluetoothAdapter.isEnabled();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @SuppressLint("MissingPermission")
+    public boolean isBluetoothConnected(){
+        if(mBluetoothAdapter == null) return false;
+
+        for (BluetoothDevice x : mBluetoothAdapter.getBondedDevices()){
+            if(x.getName().equals(deviceNameToConnect)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void connect(){
+        BluetoothDeviceFilter deviceFilter = new BluetoothDeviceFilter.Builder().setNamePattern(Pattern.compile("kdeoliveira")).build();
+
+        AssociationRequest pairingRequest = new AssociationRequest.Builder().addDeviceFilter(deviceFilter).setSingleDevice(true).build();
+
+        CompanionDeviceManager deviceManager = (CompanionDeviceManager) getSystemService(Context.COMPANION_DEVICE_SERVICE);
+
+        //TODO startObservingDevicePresence
+
+        deviceManager.associate(pairingRequest, new CompanionDeviceManager.Callback() {
+            @Override
+            public void onDeviceFound(IntentSender intentSender) {
+                Log.d("inapp", deviceManager.getAssociations().toString());
+                IntentSenderRequest.Builder req = new IntentSenderRequest.Builder(intentSender);
+                startBluetoothActivityForResult.launch(req.build());
+            }
+
+            @Override
+            public void onFailure(CharSequence charSequence) {
+                Log.e("inapp Bluetooth", "Unable to find device - "+charSequence);
+            }
+        }, null);
+    }
 
     public synchronized void connect(BluetoothDevice device){
         if(SERVICE_STATE == STATE_CONN){

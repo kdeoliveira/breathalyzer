@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-<!--    <item android:state_enabled="false">-->
-<!--        <shape android:shape="oval">-->
-<!--            <solid  android:color="@android:color/transparent" />-->
-<!--        </shape>-->
-<!--    </item>-->
-    <item android:state_pressed="true">
-        <shape android:shape="oval">
-            <solid  android:color="?attr/colorSecondary" />
-        </shape>
-    </item>
-    <item android:state_pressed="false">
-        <shape android:shape="oval">
-            <solid  android:color="?attr/colorPrimary" />
-        </shape>
-    </item>
-
-
+        <item android:state_enabled="false">
+            <shape android:shape="oval">
+                <solid  android:color="@color/primaryLightColor" />
+            </shape>
+        </item>
+        <item android:state_pressed="true">
+            <shape android:shape="oval">
+                <solid  android:color="@color/primaryLightColor" />
+            </shape>
+        </item>
+        <item android:state_pressed="false">
+            <shape android:shape="oval">
+                <solid  android:color="@color/primaryColor" />
+            </shape>
+        </item>
 </selector>
