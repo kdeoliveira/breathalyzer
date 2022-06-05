@@ -11,10 +11,4 @@
     <color name="secondaryTextColor">#ffffff</color>
     <color name="primaryBgColor">#edf2f2</color>
     <color name="secondaryBgColor">#f4f7f7</color>
-        <declare-styleable name="ds">
-            <attr name="background_color" format="color"/>
-            <attr name="text_color" format="color"/>
-            <attr name="button_color" format="color"/>
-        </declare-styleable>
-
 </resources>
