@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "71506680402",
+    "firebase_url": "https://abreath-default-rtdb.firebaseio.com",
     "project_id": "abreath",
     "storage_bucket": "abreath.appspot.com"
   },

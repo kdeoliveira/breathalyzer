@@ -1,16 +1,15 @@
 package com.coen390.abreath;
 
-import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
+import com.coen390.abreath.data.entity.UserDataEntity;
+import com.coen390.abreath.ui.Login;
 import com.google.android.material.bottomappbar.BottomAppBar;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
@@ -19,6 +18,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.coen390.abreath.databinding.ActivityMainBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
 
@@ -26,12 +27,24 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private static int startup = 0;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        System.out.println("Helloo1 " + startup);
+        if(user == null && startup == 0) //user is not signed in.
+        {
+            System.out.println("Helloo" + startup);
+            startup++;
+            openSignIn();
+        }
 
+        startup++;
+        System.out.println("Helloo1 " + startup);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -63,8 +76,14 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-
     }
+
+    public void openSignIn()
+    {
+        Intent intent = new Intent(this, Login.class);
+        startActivity(intent);
+    }
+
 
 
 //    @Override
