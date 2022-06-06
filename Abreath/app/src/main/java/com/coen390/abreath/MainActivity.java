@@ -31,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
     private static int startup = 0;
 
 
+    private AppBarConfiguration appBarConfiguration;
+
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,14 +49,15 @@ public class MainActivity extends AppCompatActivity {
         startup++;
         System.out.println("Helloo1 " + startup);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
+
         setContentView(binding.getRoot());
 
-        BottomAppBar navView = findViewById(R.id.nav_view);
+//        BottomAppBar navView = findViewById(R.id.nav_view);
 //        setSupportActionBar(navView);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_settings)
+        appBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.navigation_home, R.id.connectionDashboard, R.id.navigation_settings)
                 .build();
 
         Objects.requireNonNull(getSupportActionBar()).setElevation(0f);
@@ -68,10 +72,12 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
         binding.fabDashboard.setOnClickListener((View view) -> {
             //https://stackoverflow.com/questions/57529211/intercept-navigationui-onnavdestinationselected-to-make-backstack-pop-with-in
             //Properly navigate from FAB to another fragment using user-defined onNavDestinationSelected behavior
-            NavOptions options = new NavOptions.Builder().setPopUpTo(Objects.requireNonNull(navController.getCurrentDestination()).getId(), true).setLaunchSingleTop(true).build();
+            NavOptions options = new NavOptions.Builder().setPopUpTo(Objects.requireNonNull(navController.getCurrentDestination()).getId(), true).setLaunchSingleTop(false).build();
             navController.navigate(R.id.to_navigation_dashboard, null, options);
 
         });
@@ -84,20 +90,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-
-
-//    @Override
-//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-//        switch (item.getItemId()){
-//            case R.id.navigation_home:
-//                NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-//                return NavigationUI.onNavDestinationSelected(item, navController)
-//                        || super.onOptionsItemSelected(item);
-//
-//
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
-//
-//    }
+    @Override
+    public boolean onSupportNavigateUp() {
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+        return NavigationUI.navigateUp(navController, appBarConfiguration)
+                || super.onSupportNavigateUp();
+    }
 }

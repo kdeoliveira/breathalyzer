@@ -60,7 +60,7 @@
         <FrameLayout
             android:id="@+id/frame_header_dashboard"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="75dp"
             android:background="@drawable/gradient_header">
         </FrameLayout>
 

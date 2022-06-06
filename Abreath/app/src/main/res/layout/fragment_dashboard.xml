@@ -5,24 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.dashboard.DashboardFragment">
-    <FrameLayout
-        android:id="@+id/frame_header_dashboard"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:background="@drawable/gradient_header"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
 
-        app:layout_constraintRight_toRightOf="parent">
-
-    </FrameLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/frame_header_dashboard"
+        app:layout_constraintTop_toTopOf="parent"
         android:orientation="vertical"
         android:paddingStart="17dp"
         android:paddingEnd="17dp"
