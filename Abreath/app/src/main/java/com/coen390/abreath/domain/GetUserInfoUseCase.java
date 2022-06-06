@@ -2,6 +2,7 @@ package com.coen390.abreath.domain;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.coen390.abreath.common.Tuple;
@@ -11,6 +12,10 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,28 +24,34 @@ import java.util.Locale;
 import java.util.Observable;
 
 public class GetUserInfoUseCase extends Observable implements UseCase {
-    private final MockUpRepository repository;
+    private final DatabaseReference repository;
 
-    public GetUserInfoUseCase(MockUpRepository mock){
-        this.repository = mock;
+    public GetUserInfoUseCase(DatabaseReference ref){
+        this.repository = ref;
     }
 
     @Override
     public Object call(@Nullable Object payload) {
-        this.repository.fetchSample(new MockUpRepository.ControllerListener<UserDataEntity>() {
+        this.repository.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onCompleted(UserDataEntity data) {
-                Log.d("inapp", data.getLast_name());
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                UserDataEntity userDataEntity = new UserDataEntity(
+                        snapshot.child("name").getValue(String.class),
+                        snapshot.child("height").getValue(String.class),
+                        snapshot.child("weight").getValue(String.class),
+                        snapshot.child("age").getValue(String.class),
+                        snapshot.child("phone").getValue(String.class)
+                );
+
                 setChanged();
-                notifyObservers(data);
+                notifyObservers(userDataEntity);
             }
 
             @Override
-            public void onFailure(Throwable t) {
-                Log.e("[debug]", t.toString());
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("[debug]", error.getMessage());
             }
         });
-
         return payload;
     }
 }

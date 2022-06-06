@@ -33,6 +33,8 @@ import java.util.Objects;
 /**
  * Entity representing the data fetched from mock API
  * The response body will be serialized to this class
+ *
+ * TODO to refactor
  */
 public class UserDataEntity {
     private String username;
@@ -77,6 +79,31 @@ public class UserDataEntity {
 
     private String ageString;
     private String weightString;
+
+    public String getAgeString() {
+        return ageString;
+    }
+
+    public void setAgeString(String ageString) {
+        this.ageString = ageString;
+    }
+
+    public String getWeightString() {
+        return weightString;
+    }
+
+    public void setWeightString(String weightString) {
+        this.weightString = weightString;
+    }
+
+    public String getHeightString() {
+        return heightString;
+    }
+
+    public void setHeightString(String heightString) {
+        this.heightString = heightString;
+    }
+
     private String heightString;
 
     public int getId() {

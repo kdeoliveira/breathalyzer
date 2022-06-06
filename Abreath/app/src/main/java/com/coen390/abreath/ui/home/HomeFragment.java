@@ -29,6 +29,10 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -73,25 +77,27 @@ public class HomeFragment extends Fragment {
 
 
         //Note that this should be moved into onViewCreated to ensure parent activity or this view has been created before setting ViewModels
+//        UserDataViewModel sampleModel = new ViewModelProvider(this, new ViewModelFactory(new MockUpRepository(MockUpServiceBuilder.create(MockUpService.class)))).get(UserDataViewModel.class);
         UserDataViewModel sampleModel = new ViewModelProvider(this, new ViewModelFactory(new MockUpRepository(MockUpServiceBuilder.create(MockUpService.class)))).get(UserDataViewModel.class);
+
 
         sampleModel.getUserInfo().observe(getViewLifecycleOwner(), userDataEntity -> {
 
             nameTextView.setText(userDataEntity.getName());
             lastnameTextView.setText(userDataEntity.getLast_name());
-            usernameTextView.setText("@".concat(userDataEntity.getUsername()));
-            ageTextView.setText(String.format(Locale.CANADA,"%d", userDataEntity.getAge()));
+//            usernameTextView.setText("@".concat(userDataEntity.getUsername()));
+            ageTextView.setText(String.format(Locale.CANADA,"%s", userDataEntity.getAgeString()));
             if(!heightUnits)
-                heightTextView.setText(String.format(Locale.CANADA,"%.2f cm", userDataEntity.getHeight()));
+                heightTextView.setText(String.format(Locale.CANADA,"%s cm", userDataEntity.getHeightString()));
             else{
-                int[] feet = Utility.cmtoin(userDataEntity.getHeight());
+                int[] feet = Utility.cmtoin(Float.parseFloat(userDataEntity.getHeightString()));
                 heightTextView.setText(String.format(Locale.CANADA,"%d' %d''", feet[0], feet[1]));
             }
 
             if(!weigthUnits)
-                weightTextView.setText(String.format(Locale.CANADA,"%d kg", userDataEntity.getWeight()));
+                weightTextView.setText(String.format(Locale.CANADA,"%s kg", userDataEntity.getWeightString()));
             else
-                weightTextView.setText(String.format(Locale.CANADA,"%d lbs", (int) Utility.kgtolbs(userDataEntity.getWeight())) );
+                weightTextView.setText(String.format(Locale.CANADA,"%d lbs", (int) Utility.kgtolbs(Float.parseFloat(userDataEntity.getWeightString()))) );
         });
 
         return root;
