@@ -58,9 +58,6 @@ public class SettingsFragment extends Fragment {
                 {
                     case 0:
                         openAccount();
-                    case 2:
-                        Intent intent = new Intent(getActivity(), SensorActivity.class);
-                        startActivity(intent);
                         break;
                     case 5:
                         openAboutPage();
@@ -69,7 +66,6 @@ public class SettingsFragment extends Fragment {
                         FirebaseAuth.getInstance().signOut();
                         openSignIn();
                         break;
-
                     default:
                         break;
                 }
@@ -89,7 +85,6 @@ public class SettingsFragment extends Fragment {
     {
         Intent intent = new Intent(getActivity(), AboutPage.class);
         startActivity(intent);
-
     }
 
     public void openSignIn()

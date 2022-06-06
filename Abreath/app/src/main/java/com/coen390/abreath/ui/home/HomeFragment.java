@@ -18,6 +18,7 @@ import com.coen390.abreath.R;
 import com.coen390.abreath.data.api.MockUpRepository;
 import com.coen390.abreath.data.api.MockUpService;
 import com.coen390.abreath.data.api.MockUpServiceBuilder;
+import com.coen390.abreath.data.entity.UserDataEntity;
 import com.coen390.abreath.databinding.FragmentHomeBinding;
 import com.coen390.abreath.ui.model.UserDataViewModel;
 import com.coen390.abreath.ui.model.ViewModelFactory;
@@ -26,6 +27,8 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -59,6 +62,8 @@ public class HomeFragment extends Fragment {
         profileImage = binding.profileImage;
         weightTextView = binding.profileWeight;
 
+
+
         //Note that this should be moved into onViewCreated to ensure parent activity or this view has been created before setting ViewModels
         UserDataViewModel sampleModel = new ViewModelProvider(this, new ViewModelFactory(new MockUpRepository(MockUpServiceBuilder.create(MockUpService.class)))).get(UserDataViewModel.class);
 
@@ -69,11 +74,8 @@ public class HomeFragment extends Fragment {
             ageTextView.setText(String.format(Locale.CANADA,"%d", userDataEntity.getAge()));
             heightTextView.setText(String.format(Locale.CANADA,"%.2f cm", userDataEntity.getHeight()));
             weightTextView.setText(String.format(Locale.CANADA,"%d kg", userDataEntity.getWeight()));
+
         });
-
-
-
-
 
         return root;
 

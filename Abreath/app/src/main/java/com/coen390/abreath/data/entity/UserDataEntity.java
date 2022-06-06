@@ -15,8 +15,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.ktx.Firebase;
@@ -74,6 +77,8 @@ public class UserDataEntity {
     private String ageString;
     private String weightString;
     private String heightString;
+
+    private static String result[] = {"","","",""};
 
     public int getId() {
         return id;
@@ -138,7 +143,13 @@ public class UserDataEntity {
         this.last_name = last_name;
     }
 
+    public String getWeightString(){return weightString;}
+    public String getHeightString(){return heightString;}
+    public String getAgeString(){return ageString;}
 
+    public void setWeightString(String weight){this.weightString = weight;}
+    public void setHeightString(String height){this.heightString = height;}
+    public void setAgeString(String age){this.ageString = age;}
 
 
 
@@ -236,4 +247,34 @@ public class UserDataEntity {
         if (control[4] == true)
             dr.child(uid).child("phone").setValue(passPhone);
     }
+
+    public void getDataForHome()
+    {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = user.getUid();
+        DatabaseReference auth = FirebaseDatabase.getInstance().getReference().child("user");
+
+        auth.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                result[0] = snapshot.child("name").getValue(String.class);
+                result[1] = snapshot.child("age").getValue(String.class);
+                result[2] = snapshot.child("height").getValue(String.class);
+                result[3] = snapshot.child("weight").getValue(String.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+
+    public String[] getData()
+    {
+        return result;
+    }
+
+
 }

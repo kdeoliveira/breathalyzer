@@ -38,16 +38,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        System.out.println("Helloo1 " + startup);
         if(user == null && startup == 0) //user is not signed in.
         {
-            System.out.println("Helloo" + startup);
             startup++;
             openSignIn();
         }
 
         startup++;
-        System.out.println("Helloo1 " + startup);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
 
         setContentView(binding.getRoot());
