@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.RectF;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 

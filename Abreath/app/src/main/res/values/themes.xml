@@ -25,5 +25,9 @@
         <item name="fontFamily">@font/nunito_sans_light</item>
         <item name="android:fontFamily">@font/nunito_sans_light</item>
     </style>
+    <style name="TextAppearanceLogo">
+        <item name="fontFamily">@font/expletus_sans_bold</item>
+        <item name="android:fontFamily">@font/expletus_sans_bold</item>
+    </style>
 
 </resources>

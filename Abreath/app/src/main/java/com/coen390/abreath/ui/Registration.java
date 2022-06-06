@@ -12,9 +12,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.coen390.abreath.MainActivity;
 import com.coen390.abreath.R;
 import com.coen390.abreath.data.entity.UserDataEntity;
 import com.coen390.abreath.ui.settings.pages.Account;
+
+import java.util.Objects;
 
 public class Registration extends AppCompatActivity {
 
@@ -37,6 +40,8 @@ public class Registration extends AppCompatActivity {
         buttonSignUp = findViewById(R.id.signup_button);
         haveAccountText = findViewById(R.id.login_on_signup);
 
+        Objects.requireNonNull(getSupportActionBar()).setElevation(0f);
+        getSupportActionBar().setTitle(getResources().getText(R.string.create_account));
 
         buttonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,8 +61,9 @@ public class Registration extends AppCompatActivity {
                     ude.createAccount();
                     Toast.makeText(getApplicationContext(), "Account Created", Toast.LENGTH_SHORT).show();
                     ude.signIn(); //To sign the user in.
+                    openAccount();
                 }
-                openAccount();
+
             }
         });
 
@@ -72,7 +78,9 @@ public class Registration extends AppCompatActivity {
 
     private void openAccount()
     {
-        Intent intent = new Intent(getApplicationContext(), Account.class);
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("login_result", true);
         startActivity(intent);
     }
 

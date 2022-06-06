@@ -58,9 +58,6 @@ public class SettingsFragment extends Fragment {
                 {
                     case 0:
                         openAccount();
-                    case 2:
-                        Intent intent = new Intent(getActivity(), SensorActivity.class);
-                        startActivity(intent);
                         break;
                     case 5:
                         openAboutPage();

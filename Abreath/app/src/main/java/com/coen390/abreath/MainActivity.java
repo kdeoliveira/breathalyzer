@@ -3,6 +3,7 @@ package com.coen390.abreath;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.coen390.abreath.data.entity.UserDataEntity;
@@ -27,8 +28,7 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
-    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    private static int startup = 0;
+    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();;
 
 
     private AppBarConfiguration appBarConfiguration;
@@ -38,16 +38,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        System.out.println("Helloo1 " + startup);
-        if(user == null && startup == 0) //user is not signed in.
-        {
-            System.out.println("Helloo" + startup);
-            startup++;
-            openSignIn();
-        }
 
-        startup++;
-        System.out.println("Helloo1 " + startup);
+
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
 
         setContentView(binding.getRoot());
@@ -84,10 +77,22 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void openSignIn()
-    {
-        Intent intent = new Intent(this, Login.class);
-        startActivity(intent);
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intentRecv = getIntent();
+
+        if(user != null && intentRecv.getBooleanExtra("login_result", false)){
+            Intent intent = new Intent(this, Login.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override

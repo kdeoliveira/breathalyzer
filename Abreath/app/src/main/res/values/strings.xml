@@ -13,5 +13,7 @@
     <string name="start">START</string>
     <string name="connecting">SEARCHING</string>
     <string name="connected">CONNECTED</string>
+    <string name="breath">BREATH</string>
+    <string name="create_account">Create an account</string>
 
 </resources>
