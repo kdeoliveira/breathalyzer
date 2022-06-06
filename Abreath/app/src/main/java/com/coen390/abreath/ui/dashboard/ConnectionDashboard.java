@@ -93,24 +93,7 @@ public class ConnectionDashboard extends Fragment {
     });
 
 @SuppressLint("MissingPermission")
-private final ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForResult = registerForActivityResult(new ActivityResultContracts.StartIntentSenderForResult(), result -> {
-    switch(result.getResultCode()){
-        case Activity.RESULT_OK:
-            if(result.getData() != null){
-                BluetoothDevice device = result.getData().getParcelableExtra(CompanionDeviceManager.EXTRA_DEVICE);
-                if(device != null){
-                    //Note that in case of disconnected remote device, use case should be handled on the dashboard page
-                    device.createBond();
-                }
-            }
-            break;
-        case Activity.RESULT_CANCELED:
-            toggleProgressBar();
-            break;
-        default:
-            break;
-    }
-});
+private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForResult;
 
     public ConnectionDashboard() {}
 
@@ -118,6 +101,25 @@ private final ActivityResultLauncher<IntentSenderRequest> startBluetoothActivity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        startBluetoothActivityForResult = registerForActivityResult(new ActivityResultContracts.StartIntentSenderForResult(), result -> {
+            switch(result.getResultCode()){
+                case Activity.RESULT_OK:
+                    if(result.getData() != null){
+                        BluetoothDevice device = result.getData().getParcelableExtra(CompanionDeviceManager.EXTRA_DEVICE);
+                        if(device != null){
+                            //Note that in case of disconnected remote device, use case should be handled on the dashboard page
+                            device.createBond();
+                        }
+                    }
+                    break;
+                case Activity.RESULT_CANCELED:
+                    toggleProgressBar();
+                    break;
+                default:
+                    break;
+            }
+        });
+
     }
 
     @Override
@@ -225,6 +227,7 @@ private final ActivityResultLauncher<IntentSenderRequest> startBluetoothActivity
             public void onDeviceFound(IntentSender intentSender) {
                 Log.d("inapp", deviceManager.getAssociations().toString());
                 IntentSenderRequest.Builder req = new IntentSenderRequest.Builder(intentSender);
+
                 startBluetoothActivityForResult.launch(req.build());
             }
 
