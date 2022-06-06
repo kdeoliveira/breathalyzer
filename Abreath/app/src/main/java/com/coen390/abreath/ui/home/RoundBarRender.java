@@ -43,7 +43,7 @@ public class RoundBarRender extends BarChartRenderer {
     private float m_threashold;
     public RoundBarRender(BarDataProvider chart, ChartAnimator animator, ViewPortHandler viewPortHandler){
         super(chart, animator, viewPortHandler);
-        m_threashold = 0.01f;
+        m_threashold = 0.08f;
     }
 
 

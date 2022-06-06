@@ -164,6 +164,7 @@ private final ActivityResultLauncher<IntentSenderRequest> startBluetoothActivity
                 startBluetoothDiscovery();
             }
         });
+
         return binding.getRoot();
     }
 

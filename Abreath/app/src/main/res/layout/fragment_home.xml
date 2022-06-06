@@ -97,14 +97,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/profile_age"
-                android:textSize="24dp"
+                android:textSize="24sp"
                 android:textStyle="bold" />
 
             <TextView
 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Age"
+                android:text="@string/age"
                 android:textSize="12sp" />
         </LinearLayout>
 
@@ -118,12 +118,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/profile_height"
-                android:textSize="24dp"
+                android:textSize="24sp"
                 android:textStyle="bold" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Height"
+                android:text="@string/height"
                 app:layout_constraintTop_toBottomOf="@+id/profile_age"
                 android:textSize="12sp"/>
         </LinearLayout>
@@ -139,12 +139,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/profile_weight"
-                android:textSize="24dp"
+                android:textSize="24sp"
                 android:textStyle="bold" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Weight"
+                android:text="@string/weight"
                 android:textSize="12sp"/>
         </LinearLayout>
 
@@ -164,16 +164,16 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="1dp"
             android:layout_marginStart="5dp"
-            android:text="Previous Samples"
+            android:text="@string/previous_samples"
             android:textStyle="bold"
-            android:textSize="18dp"
+            android:textSize="18sp"
              />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="1dp"
             android:layout_marginStart="5dp"
-            android:text="in g/ml"
+            android:text="@string/graph_units"
             android:textSize="12sp"
             android:textStyle="italic"
             />

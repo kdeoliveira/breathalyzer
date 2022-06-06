@@ -28,7 +28,7 @@ public class MockUpServiceBuilder {
         Date date = null;
         try {
             date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSS'Z'", Locale.CANADA).parse(jsonObject.get("createdAt").getAsString());
-            float mapped_bac = Utility.map(jsonObject.get("bac").getAsFloat(), 0.0f, 103172.0f, 0.0f, 0.2f);
+            float mapped_bac = Utility.map(jsonObject.get("bac").getAsFloat(), 0.0f, 103172.0f, 0.0f, 0.1f);
             return new UserDataEntity(jsonObject.get("username").getAsString(),  mapped_bac, date,jsonObject.get("id").getAsInt(),jsonObject.get("name").getAsString(),jsonObject.get("lastName").getAsString(), jsonObject.get("age").getAsInt(), jsonObject.get("weight").getAsInt(), jsonObject.get("height").getAsFloat()/100.0f);
         } catch (ParseException e) {
             e.printStackTrace();

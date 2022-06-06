@@ -24,7 +24,7 @@ public class AppearancePage extends AppCompatActivity {
         Switch nightmode_switch = findViewById(R.id.nightmode_switch);
 
         SharedPreferences night = getSharedPreferences("night",0);
-        Boolean booleanValue = night.getBoolean("night_mode",true);
+        boolean booleanValue = night.getBoolean("night_mode",true);
         if (booleanValue){
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
             nightmode_switch.setChecked(true);
@@ -38,7 +38,7 @@ public class AppearancePage extends AppCompatActivity {
                     nightmode_switch.setChecked(true);
                     SharedPreferences.Editor editor = night.edit();
                     editor.putBoolean("night_mode",true);
-                    editor.commit();
+                    editor.apply();
 
 
                 }else {
@@ -46,17 +46,7 @@ public class AppearancePage extends AppCompatActivity {
                     nightmode_switch.setChecked(false);
                     SharedPreferences.Editor editor = night.edit();
                     editor.putBoolean("night_mode",false);
-                    editor.commit();
-                    String height = "178";
-                    String weight ="100";
-                    SharedPreferences sp;
-                    sp = getSharedPreferences("units" , Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor2= sp.edit();
-                    editor2.putString("user_height", height);
-                    editor2.putString("height", height + "cm");
-                    editor2.putString("user_weight", weight);
-                    editor2.putString("weight", weight + "kg");
-                    editor2.commit();
+                    editor.apply();
 
                 }
             }

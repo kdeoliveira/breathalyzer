@@ -85,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
         if(user != null && intentRecv.getBooleanExtra("login_result", false)){
             Intent intent = new Intent(this, Login.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-
             startActivity(intent);
         }
     }
