@@ -10,7 +10,7 @@
     >
 
     <FrameLayout
-        android:layout_width="500dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/gradient_header" >
 
@@ -30,7 +30,7 @@
 
     <TextView
         android:id="@+id/helpText"
-        android:layout_width="376dp"
+        android:layout_width="match_parent"
         android:layout_height="493dp"
         android:layout_marginStart="17dp"
         android:layout_marginTop="17dp"

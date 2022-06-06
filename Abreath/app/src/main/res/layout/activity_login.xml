@@ -119,7 +119,7 @@
 
         <Button
             android:id="@+id/login_button"
-            android:layout_width="400dp"
+            android:layout_width="match_parent"
             android:layout_height="52dp"
             android:layout_marginTop="65dp"
             android:background="@drawable/save_button"

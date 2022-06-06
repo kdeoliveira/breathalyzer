@@ -141,8 +141,8 @@ private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForRes
                     switch(intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.ERROR)){
                         case BluetoothDevice.BOND_BONDED:
                             toggleProgressBar();
-                            Toast.makeText(getContext(), "Successfully connected to breathalyzer", Toast.LENGTH_SHORT).show();
-                            Navigation.findNavController(binding.getRoot()).navigate(R.id.action_connectionDashboard_to_navigation_dashboard);
+                            Toast.makeText(context, "Successfully connected to breathalyzer", Toast.LENGTH_SHORT).show();
+                            Navigation.findNavController(container).navigate(R.id.action_connectionDashboard_to_navigation_dashboard);
                             break;
                         case BluetoothDevice.BOND_BONDING:
                             isConnected = true;
@@ -176,7 +176,7 @@ private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForRes
         if(isScanning){
             spin_progress.setVisibility(View.VISIBLE);
             connect_button.setEnabled(false);
-            connect_button.setText(getResources().getText(R.string.connecting));
+            connect_button.setText(R.string.connecting);
             //This would be required if using startDiscovery since it only scan for around 12 seconds
 //            Handler handler = new Handler();
 //            handler.postDelayed(() -> {
@@ -190,7 +190,7 @@ private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForRes
             spin_progress.setVisibility(View.GONE);
             connect_button.setEnabled(true);
 
-            connect_button.setText(isConnected ? getResources().getText(R.string.connected) : getResources().getText(R.string.start) );
+            connect_button.setText(isConnected ? R.string.connected : R.string.start );
         }
     }
 
