@@ -86,18 +86,18 @@ public class HomeFragment extends Fragment {
             nameTextView.setText(userDataEntity.getName());
             lastnameTextView.setText(userDataEntity.getLast_name());
 //            usernameTextView.setText("@".concat(userDataEntity.getUsername()));
-            ageTextView.setText(String.format(Locale.CANADA,"%s", userDataEntity.getAgeString()));
+            ageTextView.setText(String.format(Locale.CANADA,"%d", userDataEntity.getAge()));
             if(!heightUnits)
-                heightTextView.setText(String.format(Locale.CANADA,"%s cm", userDataEntity.getHeightString()));
+                heightTextView.setText(String.format(Locale.CANADA,"%.2f cm", userDataEntity.getHeight()));
             else{
-                int[] feet = Utility.cmtoin(Float.parseFloat(userDataEntity.getHeightString()));
+                int[] feet = Utility.cmtoin(userDataEntity.getHeight());
                 heightTextView.setText(String.format(Locale.CANADA,"%d' %d''", feet[0], feet[1]));
             }
 
             if(!weigthUnits)
-                weightTextView.setText(String.format(Locale.CANADA,"%s kg", userDataEntity.getWeightString()));
+                weightTextView.setText(String.format(Locale.CANADA,"%d kg", userDataEntity.getWeight()));
             else
-                weightTextView.setText(String.format(Locale.CANADA,"%d lbs", (int) Utility.kgtolbs(Float.parseFloat(userDataEntity.getWeightString()))) );
+                weightTextView.setText(String.format(Locale.CANADA,"%d lbs", (int) Utility.kgtolbs(userDataEntity.getWeight())) );
         });
 
         return root;

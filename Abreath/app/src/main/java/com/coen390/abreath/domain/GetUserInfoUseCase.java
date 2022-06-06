@@ -32,16 +32,22 @@ public class GetUserInfoUseCase extends Observable implements UseCase {
 
     @Override
     public Object call(@Nullable Object payload) {
+
         this.repository.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                UserDataEntity userDataEntity = new UserDataEntity(
-                        snapshot.child("name").getValue(String.class),
-                        snapshot.child("height").getValue(String.class),
-                        snapshot.child("weight").getValue(String.class),
-                        snapshot.child("age").getValue(String.class),
-                        snapshot.child("phone").getValue(String.class)
-                );
+                UserDataEntity userDataEntity;
+                try{
+                    userDataEntity  = new UserDataEntity(
+                            snapshot.child("name").getValue(String.class),
+                            snapshot.child("height").getValue(String.class),
+                            snapshot.child("weight").getValue(String.class),
+                            snapshot.child("age").getValue(String.class),
+                            snapshot.child("phone").getValue(String.class)
+                    );
+                }catch (Exception e){
+                    userDataEntity = new UserDataEntity();
+                }
 
                 setChanged();
                 notifyObservers(userDataEntity);

@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.coen390.abreath.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -140,8 +141,11 @@ public class UserDataEntity {
         this.name = name;
         this.phone = phone;
         this.weightString = weight;
+        this.weight = Integer.parseInt(weight);
         this.ageString = age;
+        this.age = Integer.parseInt(age);
         this.heightString = height;
+        this.height = Float.parseFloat(height);
     }
 
     public UserDataEntity()//Empty Constructor
