@@ -20,7 +20,7 @@ public class DashboardViewModel extends ViewModel {
     private final MutableLiveData<String> DisplayData;
     String username = "John";
     float threshold = 0.08f;
-    float userdata =0.05f;
+    float userdata =0.06f;
 
     public DashboardViewModel() {
 

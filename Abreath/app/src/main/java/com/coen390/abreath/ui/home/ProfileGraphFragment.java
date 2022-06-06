@@ -90,7 +90,7 @@ public class ProfileGraphFragment extends Fragment {
         RoundBarRender roundBarRender = new RoundBarRender(chart, chart.getAnimator(), chart.getViewPortHandler());
 //        roundBarRender.initBuffers();
 //        roundBarRender.setRadius(20);
-        roundBarRender.setThreashold(0.08f);
+        roundBarRender.setThreashold(0.12f);
         chart.setRenderer(roundBarRender);
 
         //Note that this should be moved into onViewCreated to ensure parent activity or this view has been created before setting ViewModels

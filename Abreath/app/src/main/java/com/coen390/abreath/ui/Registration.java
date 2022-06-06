@@ -16,6 +16,7 @@ import com.coen390.abreath.MainActivity;
 import com.coen390.abreath.R;
 import com.coen390.abreath.data.entity.UserDataEntity;
 import com.coen390.abreath.ui.settings.pages.Account;
+import com.coen390.abreath.ui.settings.pages.AccountPage;
 
 import java.util.Objects;
 
@@ -78,7 +79,7 @@ public class Registration extends AppCompatActivity {
 
     private void openAccount()
     {
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        Intent intent = new Intent(getApplicationContext(), Account.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("login_result", true);
         startActivity(intent);
