@@ -6,9 +6,9 @@
         android:useLevel="true"
         android:type="linear"
 
-        android:centerColor="@color/primaryColor"
+        android:centerColor="@android:color/holo_red_light"
         android:centerX="0.9"
-        android:endColor="@color/primaryColor"
+        android:endColor="@android:color/holo_red_light"
 
         android:angle="90" />
 </shape>

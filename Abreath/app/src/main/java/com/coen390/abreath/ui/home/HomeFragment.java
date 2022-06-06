@@ -41,7 +41,7 @@ public class HomeFragment extends Fragment {
 
     private ProfileGraphFragment graph;
     private BarChart chart;
-    private TextView nameTextView, ageTextView, heightTextView, weightTextView;
+    private TextView nameTextView, ageTextView, heightTextView, weightTextView, lastnameTextView, usernameTextView;
     private ImageView profileImage;
     private String name, age, height;
 
@@ -54,6 +54,8 @@ public class HomeFragment extends Fragment {
         View root = binding.getRoot();
 
         nameTextView = binding.profileName;
+        lastnameTextView = binding.profileLastname;
+        usernameTextView = binding.profileUsername;
         ageTextView = binding.profileAge;
         heightTextView = binding.profileHeight;
         profileImage = binding.profileImage;
@@ -68,10 +70,12 @@ public class HomeFragment extends Fragment {
         UserDataViewModel sampleModel = new ViewModelProvider(this, new ViewModelFactory(new MockUpRepository(MockUpServiceBuilder.create(MockUpService.class)))).get(UserDataViewModel.class);
 
         sampleModel.getUserInfo().observe(getViewLifecycleOwner(), userDataEntity -> {
-            nameTextView.setText(userDataEntity.getName().concat(" ").concat(userDataEntity.getLast_name()));
-            ageTextView.setText(String.format(Locale.CANADA,"Age: %d", userDataEntity.getAge()));
-            heightTextView.setText(String.format("Height: " + height));
-            weightTextView.setText(String.format("Weight : " + weight));
+            nameTextView.setText(userDataEntity.getName());
+            lastnameTextView.setText(userDataEntity.getLast_name());
+            usernameTextView.setText("@".concat(userDataEntity.getUsername()));
+            ageTextView.setText(String.format(Locale.CANADA,"%d", userDataEntity.getAge()));
+            heightTextView.setText(String.format(Locale.CANADA,"%.2f cm", userDataEntity.getHeight()));
+            weightTextView.setText(String.format(Locale.CANADA,"%d kg", userDataEntity.getWeight()));
         });
 
 
