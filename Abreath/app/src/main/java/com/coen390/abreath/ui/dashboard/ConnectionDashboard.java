@@ -164,6 +164,7 @@ private final ActivityResultLauncher<IntentSenderRequest> startBluetoothActivity
                 startBluetoothDiscovery();
             }
         });
+
         return binding.getRoot();
     }
 
@@ -206,7 +207,7 @@ private final ActivityResultLauncher<IntentSenderRequest> startBluetoothActivity
             if(isScanning && !isConnected){
                 spin_progress.setVisibility(View.GONE);
                 connect_button.setEnabled(true);
-                connect_button.setText(getResources().getText(R.string.start) );
+                connect_button.setText(R.string.start);
                 isScanning = false;
             }
         }, 12000);

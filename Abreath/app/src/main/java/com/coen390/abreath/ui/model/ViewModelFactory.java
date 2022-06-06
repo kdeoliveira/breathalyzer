@@ -1,12 +1,12 @@
 package com.coen390.abreath.ui.model;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.coen390.abreath.common.Factory;
 import com.coen390.abreath.data.api.MockUpRepository;
-import com.coen390.abreath.data.api.MockUpService;
+import com.google.firebase.database.DatabaseReference;
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
     private final MockUpRepository repository;

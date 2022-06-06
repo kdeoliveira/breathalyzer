@@ -1,7 +1,6 @@
 package com.coen390.abreath.ui.home;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -31,6 +30,10 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.renderer.XAxisRenderer;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.Utils;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,7 +90,7 @@ public class ProfileGraphFragment extends Fragment {
         RoundBarRender roundBarRender = new RoundBarRender(chart, chart.getAnimator(), chart.getViewPortHandler());
 //        roundBarRender.initBuffers();
 //        roundBarRender.setRadius(20);
-        roundBarRender.setThreashold(0.2f);
+        roundBarRender.setThreashold(0.08f);
         chart.setRenderer(roundBarRender);
 
         //Note that this should be moved into onViewCreated to ensure parent activity or this view has been created before setting ViewModels

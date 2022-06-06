@@ -66,15 +66,10 @@ public class SettingsFragment extends Fragment {
                         openAccount();
                         break;
                     case 5:
-                        openAboutPage();
-                        break;
-                    case 6:
                         FirebaseAuth.getInstance().signOut();
                         openSignIn();
                         break;
 
-                        openAccountPage();
-                        break;
                     case 1:
                         openAppearancePage();
                         break;
