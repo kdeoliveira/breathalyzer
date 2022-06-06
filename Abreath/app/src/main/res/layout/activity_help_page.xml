@@ -10,7 +10,7 @@
     >
 
     <FrameLayout
-        android:layout_width="600dp"
+        android:layout_width="500dp"
         android:layout_height="wrap_content"
         android:background="@drawable/gradient_header" >
 
