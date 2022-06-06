@@ -87,30 +87,6 @@ public class BluetoothClassicService extends Service {
         return false;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void connect(){
-        BluetoothDeviceFilter deviceFilter = new BluetoothDeviceFilter.Builder().setNamePattern(Pattern.compile("kdeoliveira")).build();
-
-        AssociationRequest pairingRequest = new AssociationRequest.Builder().addDeviceFilter(deviceFilter).setSingleDevice(true).build();
-
-        CompanionDeviceManager deviceManager = (CompanionDeviceManager) getSystemService(Context.COMPANION_DEVICE_SERVICE);
-
-        //TODO startObservingDevicePresence
-
-        deviceManager.associate(pairingRequest, new CompanionDeviceManager.Callback() {
-            @Override
-            public void onDeviceFound(IntentSender intentSender) {
-                Log.d("inapp", deviceManager.getAssociations().toString());
-                IntentSenderRequest.Builder req = new IntentSenderRequest.Builder(intentSender);
-                startBluetoothActivityForResult.launch(req.build());
-            }
-
-            @Override
-            public void onFailure(CharSequence charSequence) {
-                Log.e("inapp Bluetooth", "Unable to find device - "+charSequence);
-            }
-        }, null);
-    }
 
     public synchronized void connect(BluetoothDevice device){
         if(SERVICE_STATE == STATE_CONN){
