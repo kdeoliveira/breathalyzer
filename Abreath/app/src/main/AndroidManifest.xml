@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.coen390.abreath">
+
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
     <uses-feature android:name="android.hardware.bluetooth" android:required="true"/>
 
@@ -34,6 +35,14 @@
         android:theme="@style/Theme.Abreath"
         tools:targetApi="31">
         <activity
+            android:name=".ui.settings.pages.Account"
+            android:exported="false" />
+        <activity
+            android:name=".ui.Registration"
+            android:exported="false" />
+        <activity
+            android:name=".ui.Login"
+            android:exported="false" />
             android:name=".SensorActivity"
             android:exported="false" />
         <service android:name=".service.BluetoothClassicService" />
