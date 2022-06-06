@@ -25,6 +25,12 @@ import com.coen390.abreath.ui.settings.pages.AboutPage;
 import com.coen390.abreath.ui.settings.pages.Account;
 import com.google.firebase.auth.FirebaseAuth;
 
+import com.coen390.abreath.ui.settings.pages.AccountPage;
+import com.coen390.abreath.ui.settings.pages.AppearancePage;
+import com.coen390.abreath.ui.settings.pages.HelpPage;
+import com.coen390.abreath.ui.settings.pages.UnitsPage;
+
+
 import java.util.ArrayList;
 
 public class SettingsFragment extends Fragment {
@@ -40,12 +46,12 @@ public class SettingsFragment extends Fragment {
         list = binding.listView;
         ArrayList<Category> al = new ArrayList<>();
         al.add(new Category(R.drawable.account, "Account"));
-        al.add(new Category(R.drawable.switcher, "Apperance"));
-        al.add(new Category(R.drawable.shield, "Privacy & Security"));
+        al.add(new Category(R.drawable.switcher, "Appearance"));
         al.add(new Category(R.drawable.graph, "Units"));
         al.add(new Category(R.drawable.help, "Help"));
         al.add(new Category(R.drawable.info, "About"));
         al.add(new Category(R.drawable.logout, "Logout"));
+      
 
         SettingsAdapter sa = new SettingsAdapter(getActivity().getApplicationContext(), R.layout.row, al);
         list.setAdapter(sa);
@@ -67,6 +73,20 @@ public class SettingsFragment extends Fragment {
                         openSignIn();
                         break;
 
+                        openAccountPage();
+                        break;
+                    case 1:
+                        openAppearancePage();
+                        break;
+                    case 2:
+                        openUnitsPage();
+                        break;
+                    case 3:
+                        openHelpPage();
+                        break;
+                    case 4:
+                        openAboutPage();
+                        break;
                     default:
                         break;
                 }
@@ -81,7 +101,6 @@ public class SettingsFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
-
     private void openAboutPage()
     {
         Intent intent = new Intent(getActivity(), AboutPage.class);
@@ -104,6 +123,30 @@ public class SettingsFragment extends Fragment {
     public void openAccount()
     {
         Intent intent = new Intent(getActivity(), Account.class);
+              startActivity(intent);
+    }
+
+    private void openHelpPage()
+    {
+        Intent intent = new Intent(getActivity(), HelpPage.class);
+        startActivity(intent);
+
+    }
+    private void openAccountPage()
+    {
+        Intent intent = new Intent(getActivity(), AccountPage.class);
+        startActivity(intent);
+
+    }
+    private void openAppearancePage()
+    {
+        Intent intent = new Intent(getActivity(), AppearancePage.class);
+        startActivity(intent);
+
+    }
+    private void openUnitsPage()
+    {
+        Intent intent = new Intent(getActivity(), UnitsPage.class);
         startActivity(intent);
 
     }

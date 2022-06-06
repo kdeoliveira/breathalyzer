@@ -1,5 +1,7 @@
 package com.coen390.abreath.ui.home;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,6 +31,7 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Random;
 
 //https://developer.android.com/guide/fragments/communicate
@@ -50,7 +53,6 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-
         nameTextView = binding.profileName;
         lastnameTextView = binding.profileLastname;
         usernameTextView = binding.profileUsername;
@@ -58,6 +60,11 @@ public class HomeFragment extends Fragment {
         heightTextView = binding.profileHeight;
         profileImage = binding.profileImage;
         weightTextView = binding.profileWeight;
+
+        SharedPreferences sp = getActivity().getApplicationContext().getSharedPreferences("units", Context.MODE_PRIVATE);
+        String height = sp.getString("height","");
+        String weight = sp.getString("weight","");
+
 
         //Note that this should be moved into onViewCreated to ensure parent activity or this view has been created before setting ViewModels
         UserDataViewModel sampleModel = new ViewModelProvider(this, new ViewModelFactory(new MockUpRepository(MockUpServiceBuilder.create(MockUpService.class)))).get(UserDataViewModel.class);
@@ -86,6 +93,7 @@ public class HomeFragment extends Fragment {
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
         transaction.replace(R.id.fragmentContainerView, profileGraphFragment).commit();
+
     }
 
     private BarData createChartData() {

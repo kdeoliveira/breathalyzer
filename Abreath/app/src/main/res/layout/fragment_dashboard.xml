@@ -6,58 +6,118 @@
     android:layout_height="match_parent"
     tools:context=".ui.dashboard.DashboardFragment">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+
+    <TextView
+        android:id="@+id/text_dashboard"
+        android:layout_width="wrap_content"
+        android:layout_height="175dp"
+        android:layout_marginTop="530dp"
+        android:textSize = "20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:orientation="vertical"
-        android:paddingStart="17dp"
-        android:paddingEnd="17dp"
-        >
+        app:layout_constraintVertical_bias="0.601" />
+
+    <TextView
+        android:id="@+id/text_username"
+        android:layout_width="350dp"
+        android:layout_height="175dp"
+        android:layout_marginTop="-300dp"
+        android:textSize = "20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.601" />
+    <ImageView
+        android:id="@+id/green_display"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="-135dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.601"
+        android:src="@drawable/green_triangle" />
+    <ImageView
+        android:id="@+id/orange_display"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:rotation="130"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="55dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.601"
+        android:src="@drawable/orange_triangle" />
+    <ImageView
+        android:id="@+id/red_display"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:rotation="180"
+        android:layout_marginTop="55dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.601"
+        android:src="@drawable/red_triangle"  />
+
+    <TextView
+        android:id="@+id/results_display"
+        android:layout_width="530dp"
+        android:layout_height="175dp"
+        android:layout_marginTop="-130dp"
+        android:layout_marginRight="-500dp"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.601" />
 
 
-        <TextView
-            android:id="@+id/text_username"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textSize="20sp"
-/>
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="17dp"/>
-        <TextView
-            android:id="@+id/results_display"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="textEnd"
-            android:textSize="40sp"
-            android:textStyle="bold"
-/>
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="17dp"/>
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/piechart_display"
+        android:layout_width="150dp"
+        android:layout_height="175dp"
+        android:layout_marginTop="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.601" >
+    </com.github.mikephil.charting.charts.PieChart>
 
-        <com.github.mikephil.charting.charts.PieChart
-            android:id="@+id/piechart_display"
 
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_marginTop="10dp"
-            app:layout_constraintBottom_toBottomOf="parent" />
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="17dp"/>
-        <TextView
-            android:id="@+id/text_dashboard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textSize="20sp" />
-    </LinearLayout>
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/piechart_index"
+        android:layout_width="175dp"
+        android:layout_height="175dp"
+        android:layout_marginTop="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.601" >
+
+
+    </com.github.mikephil.charting.charts.PieChart>
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
