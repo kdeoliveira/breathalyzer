@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.settings.pages.AboutPage"
+    tools:context=".ui.settings.pages.PrivacyPage"
     android:orientation="vertical"
     android:background="@color/primaryBgColor"
     >
 
     <FrameLayout
-        android:layout_width="500dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/gradient_header" >
         <ImageView
@@ -28,7 +28,7 @@
     </FrameLayout>
 
     <TextView
-        android:id="@+id/aboutText"
+        android:id="@+id/privacyText"
         android:layout_width="376dp"
         android:layout_height="493dp"
         android:layout_marginStart="17dp"
@@ -48,4 +48,3 @@
 
 
 </LinearLayout>
-
