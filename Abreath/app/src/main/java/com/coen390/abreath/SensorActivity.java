@@ -110,7 +110,6 @@ public class SensorActivity extends AppCompatActivity {
             }else if(BleService.ACTION_GATT_DISCONNECTED.equals(action)){
                 Log.d("Activity inapp", "disconnected");
             }else if(BleService.ACTION_GATT_SUCCESS_DISCOVERED.equals(action)){
-
                 displayGattServices(bluetoothService.getSupportedGattServices());
             }
         }

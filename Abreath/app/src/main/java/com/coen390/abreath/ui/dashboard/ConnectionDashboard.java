@@ -5,6 +5,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattService;
 import android.companion.AssociationRequest;
 import android.companion.BluetoothDeviceFilter;
 import android.companion.CompanionDeviceManager;
@@ -38,13 +40,19 @@ import android.widget.Toast;
 
 import com.coen390.abreath.R;
 import com.coen390.abreath.databinding.FragmentConnectionDashboardBinding;
+import com.coen390.abreath.service.BleService;
 import com.coen390.abreath.service.BluetoothClassicService;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class ConnectionDashboard extends Fragment {
+    private static final String TAG = "debug.abreath.BLUETOOTH";
 
     private FragmentConnectionDashboardBinding binding;
     private Button connect_button;
@@ -53,28 +61,110 @@ public class ConnectionDashboard extends Fragment {
     private Boolean isConnected = false;
     private Handler mHandlerConnection;
 
-    private BluetoothClassicService bluetoothClassicService;
+    private BleService bluetoothService;
 
-    private final ServiceConnection serviceConnection = new ServiceConnection() {
-        @SuppressLint("MissingPermission")
+    private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-            bluetoothClassicService = ((BluetoothClassicService.LocalBinder) iBinder).getService();
-            if(!bluetoothClassicService.isBluetoothSupported()){
-                Toast.makeText(getContext(), "Bluetooth is not supported in this device", Toast.LENGTH_SHORT).show();
+            bluetoothService = ((BleService.LocalBinder) iBinder).getService();
+            if(bluetoothService == null || !bluetoothService.isBleSupported()){
+                Log.e(TAG, "Unable to connect to BLE");
                 return;
+            }else{
+                if(bluetoothService.isBluetoothConnected()){
+                    isConnected = true;
+                }
             }
-            else if(bluetoothClassicService.isBluetoothConnected()){
-                isConnected = true;
-            }
+
         }
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
-            Log.i("Fragment", "Bluetooth Service Stopped");
-            bluetoothClassicService = null;
+            Log.e(TAG, "Ble disconnected "+componentName.toString());
+            bluetoothService = null;
         }
     };
+
+    private final BroadcastReceiver gattUpdateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            if(BleService.ACTION_GATT_CONNECTED.equals(action)){
+                Log.d(TAG, "connected");
+
+                Toast.makeText(context, "Connected", Toast.LENGTH_LONG).show();
+                isConnected = true;
+                toggleProgressBar();
+
+            }else if(BleService.ACTION_GATT_DISCONNECTED.equals(action)){
+                Log.d(TAG, "disconnected");
+                Toast.makeText(context, "Disconnected", Toast.LENGTH_LONG).show();
+                isConnected = false;
+            }else if(BleService.ACTION_GATT_SUCCESS_DISCOVERED.equals(action)){
+                    UUID uuidESP = UUID.fromString("91bad492-b950-4226-aa2b-4ede9fa42f59");
+                    for(BluetoothGattService x : bluetoothService.getSupportedGattServices()){
+                        Log.d(TAG, x.getUuid().toString());
+//                        if(x.getUuid().equals(uuidESP)){
+//                            Log.d(TAG, "YES!");
+//                            bluetoothService.readCharacteristics(x.getCharacteristic(uuidESP));
+//                        }
+                    }
+
+                String uuid = null;
+                String unknownServiceString ="Unknwon Service";
+                String unknownCharaString = "Unknown Char";
+                ArrayList<HashMap<String, String>> gattServiceData =
+                        new ArrayList<HashMap<String, String>>();
+                ArrayList<ArrayList<HashMap<String, String>>> gattCharacteristicData
+                        = new ArrayList<ArrayList<HashMap<String, String>>>();
+                ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics =
+                        new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
+                ArrayList<BluetoothGattCharacteristic> charas =
+                        new ArrayList<BluetoothGattCharacteristic>();
+                // Loops through available GATT Services.
+                for (BluetoothGattService gattService : bluetoothService.getSupportedGattServices()) {
+                    if(!gattService.getUuid().equals(uuidESP)) continue;
+
+                        HashMap<String, String> currentServiceData =
+                            new HashMap<String, String>();
+                    uuid = gattService.getUuid().toString();
+                    currentServiceData.put(
+                            "LIST_NAME", uuid);
+                    currentServiceData.put("LIST_UUID", uuid);
+                    gattServiceData.add(currentServiceData);
+
+                    ArrayList<HashMap<String, String>> gattCharacteristicGroupData =
+                            new ArrayList<HashMap<String, String>>();
+                    List<BluetoothGattCharacteristic> gattCharacteristics =
+                            gattService.getCharacteristics();
+
+                    // Loops through available Characteristics.
+                    for (BluetoothGattCharacteristic gattCharacteristic :
+                            gattCharacteristics) {
+                        charas.add(gattCharacteristic);
+                        HashMap<String, String> currentCharaData =
+                                new HashMap<String, String>();
+                        uuid = gattCharacteristic.getUuid().toString();
+                        currentCharaData.put(
+                                "LIST_NAME", uuid);
+                        currentCharaData.put("LIST_UUID", uuid);
+                        gattCharacteristicGroupData.add(currentCharaData);
+                    }
+
+                    gattCharacteristicData.add(gattCharacteristicGroupData);
+                }
+
+                Log.d(TAG, charas.toString());
+                for(BluetoothGattCharacteristic x : charas){
+                    bluetoothService.readCharacteristics(x);
+                }
+            }
+
+
+        }
+    };
+
+
     private final ActivityResultLauncher<Intent> startForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         Log.i("inapp Activity", result.toString());
 
@@ -109,6 +199,12 @@ private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForRes
                         if(device != null){
                             //Note that in case of disconnected remote device, use case should be handled on the dashboard page
                             device.createBond();
+
+                            if(bluetoothService.connectTo(device.getAddress())){
+                                Log.d(TAG, "Connected to device");
+                            }else{
+                                Log.e(TAG, "Not Able to connect");
+                            }
                         }
                     }
                     break;
@@ -140,9 +236,8 @@ private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForRes
                 if(action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)){
                     switch(intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.ERROR)){
                         case BluetoothDevice.BOND_BONDED:
-                            toggleProgressBar();
                             Toast.makeText(context, "Successfully connected to breathalyzer", Toast.LENGTH_SHORT).show();
-                            Navigation.findNavController(container).navigate(R.id.action_connectionDashboard_to_navigation_dashboard);
+//                            Navigation.findNavController(container).navigate(R.id.action_connectionDashboard_to_navigation_dashboard);
                             break;
                         case BluetoothDevice.BOND_BONDING:
                             isConnected = true;
@@ -156,7 +251,7 @@ private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForRes
         }, intentFilter);
 
         connect_button.setOnClickListener(view -> {
-            if(!bluetoothClassicService.isBluetoothEnabled()){
+            if(!bluetoothService.isBleSupported()){
                 Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startForResult.launch(intent);
             }else{
@@ -200,10 +295,10 @@ private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForRes
     private void startBluetoothDiscovery(){
         toggleProgressBar();
 
-        if(bluetoothClassicService.isBluetoothConnected()){
-            Navigation.findNavController(binding.getRoot()).navigate(R.id.action_connectionDashboard_to_navigation_dashboard);
-            return;
-        }
+//        if(bluetoothService.isBluetoothConnected()){
+//            Navigation.findNavController(binding.getRoot()).navigate(R.id.action_connectionDashboard_to_navigation_dashboard);
+//            return;
+//        }
 
         mHandlerConnection.postDelayed(() -> {
             if(isScanning && !isConnected){
@@ -214,7 +309,7 @@ private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForRes
             }
         }, 12000);
 
-        BluetoothDeviceFilter deviceFilter = new BluetoothDeviceFilter.Builder().setNamePattern(Pattern.compile(BluetoothClassicService.deviceNameToConnect)).build();
+        BluetoothDeviceFilter deviceFilter = new BluetoothDeviceFilter.Builder().setNamePattern(Pattern.compile(BleService.DEVICE_TO_CONNECT)).build();
 
         AssociationRequest pairingRequest = new AssociationRequest.Builder().addDeviceFilter(deviceFilter).setSingleDevice(true).build();
 
@@ -225,56 +320,59 @@ private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForRes
         deviceManager.associate(pairingRequest, new CompanionDeviceManager.Callback() {
             @Override
             public void onDeviceFound(IntentSender intentSender) {
-                Log.d("inapp", deviceManager.getAssociations().toString());
+                Log.d(TAG, deviceManager.getAssociations().toString());
                 IntentSenderRequest.Builder req = new IntentSenderRequest.Builder(intentSender);
-
                 startBluetoothActivityForResult.launch(req.build());
+
             }
 
             @Override
             public void onFailure(CharSequence charSequence) {
-                Log.e("inapp Bluetooth", "Unable to find device - "+charSequence);
+                Log.e(TAG, "Unable to find device - "+charSequence);
             }
         }, null);
     }
 
 
     private void requestPermission() {
-        int permissionCheck = requireActivity().checkSelfPermission("Manifest.permission.ACCESS_FINE_LOCATION");
-        permissionCheck += requireActivity().checkSelfPermission("Manifest.permission.ACCESS_COARSE_LOCATION");
+        int permissionCheck = requireActivity().checkSelfPermission("Manifest.permission.BLUETOOTH_CONNECT");
+        permissionCheck += requireActivity().checkSelfPermission("Manifest.permission.BLUETOOTH_SCAN");
         if (permissionCheck != 0) {
-            requireActivity().requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1001); //Any number
+            requireActivity().requestPermissions(new String[]{Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT}, 1001); //Any number
         }
     }
 
-    //Lifecycle hooks
 
+    //Lifecycle Hooks
     @Override
     public void onResume() {
         super.onResume();
-        if(bluetoothClassicService != null && bluetoothClassicService.isBluetoothConnected()){
-            isConnected = true;
-        }else{
-            isConnected = false;
-        }
+
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(BleService.ACTION_GATT_CONNECTED);
+        intentFilter.addAction(BleService.ACTION_GATT_DISCONNECTED);
+        intentFilter.addAction(BleService.ACTION_GATT_SUCCESS_DISCOVERED);
+        requireContext().registerReceiver(gattUpdateReceiver, intentFilter);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
         //Starts remote service that will handle the communication & transferring of data between device and app
         //implementation depends on design and protocol chosen for communication
-        Intent intent = new Intent(getContext(), BluetoothClassicService.class);
+        Intent intent = new Intent(getContext(), BleService.class);
         requireActivity().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+
     }
 
     @SuppressLint("MissingPermission")
     @Override
     public void onStop() {
         super.onStop();
-        if(bluetoothClassicService != null)
+        if(bluetoothService != null)
             requireActivity().unbindService(serviceConnection);
+
+        requireContext().unregisterReceiver(gattUpdateReceiver);
     }
 
     @Override
