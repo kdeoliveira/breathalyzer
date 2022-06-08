@@ -1,22 +1,38 @@
 package com.coen390.abreath.ui.dashboard;
 
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattService;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import com.coen390.abreath.R;
+import com.coen390.abreath.common.Constant;
+import com.coen390.abreath.common.Utility;
 import com.coen390.abreath.databinding.FragmentDashboardBinding;
+import com.coen390.abreath.service.BleService;
+import com.coen390.abreath.service.BluetoothServiceConnection;
 import com.coen390.abreath.ui.model.DashboardViewModel;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
@@ -27,6 +43,7 @@ import com.github.mikephil.charting.data.PieEntry;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class DashboardFragment extends Fragment {
@@ -35,7 +52,11 @@ public class DashboardFragment extends Fragment {
     private PieChart pieIndex;
     float userdata = 0.06f;
     float threshold = 0.08f;
+    private BleService bluetoothService;
+    private List<Float> chartValues;
 
+    private BroadcastReceiver gattUpdateReceiver;
+    private ServiceConnection serviceConnection;
 
 
     private void PieData() {
@@ -73,9 +94,7 @@ public class DashboardFragment extends Fragment {
         pieChart.setData(data);
         pieChart.invalidate();
         pieChart.setHoleColor(80000000);
-        pieChart.animateY(2000, Easing.EaseInOutQuad);
-
-
+//        pieChart.animateY(2000, Easing.EaseInOutQuad);
     }
     private void PieIndex() {
 
@@ -109,7 +128,45 @@ public class DashboardFragment extends Fragment {
 
     private FragmentDashboardBinding binding;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        chartValues = new ArrayList<>();
 
+        serviceConnection = new BluetoothServiceConnection(new BluetoothServiceConnection.onBleService() {
+            @Override
+            public void onConnected(BleService bleService) {
+                bluetoothService = bleService;
+            }
+            @Override
+            public void onDisconnected(ComponentName componentName) {
+                bluetoothService = null;
+            }
+        });
+        gattUpdateReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                final String action = intent.getAction();
+                if(BleService.ACTION_GATT_CONNECTED.equals(action)){
+                    Log.d("TAG", "connected");
+                }else if(BleService.ACTION_GATT_DISCONNECTED.equals(action)){
+                    Toast.makeText(context, "Disconnected", Toast.LENGTH_LONG).show();
+                }else if(BleService.ACTION_READ_DATA.equals(action)){
+                    String payload = intent.getStringExtra(BleService.BLE_READ_STRING);
+                    if(payload != null){
+                        if(chartValues.size() < 10)
+                            chartValues.add(Float.parseFloat(payload));
+
+                        userdata = Utility.map(Float.parseFloat(payload), 0, 100, 0, 0.2f);
+                        PieData();
+
+
+
+                    }
+                }
+            }
+        };
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -167,6 +224,23 @@ public class DashboardFragment extends Fragment {
 
         return root;
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Intent intent = new Intent(getContext(), BleService.class);
+        requireActivity().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(BleService.ACTION_GATT_CONNECTED);
+        intentFilter.addAction(BleService.ACTION_GATT_DISCONNECTED);
+        intentFilter.addAction(BleService.ACTION_READ_DATA);
+        requireContext().registerReceiver(gattUpdateReceiver, intentFilter);
     }
 
     @Override

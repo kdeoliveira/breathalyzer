@@ -31,12 +31,14 @@ public class BleService extends Service {
 
 
     public final static String ACTION_GATT_CONNECTED =
-            "com.example.bluetooth.le.ACTION_GATT_CONNECTED";
+            "coen390.bluetooth.le.ACTION_GATT_CONNECTED";
     public final static String ACTION_GATT_DISCONNECTED =
-            "com.example.bluetooth.le.ACTION_GATT_DISCONNECTED";
-
+            "coen390.bluetooth.le.ACTION_GATT_DISCONNECTED";
     public final static String ACTION_GATT_SUCCESS_DISCOVERED =
-            "com.example.bluetooth.le.ACTION_GATT_SUCCESS_DISCOVERED";
+            "coen390.bluetooth.le.ACTION_GATT_SUCCESS_DISCOVERED";
+    public final static String ACTION_READ_DATA = "coen390.bluetooth.le.ACTION_READ_DATA";
+
+    public final static String BLE_READ_STRING = "coen390.bluetooth.le.BLE_READ_STRING";
 
     //Get Client Descriptor UUID https://stackoverflow.com/questions/47475431/how-to-find-out-client-characteristic-config
     //Sample Description Class https://github.com/googlearchive/android-BluetoothLeGatt/blob/master/Application/src/main/java/com/example/android/bluetoothlegatt/SampleGattAttributes.java
@@ -64,7 +66,7 @@ public class BleService extends Service {
             super.onCharacteristicRead(gatt, characteristic, status);
 
             if(status == BluetoothGatt.GATT_SUCCESS){
-                Log.d("BleService", characteristic.getStringValue(1));
+                broadcastUpdate(ACTION_READ_DATA, characteristic.getStringValue(0));
             }
         }
 
@@ -98,16 +100,20 @@ public class BleService extends Service {
         return binder;
     }
 
-    @SuppressLint("MissingPermission")
     @Override
     public boolean onUnbind(Intent intent) {
 
+        this.close();
+        return super.onUnbind(intent);
+
+    }
+
+    @SuppressLint("MissingPermission")
+    public void close(){
         if(bluetoothGatt != null){
             bluetoothGatt.close();
             bluetoothGatt = null;
         }
-        return super.onUnbind(intent);
-
     }
 
     @SuppressLint("MissingPermission")
@@ -166,6 +172,12 @@ public class BleService extends Service {
 
     private void broadcastUpdate(final String action){
         final Intent intent = new Intent(action);
+        sendBroadcast(intent);
+    }
+
+    private void broadcastUpdate(final String action, final String payload){
+        final Intent intent = new Intent(action);
+        intent.putExtra(BLE_READ_STRING, payload);
         sendBroadcast(intent);
     }
 

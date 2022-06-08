@@ -12,8 +12,6 @@
 #define bleServerName "ABreath"
 
 
-float temp;
-float tempF;
 float hum;
 
 // Timer variables
@@ -21,13 +19,13 @@ unsigned long lastTime = 0;
 unsigned long timerDelay = 300;
 
 bool deviceConnected = false;
+bool prevDeviceConnected = false;
 
 // See the following for generating UUIDs:
 // https://www.uuidgenerator.net/
 #define SERVICE_UUID "91bad492-b950-4226-aa2b-4ede9fa42f59"
-// Humidity Characteristic and Descriptor
-BLECharacteristic bmeHumidityCharacteristics("ca73b3ba-39f6-4ab3-91ae-186dc9577d99", BLECharacteristic::PROPERTY_NOTIFY);
-BLEDescriptor bmeHumidityDescriptor(BLEUUID((uint16_t)0x2903));
+#define CHARACTERISTIC_UUID "ca73b3ba-39f6-4ab3-91ae-186dc9577d99"
+
 
 //Setup callbacks onConnect and onDisconnect
 class MyServerCallbacks: public BLEServerCallbacks {
@@ -41,15 +39,16 @@ class MyServerCallbacks: public BLEServerCallbacks {
 
 
 BLECharacteristic *pCharacteristic;
+BLEServer *pServer;
 void setup() {
   Serial.begin(115200);
   Serial.println("Starting BLE work!");
 
   BLEDevice::init(bleServerName);
-  BLEServer *pServer = BLEDevice::createServer();
+  pServer = BLEDevice::createServer();
   BLEService *pService = pServer->createService(SERVICE_UUID);
     pServer->setCallbacks(new MyServerCallbacks());
-  pCharacteristic = pService->createCharacteristic("ca73b3ba-39f6-4ab3-91ae-186dc9577d99", BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
+  pCharacteristic = pService->createCharacteristic(CHARACTERISTIC_UUID, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
   pCharacteristic->setValue("First string sent");
 
   pService->start();
@@ -69,19 +68,28 @@ void setup() {
 void loop() {
   if (deviceConnected) {
     if ((millis() - lastTime) > timerDelay) {
-
+      //Generating random numbers
       hum = rand() % 100;
-      //Notify humidity reading from BME
-      static char humidityTemp[6];
-      dtostrf(hum, 6, 2, humidityTemp);
-      //Set humidity Characteristic value and notify connected client
-      pCharacteristic->setValue(humidityTemp);
-      pCharacteristic->notify();   
-      Serial.print(" - Humidity: ");
+      static char buff[6];
+      dtostrf(hum, 6, 2, buff);
+      
+      pCharacteristic->setValue(buff);
+      pCharacteristic->notify();
+      Serial.print(" - Val: ");
       Serial.print(hum);
       Serial.println(" %");
       
       lastTime = millis();
     }
+  }
+  if(!deviceConnected && prevDeviceConnected){
+    delay(500);
+    pServer->startAdvertising(); //Restart scanning
+    Serial.println("Scanning");
+    prevDeviceConnected = deviceConnected;
+  }
+  if(deviceConnected && !prevDeviceConnected){
+    prevDeviceConnected = deviceConnected;
+    Serial.println("Connecting...");
   }
 }

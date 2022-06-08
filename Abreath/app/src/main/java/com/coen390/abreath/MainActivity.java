@@ -1,5 +1,6 @@
 package com.coen390.abreath;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.coen390.abreath.data.entity.UserDataEntity;
+import com.coen390.abreath.service.BleService;
 import com.coen390.abreath.ui.Login;
 import com.google.android.material.bottomappbar.BottomAppBar;
 
@@ -38,8 +40,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
 
@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
             navController.navigate(R.id.to_navigation_dashboard, null, options);
 
         });
+
 
     }
 

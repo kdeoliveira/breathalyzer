@@ -15,8 +15,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.coen390.abreath.R;
-import com.coen390.abreath.data.entity.UserDataEntity;
-import com.coen390.abreath.SensorActivity;
 import com.coen390.abreath.databinding.FragmentSettingsBinding;
 import com.coen390.abreath.ui.Login;
 import com.coen390.abreath.ui.Registration;
