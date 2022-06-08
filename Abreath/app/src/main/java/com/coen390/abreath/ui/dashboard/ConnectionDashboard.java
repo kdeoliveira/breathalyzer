@@ -39,6 +39,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.coen390.abreath.R;
+import com.coen390.abreath.common.Constant;
 import com.coen390.abreath.databinding.FragmentConnectionDashboardBinding;
 import com.coen390.abreath.service.BleService;
 import com.coen390.abreath.service.BluetoothClassicService;
@@ -141,7 +142,9 @@ public class ConnectionDashboard extends Fragment {
                     // Loops through available Characteristics.
                     for (BluetoothGattCharacteristic gattCharacteristic :
                             gattCharacteristics) {
-                        charas.add(gattCharacteristic);
+                        if(gattCharacteristic.getUuid().equals(Constant.BleAttributes.ABREATH_SENSOR_CHARACTERISTICS_UUID))
+                            charas.add(gattCharacteristic);
+
                         HashMap<String, String> currentCharaData =
                                 new HashMap<String, String>();
                         uuid = gattCharacteristic.getUuid().toString();
@@ -155,8 +158,10 @@ public class ConnectionDashboard extends Fragment {
                 }
 
                 Log.d(TAG, charas.toString());
+
                 for(BluetoothGattCharacteristic x : charas){
                     bluetoothService.readCharacteristics(x);
+                    bluetoothService.setCharacteristicNotification(x);
                 }
             }
 

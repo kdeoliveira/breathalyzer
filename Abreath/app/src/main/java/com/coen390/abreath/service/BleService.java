@@ -64,10 +64,16 @@ public class BleService extends Service {
             super.onCharacteristicRead(gatt, characteristic, status);
 
             if(status == BluetoothGatt.GATT_SUCCESS){
-
-
                 Log.d("BleService", characteristic.getStringValue(1));
             }
+        }
+
+        @SuppressLint("MissingPermission")
+        @Override
+        public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+            super.onCharacteristicChanged(gatt, characteristic);
+            Log.d("BleService", "onCharacteristicChanged");
+            gatt.readCharacteristic(characteristic);
         }
 
         @Override
@@ -109,6 +115,13 @@ public class BleService extends Service {
         if(bluetoothGatt == null) return;
 
         bluetoothGatt.readCharacteristic(characteristic);
+    }
+
+    @SuppressLint("MissingPermission")
+    public void setCharacteristicNotification(BluetoothGattCharacteristic characteristic){
+        if(bluetoothGatt == null) return;
+        bluetoothGatt.setCharacteristicNotification(characteristic, true);
+
     }
 
     @SuppressLint("MissingPermission")
