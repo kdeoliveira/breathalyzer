@@ -1,5 +1,7 @@
 package com.coen390.abreath.ui.home;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.coen390.abreath.R;
+import com.coen390.abreath.common.Utility;
 import com.coen390.abreath.data.api.MockUpRepository;
 import com.coen390.abreath.data.api.MockUpService;
 import com.coen390.abreath.data.api.MockUpServiceBuilder;
@@ -26,9 +29,14 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Random;
 
 //https://developer.android.com/guide/fragments/communicate
@@ -38,43 +46,65 @@ public class HomeFragment extends Fragment {
 
     private ProfileGraphFragment graph;
     private BarChart chart;
-    private TextView nameTextView, ageTextView, heightTextView, weightTextView;
+    private TextView nameTextView, ageTextView, heightTextView, weightTextView, lastnameTextView, usernameTextView;
     private ImageView profileImage;
-    private String name, age, height;
+    private SharedPreferences sharedPreferences;
+    private boolean heightUnits, weigthUnits;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         HomeViewModel homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
 
+        sharedPreferences = getContext().getSharedPreferences("units", Context.MODE_PRIVATE);
+        heightUnits = sharedPreferences.getBoolean("height", false);
+        weigthUnits = sharedPreferences.getBoolean("weight", false);
+
+
+
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-
         nameTextView = binding.profileName;
+        lastnameTextView = binding.profileLastname;
+        usernameTextView = binding.profileUsername;
         ageTextView = binding.profileAge;
         heightTextView = binding.profileHeight;
         profileImage = binding.profileImage;
         weightTextView = binding.profileWeight;
 
+
+
+
         //Note that this should be moved into onViewCreated to ensure parent activity or this view has been created before setting ViewModels
+//        UserDataViewModel sampleModel = new ViewModelProvider(this, new ViewModelFactory(new MockUpRepository(MockUpServiceBuilder.create(MockUpService.class)))).get(UserDataViewModel.class);
         UserDataViewModel sampleModel = new ViewModelProvider(this, new ViewModelFactory(new MockUpRepository(MockUpServiceBuilder.create(MockUpService.class)))).get(UserDataViewModel.class);
 
+
         sampleModel.getUserInfo().observe(getViewLifecycleOwner(), userDataEntity -> {
-            nameTextView.setText(userDataEntity.getName().concat(" ").concat(userDataEntity.getLast_name()));
-            ageTextView.setText(String.format(Locale.CANADA,"Age: %d", userDataEntity.getAge()));
-            heightTextView.setText(String.format(Locale.CANADA,"Height: %.2f", userDataEntity.getHeight()));
-            weightTextView.setText(String.format(Locale.CANADA,"Weight: %d", userDataEntity.getWeight()));
+
+            nameTextView.setText(userDataEntity.getName());
+            lastnameTextView.setText(userDataEntity.getLast_name());
+//            usernameTextView.setText("@".concat(userDataEntity.getUsername()));
+            ageTextView.setText(String.format(Locale.CANADA,"%d", userDataEntity.getAge()));
+            if(!heightUnits)
+                heightTextView.setText(String.format(Locale.CANADA,"%.2f cm", userDataEntity.getHeight()));
+            else{
+                int[] feet = Utility.cmtoin(userDataEntity.getHeight());
+                heightTextView.setText(String.format(Locale.CANADA,"%d' %d''", feet[0], feet[1]));
+            }
+
+            if(!weigthUnits)
+                weightTextView.setText(String.format(Locale.CANADA,"%d kg", userDataEntity.getWeight()));
+            else
+                weightTextView.setText(String.format(Locale.CANADA,"%d lbs", (int) Utility.kgtolbs(userDataEntity.getWeight())) );
         });
-
-
-
-
 
         return root;
 
 
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -82,6 +112,7 @@ public class HomeFragment extends Fragment {
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
         transaction.replace(R.id.fragmentContainerView, profileGraphFragment).commit();
+
     }
 
     private BarData createChartData() {
@@ -98,9 +129,7 @@ public class HomeFragment extends Fragment {
         ArrayList<IBarDataSet> dataSets = new ArrayList<>();
         dataSets.add(set1);
 
-        BarData data = new BarData(dataSets);
-
-        return data;
+        return new BarData(dataSets);
     }
 
     @Override
@@ -109,5 +138,8 @@ public class HomeFragment extends Fragment {
         binding = null;
     }
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
 }

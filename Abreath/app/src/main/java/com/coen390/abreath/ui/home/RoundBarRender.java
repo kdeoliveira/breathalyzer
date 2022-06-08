@@ -1,9 +1,14 @@
 package com.coen390.abreath.ui.home;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.RectF;
+import android.os.Build;
 
+import androidx.annotation.RequiresApi;
+
+import com.coen390.abreath.common.Utility;
 import com.github.mikephil.charting.animation.ChartAnimator;
 import com.github.mikephil.charting.buffer.BarBuffer;
 import com.github.mikephil.charting.data.BarData;
@@ -26,25 +31,29 @@ import java.util.List;
 public class RoundBarRender extends BarChartRenderer {
     private RectF barShadowRectBuffer = new RectF();
 
-    private int radius;
+
+    public float getThreashold() {
+        return m_threashold;
+    }
+
+    public void setThreashold(float m_threashold) {
+        this.m_threashold = m_threashold;
+    }
+
+    private float m_threashold;
     public RoundBarRender(BarDataProvider chart, ChartAnimator animator, ViewPortHandler viewPortHandler){
         super(chart, animator, viewPortHandler);
-        radius = 0;
+        m_threashold = 0.08f;
     }
 
 
-    public int getRadius() {
-        return radius;
-    }
 
-    public void setRadius(int radius) {
-        this.radius = radius;
-    }
 
     @Override
     public void drawHighlighted(Canvas c, Highlight[] indices) {
 
         BarData barData = mChart.getBarData();
+        float m_radius = mChart.getBarData().getBarWidth()/2 * 100;
 
 
         for (Highlight high : indices) {
@@ -79,7 +88,6 @@ public class RoundBarRender extends BarChartRenderer {
                     y2 = -e.getNegativeSum();
 
                 } else {
-
                     Range range = e.getRanges()[high.getStackIndex()];
 
                     y1 = range.from;
@@ -91,18 +99,25 @@ public class RoundBarRender extends BarChartRenderer {
                 y2 = 0.f;
             }
 
+
             prepareBarHighlight(e.getX(), y1, y2, barData.getBarWidth() / 2f, trans);
 
             setHighlightDrawPos(high, mBarRect);
 
-            c.drawRoundRect(mBarRect, radius, radius, mHighlightPaint);
+            c.drawRoundRect(mBarRect, m_radius, m_radius, mHighlightPaint);
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void drawDataSet(Canvas c, IBarDataSet dataSet, int index) {
         Transformer trans = mChart.getTransformer(dataSet.getAxisDependency());
-        ((BarDataSet) dataSet).setColor(ColorTemplate.rgb("#0288d1"));
+
+        float m_radius = mChart.getBarData().getBarWidth()/2 * 100;
+
+
+
+//        ((BarDataSet) dataSet).setColor(ColorTemplate.rgb("#0288d1"));
         mBarBorderPaint.setColor(dataSet.getBarBorderColor());
         mBarBorderPaint.setStrokeWidth(Utils.convertDpToPixel(dataSet.getBarBorderWidth()));
 
@@ -110,44 +125,6 @@ public class RoundBarRender extends BarChartRenderer {
 
         float phaseX = mAnimator.getPhaseX();
         float phaseY = mAnimator.getPhaseY();
-
-        // draw the bar shadow before the values
-        if (mChart.isDrawBarShadowEnabled()) {
-            mShadowPaint.setColor(dataSet.getBarShadowColor());
-
-            BarData barData = mChart.getBarData();
-
-            final float barWidth = barData.getBarWidth();
-            final float barWidthHalf = barWidth / 2.0f;
-            float x;
-
-
-
-            for (int i = 0, count = Math.min((int) (Math.ceil((float) (dataSet.getEntryCount()) * phaseX)), dataSet.getEntryCount());
-                 i < count;
-                 i++) {
-
-                BarEntry e = dataSet.getEntryForIndex(i);
-
-                x = e.getX();
-
-                barShadowRectBuffer.left = x - barWidthHalf;
-                barShadowRectBuffer.right = x + barWidthHalf;
-
-                trans.rectValueToPixel(barShadowRectBuffer);
-
-                if (!mViewPortHandler.isInBoundsLeft(barShadowRectBuffer.right))
-                    continue;
-
-                if (!mViewPortHandler.isInBoundsRight(barShadowRectBuffer.left))
-                    break;
-
-                barShadowRectBuffer.top = mViewPortHandler.contentTop();
-                barShadowRectBuffer.bottom = mViewPortHandler.contentBottom();
-
-                c.drawRoundRect(barShadowRectBuffer, radius, radius, mShadowPaint);
-            }
-        }
 
         // initialize the buffer
         BarBuffer buffer = mBarBuffers[index];
@@ -160,11 +137,8 @@ public class RoundBarRender extends BarChartRenderer {
 
         trans.pointValuesToPixel(buffer.buffer);
 
-        final boolean isSingleColor = dataSet.getColors().size() == 1;
+        mRenderPaint.setColor(Color.rgb(2, 136, 206));
 
-        if (isSingleColor) {
-            mRenderPaint.setColor(dataSet.getColor());
-        }
 
         for (int j = 0; j < buffer.size(); j += 4) {
 
@@ -174,44 +148,23 @@ public class RoundBarRender extends BarChartRenderer {
             if (!mViewPortHandler.isInBoundsRight(buffer.buffer[j]))
                 break;
 
-            if (!isSingleColor) {
                 // Set the color for the currently drawn value. If the index
                 // is out of bounds, reuse colors.
-                mRenderPaint.setColor(dataSet.getColor(j / 4));
-            }
+                BarEntry e = dataSet.getEntryForIndex(j/4);
+                float y = e.getY();
 
-            if (dataSet.getGradientColor() != null) {
-                GradientColor gradientColor = dataSet.getGradientColor();
-                mRenderPaint.setShader(
-                        new LinearGradient(
-                                buffer.buffer[j],
-                                buffer.buffer[j + 3],
-                                buffer.buffer[j],
-                                buffer.buffer[j + 1],
-                                gradientColor.getStartColor(),
-                                gradientColor.getEndColor(),
-                                android.graphics.Shader.TileMode.MIRROR));
+            if(y > m_threashold/2){
+                    mRenderPaint.setColor(Color.rgb((int)Utility.map(y, m_threashold/2,m_threashold,2,209), 136, 206));
+            }else{
+                mRenderPaint.setColor(Color.rgb(2, 136, 206));
             }
-
-            if (dataSet.getGradientColors() != null) {
-                mRenderPaint.setShader(
-                        new LinearGradient(
-                                buffer.buffer[j],
-                                buffer.buffer[j + 3],
-                                buffer.buffer[j],
-                                buffer.buffer[j + 1],
-                                dataSet.getGradientColor(j / 4).getStartColor(),
-                                dataSet.getGradientColor(j / 4).getEndColor(),
-                                android.graphics.Shader.TileMode.MIRROR));
-            }
-
 
             c.drawRoundRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
-                    buffer.buffer[j + 3], radius, radius, mRenderPaint);
+                    buffer.buffer[j + 3], m_radius, m_radius, mRenderPaint);
 
             if (drawBorder) {
                 c.drawRoundRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
-                        buffer.buffer[j + 3], radius,radius, mBarBorderPaint);
+                        buffer.buffer[j + 3], m_radius,m_radius, mBarBorderPaint);
             }
         }
     }

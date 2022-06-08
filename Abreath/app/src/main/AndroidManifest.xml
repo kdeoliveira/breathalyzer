@@ -2,7 +2,28 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.coen390.abreath">
+
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
+    <uses-feature android:name="android.hardware.bluetooth" android:required="true"/>
+
+    <uses-feature android:name="android.software.companion_device_setup"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH"
+        android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" android:usesPermissionFlags="neverForLocation"
+        tools:targetApi="s" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"
+        android:maxSdkVersion="30" />
+
+<!--    <uses-feature android:name="android.hardware.bluetooth" />-->
+<!--    <uses-permission android:name="android.permission.BLUETOOTH" />-->
+<!--    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />-->
+<!--    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />-->
+<!--    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>-->
+
     <uses-permission android:name="android.permission.INTERNET" />
+
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -14,18 +35,49 @@
         android:theme="@style/Theme.Abreath"
         tools:targetApi="31">
         <activity
+            android:name=".ui.settings.pages.Account"
+            android:exported="false" />
+        <activity
+            android:name=".ui.Registration"
+            android:exported="false" />
+        <activity
+            android:name=".ui.Login"
+            android:exported="false" />
+            android:name=".SensorActivity"
+            android:exported="false" />
+        <service android:name=".service.BluetoothClassicService" />
+<!--        <service android:name=".service.BleService" />-->
+
+        <activity
             android:name=".ui.settings.pages.AboutPage"
+            android:exported="false" />
+        <activity
+            android:name=".ui.settings.pages.HelpPage"
+            android:exported="false" />
+        <activity
+            android:name=".ui.settings.pages.AccountPage"
+            android:exported="false" />
+        <activity
+            android:name=".ui.settings.pages.AppearancePage"
+            android:exported="false" />
+        <activity
+            android:name=".ui.settings.pages.UnitsPage"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name">
+<!--            <meta-data android:name="android.support.PARENT_FRAGMENT" />-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

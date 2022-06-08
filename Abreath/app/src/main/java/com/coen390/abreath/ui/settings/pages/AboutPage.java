@@ -22,12 +22,12 @@ public class AboutPage extends AppCompatActivity {
 
         about = findViewById(R.id.aboutText);
 
-        about.setText("Abreath is a BreathAlyzer created and developed by:\n\n" +
-                "Matthieu Pourrat, Jiaxuan Zhao, Minnelle Zafar,\n" +
-                " Kevin de Oliveira, Antoine Gaubil,\n" +
-                "KunYi Wang, Noah Louvet, Li Xingze\n" +
-                "\n\n\n\n\n\n" +
-                "All icons used on the settings page are from Google Icons and are free to use under the Apache Licence Version 2.0.");
+        about.setText("Abreath is a BreathAlyzer created and developed by:\n\n\n" +
+                "Matthieu Pourrat \n\n Jiaxuan Zhao \n\n Minnelle Zafar,\n \n" +
+                " Kevin de Oliveira\n\n Antoine Gaubil,\n\n" +
+                "KunYi Wang\n\n Noah Louvet \n\n Li Xingze\n" +
+                "\n\n\n" +
+                "All icons used on the settings page are from Google Icons \n\nand are free to use under the Apache Licence Version 2.0.");
 
         Objects.requireNonNull(getSupportActionBar()).setElevation(0f);
     }

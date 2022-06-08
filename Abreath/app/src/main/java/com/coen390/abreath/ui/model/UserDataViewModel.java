@@ -12,6 +12,10 @@ import com.coen390.abreath.domain.GetHistoryUseCase;
 import com.coen390.abreath.common.Tuple;
 import com.coen390.abreath.domain.GetUserInfoUseCase;
 import com.github.mikephil.charting.data.BarData;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 import java.util.Observable;
@@ -28,7 +32,15 @@ public class UserDataViewModel extends ViewModel implements Observer {
         samples = new MutableLiveData<>();
 //        MockUpRepository mockUpRepository = new MockUpRepository(MockUpServiceBuilder.create(MockUpService.class));
         getHistoryUseCase = new GetHistoryUseCase(mockUpRepository);
-        getUserInfoUseCase = new GetUserInfoUseCase(mockUpRepository);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String uid;
+        if(user != null)
+            uid = user.getUid();
+        else
+            uid = "";
+        DatabaseReference auth = FirebaseDatabase.getInstance().getReference().child("user");
+
+        getUserInfoUseCase = new GetUserInfoUseCase(auth.child(uid));
 
         //Async call. Check https://developer.android.com/topic/libraries/architecture/livedata#java for for specific implementation
         getHistoryUseCase.addObserver(this);
