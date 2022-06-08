@@ -27,9 +27,11 @@ import com.coen390.abreath.ui.settings.pages.AccountPage;
 import com.coen390.abreath.ui.settings.pages.AppearancePage;
 import com.coen390.abreath.ui.settings.pages.HelpPage;
 import com.coen390.abreath.ui.settings.pages.UnitsPage;
+import com.google.firebase.firestore.auth.User;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class SettingsFragment extends Fragment {
 
@@ -63,11 +65,6 @@ public class SettingsFragment extends Fragment {
                     case 0:
                         openAccount();
                         break;
-                    case 5:
-                        FirebaseAuth.getInstance().signOut();
-                        openSignIn();
-                        break;
-
                     case 1:
                         openAppearancePage();
                         break;
@@ -79,6 +76,10 @@ public class SettingsFragment extends Fragment {
                         break;
                     case 4:
                         openAboutPage();
+                        break;
+                    case 5:
+                        FirebaseAuth.getInstance().signOut();
+                        openSignIn();
                         break;
                     default:
                         break;

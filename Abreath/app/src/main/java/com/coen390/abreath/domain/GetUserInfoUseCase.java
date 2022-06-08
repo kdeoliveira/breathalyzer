@@ -29,6 +29,33 @@ public class GetUserInfoUseCase implements UseCase {
     }
 
     @Override
+    public Object call(@Nullable Object payload) {
+
+        this.repository.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                UserDataEntity userDataEntity;
+                try{
+                    userDataEntity  = new UserDataEntity(
+                            snapshot.child("name").getValue(String.class),
+                            snapshot.child("lastname").getValue(String.class),
+                            snapshot.child("height").getValue(String.class),
+                            snapshot.child("weight").getValue(String.class),
+                            snapshot.child("age").getValue(String.class),
+                            snapshot.child("phone").getValue(String.class)
+                    );
+                }catch (Exception e){
+                    userDataEntity = new UserDataEntity();
+                }
+
+                setChanged();
+                notifyObservers(userDataEntity);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("[debug]", error.getMessage());
+
     public MutableLiveData<UserDataEntity> call(@Nullable Object payload) {
         MutableLiveData<UserDataEntity> usersDataEntity = new MutableLiveData<>();
         FirebaseAuth.getInstance().addIdTokenListener((FirebaseAuth.IdTokenListener) firebaseAuth -> {

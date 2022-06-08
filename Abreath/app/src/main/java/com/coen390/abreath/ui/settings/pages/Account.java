@@ -13,7 +13,7 @@ import com.coen390.abreath.data.entity.UserDataEntity;
 
 public class Account extends AppCompatActivity {
 
-    protected EditText height_text, weight_text, age_text, phone_text, name_text;
+    protected EditText height_text, weight_text, age_text, phone_text, name_text, lastname;
     protected Button save;
 
     @Override
@@ -28,13 +28,14 @@ public class Account extends AppCompatActivity {
         phone_text= findViewById(R.id.phone);
         name_text = findViewById(R.id.name);
         save = findViewById(R.id.save);
+        lastname = findViewById(R.id.LastName);
 
-        Boolean[] control = {true, true, true, true, true};
+        Boolean[] control = {true, true, true, true, true, true};
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UserDataEntity ude = new UserDataEntity(name_text.getText().toString(), height_text.getText().toString(), weight_text.getText().toString(), age_text.getText().toString(), phone_text.getText().toString());
+                UserDataEntity ude = new UserDataEntity(name_text.getText().toString(), lastname.getText().toString(), height_text.getText().toString(), weight_text.getText().toString(), age_text.getText().toString(), phone_text.getText().toString());
 
 
                 String name = name_text.getText().toString();
@@ -42,17 +43,20 @@ public class Account extends AppCompatActivity {
                 String weight = weight_text.getText().toString();
                 String age = age_text.getText().toString();
                 String phone = phone_text.getText().toString();
+                String last = lastname.getText().toString();
 
                 if (name.isEmpty())
                     control[0] = false;
-                if (height.isEmpty())
+                if (last.isEmpty())
                     control[1] = false;
-                if (weight.isEmpty())
+                if (height.isEmpty())
                     control[2] = false;
-                if (age.isEmpty())
+                if (weight.isEmpty())
                     control[3] = false;
-                if (phone.isEmpty())
+                if (age.isEmpty())
                     control[4] = false;
+                if (phone.isEmpty())
+                    control[5] = false;
 
                 ude.updateDataSettings(control);
                 Toast.makeText(Account.this, "Data successfully saved.", Toast.LENGTH_SHORT).show();
