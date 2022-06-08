@@ -24,7 +24,6 @@ public class DashboardViewModel extends ViewModel {
 
     public DashboardViewModel() {
 
-
         mText = new MutableLiveData<>();
         Username = new MutableLiveData<>();
         DisplayData= new MutableLiveData<>();
@@ -53,12 +52,18 @@ public class DashboardViewModel extends ViewModel {
 
     public LiveData<String> getText() {
         return mText;
+
     }
     public LiveData<String> getUsername() {
         return Username;
     }
     public LiveData<String> getData() {
         return DisplayData;
+    }
+
+
+    public void setData(Float input){
+        DisplayData.postValue(String.valueOf(input));
     }
 
 

@@ -53,8 +53,7 @@ public class HomeFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        HomeViewModel homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
+
 
         sharedPreferences = getContext().getSharedPreferences("units", Context.MODE_PRIVATE);
         heightUnits = sharedPreferences.getBoolean("height", false);
@@ -82,7 +81,6 @@ public class HomeFragment extends Fragment {
 
 
         sampleModel.getUserInfo().observe(getViewLifecycleOwner(), userDataEntity -> {
-
             nameTextView.setText(userDataEntity.getName());
             lastnameTextView.setText(userDataEntity.getLast_name());
 //            usernameTextView.setText("@".concat(userDataEntity.getUsername()));
