@@ -239,7 +239,7 @@ private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForRes
             }
         }, 12000);
 
-        BluetoothDeviceFilter deviceFilter = new BluetoothDeviceFilter.Builder().setNamePattern(Pattern.compile(BleService.DEVICE_TO_CONNECT)).build();
+        BluetoothDeviceFilter deviceFilter = new BluetoothDeviceFilter.Builder().setNamePattern(Pattern.compile(Constant.BleAttributes.DEVICE_TO_CONNECT)).build();
 
         AssociationRequest pairingRequest = new AssociationRequest.Builder().addDeviceFilter(deviceFilter).setSingleDevice(true).build();
 

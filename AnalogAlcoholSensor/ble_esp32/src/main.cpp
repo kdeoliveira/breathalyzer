@@ -82,13 +82,13 @@ void loop() {
       lastTime = millis();
     }
   }
-  if(!deviceConnected && prevDeviceConnected){
+  else if(!deviceConnected && prevDeviceConnected){
     delay(500);
     pServer->startAdvertising(); //Restart scanning
     Serial.println("Scanning");
     prevDeviceConnected = deviceConnected;
   }
-  if(deviceConnected && !prevDeviceConnected){
+  else if(deviceConnected && !prevDeviceConnected){
     prevDeviceConnected = deviceConnected;
     Serial.println("Connecting...");
   }

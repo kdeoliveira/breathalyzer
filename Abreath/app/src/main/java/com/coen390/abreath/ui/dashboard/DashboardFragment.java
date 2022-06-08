@@ -54,7 +54,7 @@ public class DashboardFragment extends Fragment {
     float threshold = 0.08f;
     private BleService bluetoothService;
     private List<Float> chartValues;
-
+    private DashboardViewModel dashboardViewModel;
     private BroadcastReceiver gattUpdateReceiver;
     private ServiceConnection serviceConnection;
 
@@ -137,12 +137,15 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onConnected(BleService bleService) {
                 bluetoothService = bleService;
+                bluetoothService.getBluetoothResult().observe(getViewLifecycleOwner(), dashboardViewModel::setData);
             }
             @Override
             public void onDisconnected(ComponentName componentName) {
                 bluetoothService = null;
             }
         });
+
+
         gattUpdateReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -172,7 +175,7 @@ public class DashboardFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
 
 
-        DashboardViewModel dashboardViewModel =
+        dashboardViewModel =
                 new ViewModelProvider(this).get(DashboardViewModel.class);
 
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
@@ -187,6 +190,9 @@ public class DashboardFragment extends Fragment {
         dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
         dashboardViewModel.getUsername().observe(getViewLifecycleOwner(), UserView::setText);
+
+
+
         dashboardViewModel.getData().observe(getViewLifecycleOwner(), DataView::setText);
 
         if(userdata >= threshold)

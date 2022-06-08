@@ -17,6 +17,12 @@ import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.coen390.abreath.common.Constant;
+import com.coen390.abreath.ui.model.DashboardViewModel;
 
 import java.util.Arrays;
 import java.util.Base64;
@@ -26,9 +32,7 @@ public class BleService extends Service {
     private Binder binder = new LocalBinder();;
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothGatt bluetoothGatt;
-    public static final String DEVICE_TO_CONNECT = "ABreath";
-
-
+    private MutableLiveData<Float> mBluetoothResults;
 
     public final static String ACTION_GATT_CONNECTED =
             "coen390.bluetooth.le.ACTION_GATT_CONNECTED";
@@ -49,11 +53,9 @@ public class BleService extends Service {
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
 
             if(newState == BluetoothProfile.STATE_CONNECTED){
-                Log.d("ble inapp", "connected");
                 broadcastUpdate(ACTION_GATT_CONNECTED);
                 bluetoothGatt.discoverServices();
             }else if(newState == BluetoothProfile.STATE_DISCONNECTED){
-                Log.d("ble inapp", "disconnected");
                 broadcastUpdate(ACTION_GATT_DISCONNECTED);
                 bluetoothGatt.disconnect();
             }
@@ -66,6 +68,8 @@ public class BleService extends Service {
             super.onCharacteristicRead(gatt, characteristic, status);
 
             if(status == BluetoothGatt.GATT_SUCCESS){
+                mBluetoothResults.postValue(Float.parseFloat(characteristic.getStringValue(0)));
+
                 broadcastUpdate(ACTION_READ_DATA, characteristic.getStringValue(0));
             }
         }
@@ -74,7 +78,6 @@ public class BleService extends Service {
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicChanged(gatt, characteristic);
-            Log.d("BleService", "onCharacteristicChanged");
             gatt.readCharacteristic(characteristic);
         }
 
@@ -83,7 +86,6 @@ public class BleService extends Service {
 
 
             if(status == BluetoothGatt.GATT_SUCCESS){{
-                Log.w("inapp", "On Service Discovered");
                 broadcastUpdate(ACTION_GATT_SUCCESS_DISCOVERED);
             }
             }else{
@@ -92,11 +94,16 @@ public class BleService extends Service {
         }
     };
 
+    public LiveData<Float> getBluetoothResult(){
+        return this.mBluetoothResults;
+    }
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         BluetoothManager manager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
         bluetoothAdapter = manager.getAdapter();
+
         return binder;
     }
 
@@ -106,6 +113,12 @@ public class BleService extends Service {
         this.close();
         return super.onUnbind(intent);
 
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mBluetoothResults = new MutableLiveData<>();
     }
 
     @SuppressLint("MissingPermission")
@@ -135,7 +148,7 @@ public class BleService extends Service {
         if(bluetoothAdapter == null) return false;
 
         for (BluetoothDevice x : bluetoothAdapter.getBondedDevices()){
-            if(x.getName().equals(DEVICE_TO_CONNECT)){
+            if(x.getName().equals(Constant.BleAttributes.DEVICE_TO_CONNECT)){
                 return true;
             }
         }
