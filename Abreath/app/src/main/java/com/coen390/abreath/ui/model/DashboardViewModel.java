@@ -24,7 +24,6 @@ public class DashboardViewModel extends ViewModel {
 
     public DashboardViewModel() {
 
-
         mText = new MutableLiveData<>();
         Username = new MutableLiveData<>();
         DisplayData= new MutableLiveData<>();

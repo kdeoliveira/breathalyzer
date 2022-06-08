@@ -81,7 +81,6 @@ public class HomeFragment extends Fragment {
 
 
         sampleModel.getUserInfo().observe(getViewLifecycleOwner(), userDataEntity -> {
-
             nameTextView.setText(userDataEntity.getName());
             lastnameTextView.setText(userDataEntity.getLast_name());
 //            usernameTextView.setText("@".concat(userDataEntity.getUsername()));

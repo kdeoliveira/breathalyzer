@@ -1,12 +1,13 @@
 package com.coen390.abreath.ui.model;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.coen390.abreath.data.api.MockUpRepository;
-import com.coen390.abreath.data.api.MockUpService;
-import com.coen390.abreath.data.api.MockUpServiceBuilder;
 import com.coen390.abreath.data.entity.UserDataEntity;
 import com.coen390.abreath.domain.GetHistoryUseCase;
 import com.coen390.abreath.common.Tuple;
@@ -29,26 +30,19 @@ public class UserDataViewModel extends ViewModel implements Observer {
     private final GetUserInfoUseCase getUserInfoUseCase;
 
     public UserDataViewModel(MockUpRepository mockUpRepository) {
+        getUserInfoUseCase = new GetUserInfoUseCase();
         samples = new MutableLiveData<>();
+        info_user = getUserInfoUseCase.call(null);
+
 //        MockUpRepository mockUpRepository = new MockUpRepository(MockUpServiceBuilder.create(MockUpService.class));
         getHistoryUseCase = new GetHistoryUseCase(mockUpRepository);
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String uid;
-        if(user != null)
-            uid = user.getUid();
-        else
-            uid = "";
-        DatabaseReference auth = FirebaseDatabase.getInstance().getReference().child("user");
-
-        getUserInfoUseCase = new GetUserInfoUseCase(auth.child(uid));
 
         //Async call. Check https://developer.android.com/topic/libraries/architecture/livedata#java for for specific implementation
         getHistoryUseCase.addObserver(this);
 
-        getUserInfoUseCase.addObserver(this);
 
         getHistoryUseCase.call(null);
-        getUserInfoUseCase.call(null);
+
     }
 
     public LiveData<Tuple<List<String>, BarData>> getUserData(){
@@ -60,11 +54,7 @@ public class UserDataViewModel extends ViewModel implements Observer {
     }
 
     public LiveData<UserDataEntity> getUserInfo(){
-        if(info_user != null){
-            return this.info_user;
-        }
-        info_user = new MutableLiveData<>();
-        return info_user;
+        return Transformations.switchMap(info_user, input -> getUserInfoUseCase.call(null));
     }
 
     @Override

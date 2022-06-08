@@ -48,30 +48,52 @@ public class UserDataEntity {
     private String name;
     @SerializedName("lastName")
     private String last_name;
-    private String email, password, phone;
+    private String email;
+    private String password;
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    private String phone;
 
     public int getAge() {
         return age;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+//    public void setAge(int age) {
+//        this.age = age;
+//    }
+    public void setAge(String age) {
+        this.age = Integer.parseInt(age);
     }
+
 
     public int getWeight() {
         return weight;
     }
 
-    public void setWeight(int weight) {
-        this.weight = weight;
+//    public void setWeight(int weight) {
+//        this.weight = weight;
+//    }
+    public void setWeight(String weight) {
+        this.weight = Integer.parseInt(weight);
     }
+
 
     public float getHeight() {
         return height;
     }
 
-    public void setHeight(float height) {
-        this.height = height;
+//    public void setHeight(float height) {
+//        this.height = height;
+//    }
+    public void setHeight(String height) {
+        this.height = Float.parseFloat(height);
     }
 
     private int age;
@@ -122,6 +144,8 @@ public class UserDataEntity {
         this.weight = weight;
         this.height = height;
     }
+
+
 
     public UserDataEntity(String email, String password, String name) //For sign up
     {
