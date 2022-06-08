@@ -5,9 +5,6 @@
 #include <Arduino.h>
 
 
-//Default Temperature is in Celsius
-//Comment the next line for Temperature in Fahrenheit
-
 //BLE server name
 #define bleServerName "ABreath"
 
