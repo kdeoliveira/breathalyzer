@@ -84,6 +84,21 @@
                 />
 
             <EditText
+                android:id="@+id/LastName"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginTop="17dp"
+                android:drawableLeft="@drawable/ic_baseline_person_outline_24"
+                android:drawablePadding="15dp"
+                android:ems="10"
+                android:hint="Last Name"
+                android:inputType="textPersonName"
+                android:padding="15dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/hintColor"
+                tools:ignore="TextContrastCheck" />
+
+            <EditText
                 android:id="@+id/height"
                 android:layout_width="match_parent"
                 android:layout_height="54dp"

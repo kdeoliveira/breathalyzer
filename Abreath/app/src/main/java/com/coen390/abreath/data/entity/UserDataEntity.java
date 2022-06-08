@@ -2,11 +2,13 @@ package com.coen390.abreath.data.entity;
 
 import static android.content.ContentValues.TAG;
 
+import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import com.coen390.abreath.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -26,8 +28,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.ktx.Firebase;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -43,6 +47,7 @@ public class UserDataEntity {
     @SerializedName("createdAt")
     private Date created_at;
     private static String result[] = {"","","",""};
+    private static ArrayList<String> list = new ArrayList<>();
 
     private int id;
     private String name;
@@ -136,7 +141,7 @@ public class UserDataEntity {
         this.password = password;
     }
 
-    public UserDataEntity(String name, String height, String weight, String age, String phone) //For the account page.
+    public UserDataEntity(String name, String lastname, String height, String weight, String age, String phone) //For the account page.
     {
         this.name = name;
         this.phone = phone;
@@ -146,6 +151,7 @@ public class UserDataEntity {
         this.age = Integer.parseInt(age);
         this.heightString = height;
         this.height = Float.parseFloat(height);
+        this.last_name = lastname;
     }
 
     public UserDataEntity()//Empty Constructor
@@ -199,6 +205,18 @@ public class UserDataEntity {
 
     public void setCreated_at(Date created_at) {
         this.created_at = created_at;
+    }
+
+    public ArrayList<String> getRecordingsArray()
+    {
+        ArrayList<String> returnArrayList = new ArrayList<>();
+        for(int i = list.size() - 1; 0 <= i; i--)
+        {
+            if (i == 12)
+                break;
+            returnArrayList.add(list.get(i));
+        }
+        return returnArrayList;
     }
 
     public void createAccount()
@@ -259,16 +277,19 @@ public class UserDataEntity {
         String passHeight = heightString;
         String passAge = ageString;
         String passPhone = phone;
+        String passLastName = last_name;
 
-        if (control[0] == true)
+        if (control[0])
             dr.child(uid).child("name").setValue(passName);
-        if (control[1] == true)
+        if (control[1])
+            dr.child(uid).child("lastname").setValue(passLastName);
+        if (control[2])
             dr.child(uid).child("height").setValue(passHeight);
-        if (control[2] == true)
+        if (control[3])
             dr.child(uid).child("weight").setValue(passWeight);
-        if (control[3] == true)
+        if (control[4])
             dr.child(uid).child("age").setValue(passAge);
-        if (control[4] == true)
+        if (control[5])
             dr.child(uid).child("phone").setValue(passPhone);
     }
 
@@ -293,6 +314,48 @@ public class UserDataEntity {
             }
         });
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void storelastLevels(double result)
+    {
+        DatabaseReference dr;
+        dr = FirebaseDatabase.getInstance().getReference().child("recordings").getRef();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = user.getUid();
+
+
+        String dateTime = (java.time.LocalDateTime.now()).toString(); //Take system time and convert to string.
+        String date = dateTime.substring(0,10); //Take the first 11 characters and store them in date.
+        String time = dateTime.substring(11,19); //Take the last characters and store them in time.
+        dateTime = date+" @ "+time; //Format a string that is returned for use in other classes by setting a format date @ time
+
+        dateTime = dateTime + "," + result;
+
+        dr.child(uid).push().setValue(dateTime);
+    }
+
+    public void getLastLevels()
+    {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = user.getUid();
+        DatabaseReference auth = FirebaseDatabase.getInstance().getReference().child("recordings");
+
+
+        auth.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot dataSnapshot: snapshot.getChildren()) {
+                        list.add(dataSnapshot.getValue(String.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
 
 
     public String[] getData()

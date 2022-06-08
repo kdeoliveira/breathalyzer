@@ -40,6 +40,7 @@ public class GetUserInfoUseCase extends Observable implements UseCase {
                 try{
                     userDataEntity  = new UserDataEntity(
                             snapshot.child("name").getValue(String.class),
+                            snapshot.child("lastname").getValue(String.class),
                             snapshot.child("height").getValue(String.class),
                             snapshot.child("weight").getValue(String.class),
                             snapshot.child("age").getValue(String.class),
