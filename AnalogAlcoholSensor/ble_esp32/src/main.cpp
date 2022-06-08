@@ -15,6 +15,7 @@ float hum;
 unsigned long lastTime = 0;
 unsigned long timerDelay = 300;
 
+//Controls the flow of communication
 bool deviceConnected = false;
 bool prevDeviceConnected = false;
 
@@ -77,8 +78,11 @@ void loop() {
       Serial.println(" %");
       
       lastTime = millis();
+      //TODO Verify if the var below needs to be set
+      //preDeviceConnected = true;
     }
   }
+
   else if(!deviceConnected && prevDeviceConnected){
     delay(500);
     pServer->startAdvertising(); //Restart scanning
