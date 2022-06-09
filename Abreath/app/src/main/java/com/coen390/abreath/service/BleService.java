@@ -152,7 +152,10 @@ public class BleService extends Service {
 
     @SuppressLint("MissingPermission")
     public void close(){
+        Log.d("BleService", "unBind");
         if(bluetoothGatt != null){
+            Log.d("BleService", "Closing");
+
             bluetoothGatt.close();
             bluetoothGatt = null;
         }
@@ -184,6 +187,14 @@ public class BleService extends Service {
         characteristic.setValue(value);
         characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
         bluetoothGatt.writeCharacteristic(characteristic);
+    }
+    @SuppressLint("MissingPermission")
+    public void writeCharacteristic(String value){
+        if(bluetoothGatt == null || mBluetoothCharacteristic == null) return;
+        Log.d("BleService", "writeCharacteristic");
+        mBluetoothCharacteristic.setValue(value);
+        mBluetoothCharacteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
+        bluetoothGatt.writeCharacteristic(mBluetoothCharacteristic);
     }
 
     @SuppressLint("MissingPermission")

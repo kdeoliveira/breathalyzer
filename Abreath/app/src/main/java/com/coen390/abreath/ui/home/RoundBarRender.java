@@ -152,12 +152,15 @@ public class RoundBarRender extends BarChartRenderer {
                 // is out of bounds, reuse colors.
                 BarEntry e = dataSet.getEntryForIndex(j/4);
                 float y = e.getY();
+                mRenderPaint.setColor(Color.rgb(100, (int)Utility.map(y, m_threashold* 0.4f,m_threashold*0.9f,150,20), 10));
 
-            if(y > m_threashold/2){
-                    mRenderPaint.setColor(Color.rgb((int)Utility.map(y, m_threashold* 0.4f,m_threashold,2,209), 136, 206));
-            }else{
-                mRenderPaint.setColor(Color.rgb(2, 136, 206));
-            }
+//            if(y > m_threashold/2){
+//                    mRenderPaint.setColor(Color.rgb((int)Utility.map(y, m_threashold* 0.2f,m_threashold*0.8f,2,209), 136, 206));
+
+//            }else{
+
+//                mRenderPaint.setColor(Color.rgb(2, 136, 206));
+//            }
 
             c.drawRoundRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
                     buffer.buffer[j + 3], m_radius, m_radius, mRenderPaint);

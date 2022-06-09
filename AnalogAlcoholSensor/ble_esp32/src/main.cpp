@@ -17,7 +17,7 @@ unsigned long timerDelay = 3000;
 bool deviceConnected = false;
 bool prevDeviceConnected = false;
 
-bool isReadyToSend = true;
+bool isReadyToSend = false;
 
 // See the following for generating UUIDs:
 // https://www.uuidgenerator.net/
@@ -40,9 +40,9 @@ class MyServerCallbacks : public BLEServerCallbacks
 class MyCharacteristicCallback : public BLECharacteristicCallbacks
 {
 
-  void onRead(BLECharacteristic *pCharacteristic, esp_ble_gatts_cb_param_t *param)
+  void onWrite(BLECharacteristic *pCharacteristic, esp_ble_gatts_cb_param_t *param)
   {
-    // isReadyToSend = true;
+    isReadyToSend = true;
   }
 };
 
@@ -81,22 +81,18 @@ void loop()
   {
     if ((millis() - lastTime) > timerDelay) {
     // Generating random numbers
-    
-      hum = rand() % 20;
-      static char buff[3];
-      dtostrf(hum, 6, 2, buff);
-      pCharacteristic->setValue(buff);
-      pCharacteristic->notify();
-      delay(300);
-      
-    
 
-      pCharacteristic->setValue("P");
-      pCharacteristic->notify();
+      if(isReadyToSend){
+          hum = rand() % 20;
+          static char buff[3];
+          dtostrf(hum, 6, 2, buff);
+          pCharacteristic->setValue(buff);
+          pCharacteristic->notify();  
+          isReadyToSend = false;
+      }
+
       prevDeviceConnected = true;
-
-    // TODO Verify if the var below needs to be set
-    // preDeviceConnected = true;
+      lastTime = millis();
     }
   }
 

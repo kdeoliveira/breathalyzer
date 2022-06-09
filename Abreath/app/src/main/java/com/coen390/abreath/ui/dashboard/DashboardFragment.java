@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -55,7 +56,6 @@ public class DashboardFragment extends Fragment {
     float userdata = 0.06f;
     float threshold = 0.08f;
     private BleService bluetoothService;
-    private List<Float> chartValues;
     private DashboardViewModel dashboardViewModel;
     private BroadcastReceiver gattUpdateReceiver;
     private ServiceConnection serviceConnection;
@@ -110,9 +110,6 @@ public class DashboardFragment extends Fragment {
         colors.add(0xffFFD077);
         colors.add(0xffFA6252);
 
-
-
-
         PieDataSet dataSet = new PieDataSet(DataIndex,"");
         dataSet.setColors(colors);
 
@@ -128,29 +125,35 @@ public class DashboardFragment extends Fragment {
 
     private FragmentDashboardBinding binding;
     private boolean hasRead = false;
+    private LoadingFragment loadingFragment;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        chartValues = new ArrayList<>();
 
-        new Handler().postDelayed(() -> {
-            bluetoothService.setCharacteristicNotification();
-        }, 2000);
+
+        loadingFragment = LoadingFragment.newInstance("Awaiting Results");
+        loadingFragment.show(getChildFragmentManager(), LoadingFragment.TAG);
 
         serviceConnection = new BluetoothServiceConnection(new BluetoothServiceConnection.onBleService() {
             @Override
             public void onConnected(BleService bleService) {
                 bluetoothService = bleService;
+                bluetoothService.setCharacteristicNotification();
 
                 bluetoothService.getBluetoothResult().observe(getViewLifecycleOwner(), aFloat -> {
                     if(!hasRead){
-                        userdata = Utility.map(aFloat, 0, 20, 0, 0.2f);
+                        userdata = Utility.map(aFloat, 0, 20, 0, 0.16f);
                         PieData();
                         PieIndex();
                         dashboardViewModel.setData(userdata);
                         hasRead = true;
-                        new SaveLastLevelUseCase().call(userdata);
+                        new Handler().postDelayed(() -> {
+                            binding.getRoot().setVisibility(View.VISIBLE);
+                            loadingFragment.dismiss();
+                            new SaveLastLevelUseCase().call(userdata);
+                        }, 1000);
+
                     }
 
                 });
@@ -171,11 +174,7 @@ public class DashboardFragment extends Fragment {
                 }else if(BleService.ACTION_GATT_DISCONNECTED.equals(action)){
                     Toast.makeText(context, "Disconnected", Toast.LENGTH_LONG).show();
                 }else if(BleService.ACTION_READ_DATA.equals(action)){
-                    String payload = intent.getStringExtra(BleService.BLE_READ_STRING);
-                    if(payload != null){
-//                        if(!hasRead){
-//                        }
-                    }
+                    loadingFragment.setStateText("Calculating BAC");
                 }
             }
         };
@@ -190,6 +189,7 @@ public class DashboardFragment extends Fragment {
 
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        root.setVisibility(View.GONE);
 
         final TextView textView = binding.textDashboard;
 
@@ -222,7 +222,9 @@ public class DashboardFragment extends Fragment {
 
 
         pieChart = binding.piechartDisplay;
+        pieChart.setNoDataText("");
         pieIndex = binding.piechartIndex;
+        pieIndex.setNoDataText("");
 
 
 
@@ -260,11 +262,20 @@ public class DashboardFragment extends Fragment {
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
+
         binding = null;
-        if(bluetoothService != null)
+        if(bluetoothService != null){
+            bluetoothService.close();
             requireActivity().unbindService(serviceConnection);
+
+        }
     }
 
     @Override

@@ -130,6 +130,7 @@ private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForRes
                     }
                     break;
                 case Activity.RESULT_CANCELED:
+                    isConnected = false;
                     toggleProgressBar();
                     break;
                 default:
@@ -147,7 +148,7 @@ private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForRes
                     Toast.makeText(context, "Connected", Toast.LENGTH_LONG).show();
                     isConnected = true;
                     toggleProgressBar();
-                    Navigation.findNavController(requireView()).navigate(R.id.action_connectionDashboard_to_navigation_dashboard);
+//                    Navigation.findNavController(requireView()).navigate(R.id.action_connectionDashboard_to_navigation_dashboard);
 
                 }else if(BleService.ACTION_GATT_DISCONNECTED.equals(action)){
                     Log.d(TAG, "disconnected");
@@ -155,6 +156,7 @@ private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForRes
                     isConnected = false;
                 }else if(BleService.ACTION_GATT_SUCCESS_DISCOVERED.equals(action)) {
                     bluetoothService.setCharacteristicsGattServices(Constant.BleAttributes.ABREATH_SERVICE_UUID, Constant.BleAttributes.ABREATH_SENSOR_CHARACTERISTICS_UUID);
+                    bluetoothService.writeCharacteristic("M");
 
 //                  bluetoothService.readCharacteristics(characteristic);
 //                  bluetoothService.writeCharacteristic(characteristic, "M");
@@ -175,7 +177,7 @@ private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForRes
                             break;
                     }
                 }else if(action.equals(BleService.ACTION_WRITE_DATA)){
-//                    Navigation.findNavController(requireView()).navigate(R.id.action_connectionDashboard_to_navigation_dashboard);
+                    Navigation.findNavController(requireView()).navigate(R.id.action_connectionDashboard_to_navigation_dashboard);
                 }
             }
         };
