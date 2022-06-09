@@ -18,7 +18,6 @@ public class GraphFormatter extends ValueFormatter {
     }
     @Override
     public String getFormattedValue(float value) {
-        Log.d("getFormattedValue", String.valueOf(value));
         int index = (int) (value + 0.5f);
         if(size <= index){
             return "";
