@@ -73,6 +73,9 @@ public class ConnectionDashboard extends Fragment {
 
     private ActivityResultLauncher<Intent> startSystemBluetooth;
 
+    //TODO To be changed
+    private BluetoothGattCharacteristic mCharacteristic;
+
 @SuppressLint("MissingPermission")
 private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForResult;
 
@@ -146,26 +149,18 @@ private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForRes
                     toggleProgressBar();
                     Navigation.findNavController(requireView()).navigate(R.id.action_connectionDashboard_to_navigation_dashboard);
 
-
-
                 }else if(BleService.ACTION_GATT_DISCONNECTED.equals(action)){
                     Log.d(TAG, "disconnected");
                     Toast.makeText(context, "Disconnected", Toast.LENGTH_LONG).show();
                     isConnected = false;
-                }else if(BleService.ACTION_GATT_SUCCESS_DISCOVERED.equals(action)){
-                    for (BluetoothGattService gattService : bluetoothService.getSupportedGattServices()) {
-                        if(gattService.getUuid().equals(Constant.BleAttributes.ABREATH_SERVICE_UUID)){
-                            Log.d(TAG, gattService.getCharacteristics().toString());
+                }else if(BleService.ACTION_GATT_SUCCESS_DISCOVERED.equals(action)) {
+                    bluetoothService.setCharacteristicsGattServices(Constant.BleAttributes.ABREATH_SERVICE_UUID, Constant.BleAttributes.ABREATH_SENSOR_CHARACTERISTICS_UUID);
 
-                            BluetoothGattCharacteristic characteristic = gattService.getCharacteristic(Constant.BleAttributes.ABREATH_SENSOR_CHARACTERISTICS_UUID);
-                            if(characteristic != null){
-                                bluetoothService.readCharacteristics(characteristic);
-                                bluetoothService.setCharacteristicNotification(characteristic);
-                            }
-                            break;
-                        }
+//                  bluetoothService.readCharacteristics(characteristic);
+//                  bluetoothService.writeCharacteristic(characteristic, "M");
 
-                    }
+
+
                 }
                 else if(action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)){
                     switch(intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.ERROR)){
@@ -179,6 +174,8 @@ private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForRes
                         default:
                             break;
                     }
+                }else if(action.equals(BleService.ACTION_WRITE_DATA)){
+//                    Navigation.findNavController(requireView()).navigate(R.id.action_connectionDashboard_to_navigation_dashboard);
                 }
             }
         };
@@ -284,6 +281,7 @@ private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForRes
         intentFilter.addAction(BleService.ACTION_GATT_DISCONNECTED);
         intentFilter.addAction(BleService.ACTION_GATT_SUCCESS_DISCOVERED);
         intentFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+        intentFilter.addAction(BleService.ACTION_WRITE_DATA);
         requireContext().registerReceiver(gattUpdateReceiver, intentFilter);
 
     }

@@ -12,6 +12,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,6 +32,7 @@ import com.coen390.abreath.R;
 import com.coen390.abreath.common.Constant;
 import com.coen390.abreath.common.Utility;
 import com.coen390.abreath.databinding.FragmentDashboardBinding;
+import com.coen390.abreath.domain.SaveLastLevelUseCase;
 import com.coen390.abreath.service.BleService;
 import com.coen390.abreath.service.BluetoothServiceConnection;
 import com.coen390.abreath.ui.model.DashboardViewModel;
@@ -94,7 +96,7 @@ public class DashboardFragment extends Fragment {
         pieChart.setData(data);
         pieChart.invalidate();
         pieChart.setHoleColor(80000000);
-//        pieChart.animateY(2000, Easing.EaseInOutQuad);
+        pieChart.animateY(2000, Easing.EaseInOutQuad);
     }
     private void PieIndex() {
 
@@ -121,23 +123,37 @@ public class DashboardFragment extends Fragment {
         pieIndex.setData(data);
         pieIndex.invalidate();
         pieIndex.setHoleColor(80000000);
-        //pieIndex.animateY(2000, Easing.EaseInOutQuad);
-
-
+        pieIndex.animateY(2000, Easing.EaseInOutQuad);
     }
 
     private FragmentDashboardBinding binding;
+    private boolean hasRead = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         chartValues = new ArrayList<>();
 
+        new Handler().postDelayed(() -> {
+            bluetoothService.setCharacteristicNotification();
+        }, 2000);
+
         serviceConnection = new BluetoothServiceConnection(new BluetoothServiceConnection.onBleService() {
             @Override
             public void onConnected(BleService bleService) {
                 bluetoothService = bleService;
-                bluetoothService.getBluetoothResult().observe(getViewLifecycleOwner(), dashboardViewModel::setData);
+
+                bluetoothService.getBluetoothResult().observe(getViewLifecycleOwner(), aFloat -> {
+                    if(!hasRead){
+                        userdata = Utility.map(aFloat, 0, 20, 0, 0.2f);
+                        PieData();
+                        PieIndex();
+                        dashboardViewModel.setData(userdata);
+                        hasRead = true;
+                        new SaveLastLevelUseCase().call(userdata);
+                    }
+
+                });
             }
             @Override
             public void onDisconnected(ComponentName componentName) {
@@ -157,14 +173,8 @@ public class DashboardFragment extends Fragment {
                 }else if(BleService.ACTION_READ_DATA.equals(action)){
                     String payload = intent.getStringExtra(BleService.BLE_READ_STRING);
                     if(payload != null){
-                        if(chartValues.size() < 10)
-                            chartValues.add(Float.parseFloat(payload));
-
-                        userdata = Utility.map(Float.parseFloat(payload), 0, 100, 0, 0.2f);
-                        PieData();
-
-
-
+//                        if(!hasRead){
+//                        }
                     }
                 }
             }
@@ -216,8 +226,8 @@ public class DashboardFragment extends Fragment {
 
 
 
-        PieData();
-        PieIndex();
+//        PieData();
+//        PieIndex();
         pieChart.getDescription().setEnabled(false);
         pieChart.setHoleRadius(60);
         Legend none = pieChart.getLegend();
@@ -253,6 +263,8 @@ public class DashboardFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+        if(bluetoothService != null)
+            requireActivity().unbindService(serviceConnection);
     }
 
     @Override

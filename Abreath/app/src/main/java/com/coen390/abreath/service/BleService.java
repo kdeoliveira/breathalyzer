@@ -27,12 +27,14 @@ import com.coen390.abreath.ui.model.DashboardViewModel;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
+import java.util.UUID;
 
 public class BleService extends Service {
     private Binder binder = new LocalBinder();;
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothGatt bluetoothGatt;
     private MutableLiveData<Float> mBluetoothResults;
+    private BluetoothGattCharacteristic mBluetoothCharacteristic;
 
     public final static String ACTION_GATT_CONNECTED =
             "coen390.bluetooth.le.ACTION_GATT_CONNECTED";
@@ -41,6 +43,8 @@ public class BleService extends Service {
     public final static String ACTION_GATT_SUCCESS_DISCOVERED =
             "coen390.bluetooth.le.ACTION_GATT_SUCCESS_DISCOVERED";
     public final static String ACTION_READ_DATA = "coen390.bluetooth.le.ACTION_READ_DATA";
+
+    public final static String ACTION_WRITE_DATA = "coen390.bluetooth.le.ACTION_WRITE_DATA";
 
     public final static String BLE_READ_STRING = "coen390.bluetooth.le.BLE_READ_STRING";
 
@@ -63,12 +67,24 @@ public class BleService extends Service {
 
         }
 
+        @SuppressLint("MissingPermission")
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicRead(gatt, characteristic, status);
+            Log.d("BleService", "ON READ");
 
             if(status == BluetoothGatt.GATT_SUCCESS){
-                mBluetoothResults.postValue(Float.parseFloat(characteristic.getStringValue(0)));
+                try{
+                    Log.d("BleService", String.valueOf(characteristic.getStringValue(0)));
+
+                    mBluetoothResults.postValue(Float.parseFloat(characteristic.getStringValue(0)));
+                }catch(NumberFormatException e){
+                    Log.d("BleService", characteristic.getStringValue(0));
+//                    characteristic.setValue("M");
+//                    characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
+//                    bluetoothGatt.writeCharacteristic(characteristic);
+                }
+
 
                 broadcastUpdate(ACTION_READ_DATA, characteristic.getStringValue(0));
             }
@@ -82,10 +98,23 @@ public class BleService extends Service {
         }
 
         @Override
+        public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+            super.onCharacteristicWrite(gatt, characteristic, status);
+            Log.d("BleService", "onCharacteristicWrite");
+
+            if(status == BluetoothGatt.GATT_SUCCESS){
+                broadcastUpdate(ACTION_WRITE_DATA);
+            }else{
+                Log.e("BleService", "Unable to right into bluetooth");
+            }
+        }
+
+        @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
 
 
             if(status == BluetoothGatt.GATT_SUCCESS){{
+
                 broadcastUpdate(ACTION_GATT_SUCCESS_DISCOVERED);
             }
             }else{
@@ -132,7 +161,7 @@ public class BleService extends Service {
     @SuppressLint("MissingPermission")
     public void readCharacteristics(BluetoothGattCharacteristic characteristic){
         if(bluetoothGatt == null) return;
-
+        mBluetoothCharacteristic = characteristic;
         bluetoothGatt.readCharacteristic(characteristic);
     }
 
@@ -140,7 +169,21 @@ public class BleService extends Service {
     public void setCharacteristicNotification(BluetoothGattCharacteristic characteristic){
         if(bluetoothGatt == null) return;
         bluetoothGatt.setCharacteristicNotification(characteristic, true);
+    }
 
+    @SuppressLint("MissingPermission")
+    public void setCharacteristicNotification(){
+        if(bluetoothGatt == null || mBluetoothCharacteristic == null) return;
+        bluetoothGatt.setCharacteristicNotification(mBluetoothCharacteristic, true);
+    }
+
+    @SuppressLint("MissingPermission")
+    public void writeCharacteristic(BluetoothGattCharacteristic characteristic, String value){
+        if(bluetoothGatt == null) return;
+        Log.d("BleService", "writeCharacteristic");
+        characteristic.setValue(value);
+        characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
+        bluetoothGatt.writeCharacteristic(characteristic);
     }
 
     @SuppressLint("MissingPermission")
@@ -183,6 +226,18 @@ public class BleService extends Service {
         return bluetoothGatt.getServices();
     }
 
+    public void setCharacteristicsGattServices(UUID serviceUUID, UUID characteristicUUID){
+        if(bluetoothGatt == null) return;
+
+        for(BluetoothGattService x : bluetoothGatt.getServices()){
+            if(x.getUuid().equals(serviceUUID)){
+                BluetoothGattCharacteristic characteristic = x.getCharacteristic(characteristicUUID);
+                if(characteristic != null){
+                    mBluetoothCharacteristic = characteristic;
+                }
+            }
+        }
+    }
     private void broadcastUpdate(final String action){
         final Intent intent = new Intent(action);
         sendBroadcast(intent);

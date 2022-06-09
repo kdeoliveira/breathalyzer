@@ -195,12 +195,12 @@ public class UserDataEntity {
         this.name = name;
     }
 
-    public String getLast_name() {
+    public String getLastname() {
         return last_name;
     }
 
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
+    public void setLastname(String lastname) {
+        this.last_name = lastname;
     }
 
 
@@ -317,33 +317,13 @@ public class UserDataEntity {
             dr.child(uid).child("phone").setValue(passPhone);
     }
 
-    public void getDataForHome()
-    {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String uid = user.getUid();
-        DatabaseReference auth = FirebaseDatabase.getInstance().getReference().child("user");
-
-        auth.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                result[0] = snapshot.child("name").getValue(String.class);
-                result[1] = snapshot.child("age").getValue(String.class);
-                result[2] = snapshot.child("height").getValue(String.class);
-                result[3] = snapshot.child("weight").getValue(String.class);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void storelastLevels(double result)
     {
         DatabaseReference dr;
         dr = FirebaseDatabase.getInstance().getReference().child("recordings").getRef();
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String uid = user.getUid();
 

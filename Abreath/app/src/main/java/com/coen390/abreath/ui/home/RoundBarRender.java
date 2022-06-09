@@ -154,7 +154,7 @@ public class RoundBarRender extends BarChartRenderer {
                 float y = e.getY();
 
             if(y > m_threashold/2){
-                    mRenderPaint.setColor(Color.rgb((int)Utility.map(y, m_threashold/2,m_threashold,2,209), 136, 206));
+                    mRenderPaint.setColor(Color.rgb((int)Utility.map(y, m_threashold* 0.4f,m_threashold,2,209), 136, 206));
             }else{
                 mRenderPaint.setColor(Color.rgb(2, 136, 206));
             }
