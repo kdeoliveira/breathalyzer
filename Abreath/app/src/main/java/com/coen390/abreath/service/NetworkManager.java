@@ -7,12 +7,19 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.NetworkRequest;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.activity.ComponentActivity;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
+
+import com.coen390.abreath.MainActivity;
 
 public class NetworkManager {
-    public boolean isConnected;
+    private boolean isConnected;
     public ComponentActivity owner;
+
 
     public NetworkManager(ComponentActivity activity){
         owner = activity;
@@ -23,8 +30,26 @@ public class NetworkManager {
 
         boolean isConnected = networkInfo != null && networkInfo.isConnectedOrConnecting();
         if(!isConnected){
-            Log.d("Main Activity", "No network found still");
+            Toast.makeText(owner, "Current not connected to internet", Toast.LENGTH_SHORT).show();
             connectivityManager.registerNetworkCallback(new NetworkRequest.Builder().addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build(), connectionNetworkCallback );
+            owner.getLifecycle().addObserver(new DefaultLifecycleObserver() {
+                @Override
+                public void onPause(@NonNull LifecycleOwner owner) {
+                    DefaultLifecycleObserver.super.onPause(owner);
+                    connectivityManager.unregisterNetworkCallback(connectionNetworkCallback);
+                }
+            });
+        }
+
+    }
+
+    public boolean isConnected(){
+        return this.isConnected;
+    }
+
+    public static class Builder{
+        public static NetworkManager create(ComponentActivity activity){
+            return new NetworkManager(activity);
         }
     }
 }

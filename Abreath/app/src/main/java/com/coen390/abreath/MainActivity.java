@@ -11,9 +11,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.coen390.abreath.data.entity.UserDataEntity;
 import com.coen390.abreath.service.BleService;
+import com.coen390.abreath.service.NetworkManager;
 import com.coen390.abreath.ui.Login;
 import com.google.android.material.bottomappbar.BottomAppBar;
 
@@ -69,10 +71,17 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.bottomNavView, navController);
 
+        connectionNetworkCallback = new ConnectivityManager.NetworkCallback(){
+            @Override
+            public void onAvailable(@NonNull Network network) {
+                Toast.makeText(MainActivity.this, "Reconnected to internet", Toast.LENGTH_SHORT).show();
+            }
 
-
-
-
+            @Override
+            public void onLost(@NonNull Network network) {
+                Log.d("MainActivity", "Lost internet connection");
+            }
+        };
 
         binding.fabDashboard.setOnClickListener((View view) -> {
             //https://stackoverflow.com/questions/57529211/intercept-navigationui-onnavdestinationselected-to-make-backstack-pop-with-in
@@ -83,29 +92,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
-    private void checkConnection(){
-        final ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        final NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-
-        boolean isConnected = networkInfo != null && networkInfo.isConnectedOrConnecting();
-        if(!isConnected){
-            connectionNetworkCallback = connectionNetworkCallback = new ConnectivityManager.NetworkCallback(){
-                @Override
-                public void onAvailable(@NonNull Network network) {
-                    Log.d("MainActivity", "Network connected");
-                }
-
-                @Override
-                public void onLost(@NonNull Network network) {
-                    Log.d("MainActivity", "Network is disconnected");
-                }
-            };
-
-            Log.d("Main Activity", "No network found still");
-            connectivityManager.registerNetworkCallback(new NetworkRequest.Builder().addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build(), connectionNetworkCallback );
-        }
-    }
 
     @Override
     protected void onStart() {
@@ -122,18 +108,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        checkConnection();
-    }
-
-    @Override
-    protected void onPause() {
-        if(connectionNetworkCallback != null){
-            final ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-            connectivityManager.unregisterNetworkCallback(connectionNetworkCallback);
-            connectionNetworkCallback = null;
-        }
-        super.onPause();
-
+        NetworkManager.Builder.create(this).checkConnection(connectionNetworkCallback);
     }
 
     @Override
