@@ -157,6 +157,7 @@ private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForRes
             @Override
             public void onActionWriteData(Context context) {
                 Navigation.findNavController(requireView()).navigate(R.id.action_connectionDashboard_to_navigation_dashboard);
+
             }
 
             @Override

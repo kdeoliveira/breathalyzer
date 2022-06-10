@@ -7,6 +7,8 @@
 // BLE server name
 #define bleServerName "ABreath"
 
+#define R0_BAC 400
+
 uint8_t ledR = 2;
 uint8_t ledG = 4;
 uint8_t ledB = 5;
@@ -63,6 +65,7 @@ class MyCharacteristicCallback : public BLECharacteristicCallbacks
 
   void onWrite(BLECharacteristic *pCharacteristic, esp_ble_gatts_cb_param_t *param)
   {
+    Serial.println("Callback onWrite");
     isReadyToSend = true;
     message = pCharacteristic->getValue();
   }
@@ -71,13 +74,30 @@ class MyCharacteristicCallback : public BLECharacteristicCallbacks
 BLECharacteristic *pCharacteristic;
 BLEServer *pServer;
 
+float analogToBac(int analogValue){
+    
+    float RS_gas; // Get value of RS in a GAS
+    float ratio; // Get ratio RS_GAS/RS_air
+    float sensor_volt;
+    sensor_volt=(float)analogValue/1024*5.0;
+    RS_gas = (5.0-sensor_volt)/sensor_volt; // omit *RL
+ 
+   /*-Replace the name "R0" with the value of R0 in the demo of First Test -*/
+    ratio = RS_gas/R0_BAC;  // ratio = RS/R0
+
+    return 0.1896*pow(ratio,2) - 8.6178*ratio/10 + 1.0792;   //BAC in mg/L
+}
+
+
 
 void sendToBluetooth(int val){
   float num = static_cast<float>(val);
-  static char buff[3];
+  static char buff[8];
   dtostrf(num, 5, 2, buff);
   pCharacteristic->setValue(buff);
   pCharacteristic->notify();
+  Serial.print("val ble: ");
+  Serial.println(num);
 }
 
 void setup()
@@ -120,10 +140,8 @@ void setup()
 
 void loop()
 {
-  Serial.println("Working");
   if (deviceConnected)
   {
-    Serial.println("deviceConnected");
     if ((millis() - lastTime) > timerDelay)
     {
 
@@ -139,12 +157,19 @@ void loop()
       {
         // read the analog / millivolts value for pin 2:
         analogValue = analogRead(14);
-        Serial.println(analogValue);
+        // Serial.print("analogValue: ");
+        // Serial.println(analogValue);
+        // Serial.print("prepeak: ");
+        // Serial.println(prepeak);
+        // Serial.print("counter: ");
+        // Serial.println(counter);
+        // Serial.print("peak: ");
+        // Serial.println(peak);
 
 
 
 
-        analogValue = 0;
+        
         
         // store peak value
         if (prepeak >= analogValue)
@@ -168,28 +193,20 @@ void loop()
           ledcWrite(1, R); // write red component to channel 1, etc.
           ledcWrite(2, G);
           ledcWrite(3, B);
-          sendToBluetooth(20);
-          isReadyToSend = false;
-          
           // send peak
           if (isReadyToSend)
           {
-            // static char buff[3];
-            // itoa(peak, buff, 6);
-            // pCharacteristic->setValue(buff);
-            // pCharacteristic->notify();
+            int temp = analogToBac(peak) * 100;
+            sendToBluetooth(temp);
           }
         }
         // has reach the peak value
-        else
+        else if(counter >= 20)
         {
           if (isReadyToSend)
           {
-            // static char buff[3];
-            // itoa(9999, buff, 6);
-            // pCharacteristic->setValue(buff);
-            // pCharacteristic->notify();
-            // isReadyToSend = false;
+            sendToBluetooth(-1);
+            isReadyToSend = false;
           }
           counter = 0;
           prepeak = 0;
