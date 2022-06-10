@@ -2,6 +2,11 @@ package com.coen390.abreath;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
+import android.net.NetworkRequest;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +17,7 @@ import com.coen390.abreath.service.BleService;
 import com.coen390.abreath.ui.Login;
 import com.google.android.material.bottomappbar.BottomAppBar;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -32,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();;
 
+    private ConnectivityManager.NetworkCallback connectionNetworkCallback;
 
     private AppBarConfiguration appBarConfiguration;
 
@@ -74,8 +81,30 @@ public class MainActivity extends AppCompatActivity {
             navController.navigate(R.id.to_navigation_dashboard, null, options);
 
         });
+    }
 
 
+    private void checkConnection(){
+        final ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        final NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        boolean isConnected = networkInfo != null && networkInfo.isConnectedOrConnecting();
+        if(!isConnected){
+            connectionNetworkCallback = connectionNetworkCallback = new ConnectivityManager.NetworkCallback(){
+                @Override
+                public void onAvailable(@NonNull Network network) {
+                    Log.d("MainActivity", "Network connected");
+                }
+
+                @Override
+                public void onLost(@NonNull Network network) {
+                    Log.d("MainActivity", "Network is disconnected");
+                }
+            };
+
+            Log.d("Main Activity", "No network found still");
+            connectivityManager.registerNetworkCallback(new NetworkRequest.Builder().addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build(), connectionNetworkCallback );
+        }
     }
 
     @Override
@@ -93,6 +122,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        checkConnection();
+    }
+
+    @Override
+    protected void onPause() {
+        if(connectionNetworkCallback != null){
+            final ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            connectivityManager.unregisterNetworkCallback(connectionNetworkCallback);
+            connectionNetworkCallback = null;
+        }
+        super.onPause();
+
     }
 
     @Override

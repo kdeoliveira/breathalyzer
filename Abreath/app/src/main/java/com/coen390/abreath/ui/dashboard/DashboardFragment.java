@@ -36,6 +36,7 @@ import com.coen390.abreath.databinding.FragmentDashboardBinding;
 import com.coen390.abreath.domain.SaveLastLevelUseCase;
 import com.coen390.abreath.service.BleService;
 import com.coen390.abreath.service.BluetoothServiceConnection;
+import com.coen390.abreath.service.GattBroadcastReceiver;
 import com.coen390.abreath.ui.model.DashboardViewModel;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
@@ -165,19 +166,36 @@ public class DashboardFragment extends Fragment {
         });
 
 
-        gattUpdateReceiver = new BroadcastReceiver() {
+        gattUpdateReceiver = new GattBroadcastReceiver(new GattBroadcastReceiver.GattBroadcastReceiverListener() {
+
             @Override
-            public void onReceive(Context context, Intent intent) {
-                final String action = intent.getAction();
-                if(BleService.ACTION_GATT_CONNECTED.equals(action)){
-                    Log.d("TAG", "connected");
-                }else if(BleService.ACTION_GATT_DISCONNECTED.equals(action)){
-                    Toast.makeText(context, "Disconnected", Toast.LENGTH_LONG).show();
-                }else if(BleService.ACTION_READ_DATA.equals(action)){
-                    loadingFragment.setStateText("Calculating BAC");
-                }
+            public void onActionConnected(Context context) {
+                Log.d("DashboardFragment", "status connected");
             }
-        };
+
+            @Override
+            public void onActionDisconnected(Context context) {
+                Toast.makeText(context, "Disconnected", Toast.LENGTH_LONG).show();
+            }
+            @Override
+            public void onActionReadData(Context context, String payload) {
+                loadingFragment.setStateText("Calculating BAC");
+            }
+        });
+
+//        gattUpdateReceiver = new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context context, Intent intent) {
+//                final String action = intent.getAction();
+//                if(BleService.ACTION_GATT_CONNECTED.equals(action)){
+//                    Log.d("TAG", "connected");
+//                }else if(BleService.ACTION_GATT_DISCONNECTED.equals(action)){
+//                    Toast.makeText(context, "Disconnected", Toast.LENGTH_LONG).show();
+//                }else if(BleService.ACTION_READ_DATA.equals(action)){
+//                    loadingFragment.setStateText("Calculating BAC");
+//                }
+//            }
+//        };
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,

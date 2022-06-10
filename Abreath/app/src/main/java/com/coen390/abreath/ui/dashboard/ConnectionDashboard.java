@@ -45,6 +45,7 @@ import com.coen390.abreath.databinding.FragmentConnectionDashboardBinding;
 import com.coen390.abreath.service.BleService;
 import com.coen390.abreath.service.BluetoothClassicService;
 import com.coen390.abreath.service.BluetoothServiceConnection;
+import com.coen390.abreath.service.GattBroadcastReceiver;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -138,49 +139,47 @@ private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForRes
             }
         });
 
-        gattUpdateReceiver = new BroadcastReceiver() {
+        gattUpdateReceiver = new GattBroadcastReceiver(new GattBroadcastReceiver.GattBroadcastReceiverListener() {
             @Override
-            public void onReceive(Context context, Intent intent) {
-                final String action = intent.getAction();
-                if(BleService.ACTION_GATT_CONNECTED.equals(action)){
-                    Log.d(TAG, "connected");
+            public void onActionConnected(Context context) {
+                Toast.makeText(context, "Connected", Toast.LENGTH_LONG).show();
+                isConnected = true;
+                toggleProgressBar();
+            }
 
-                    Toast.makeText(context, "Connected", Toast.LENGTH_LONG).show();
-                    isConnected = true;
-                    toggleProgressBar();
-//                    Navigation.findNavController(requireView()).navigate(R.id.action_connectionDashboard_to_navigation_dashboard);
+            @Override
+            public void onActionDisconnected(Context context) {
+                Log.d(TAG, "disconnected");
+                Toast.makeText(context, "Disconnected", Toast.LENGTH_LONG).show();
+                isConnected = false;
+            }
 
-                }else if(BleService.ACTION_GATT_DISCONNECTED.equals(action)){
-                    Log.d(TAG, "disconnected");
-                    Toast.makeText(context, "Disconnected", Toast.LENGTH_LONG).show();
-                    isConnected = false;
-                }else if(BleService.ACTION_GATT_SUCCESS_DISCOVERED.equals(action)) {
-                    bluetoothService.setCharacteristicsGattServices(Constant.BleAttributes.ABREATH_SERVICE_UUID, Constant.BleAttributes.ABREATH_SENSOR_CHARACTERISTICS_UUID);
-                    bluetoothService.writeCharacteristic("M");
+            @Override
+            public void onActionWriteData(Context context) {
+                Navigation.findNavController(requireView()).navigate(R.id.action_connectionDashboard_to_navigation_dashboard);
+            }
 
-//                  bluetoothService.readCharacteristics(characteristic);
-//                  bluetoothService.writeCharacteristic(characteristic, "M");
+            @Override
+            public void onActionDiscovered(Context context) {
+                bluetoothService.setCharacteristicsGattServices(Constant.BleAttributes.ABREATH_SERVICE_UUID, Constant.BleAttributes.ABREATH_SENSOR_CHARACTERISTICS_UUID);
+                bluetoothService.writeCharacteristic("M");
+            }
 
-
-
-                }
-                else if(action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)){
-                    switch(intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.ERROR)){
-                        case BluetoothDevice.BOND_BONDED:
-                            Toast.makeText(context, "Successfully connected to breathalyzer", Toast.LENGTH_SHORT).show();
-                            break;
-                        case BluetoothDevice.BOND_BONDING:
-                            isConnected = true;
-                        case BluetoothDevice.BOND_NONE:
-                            toggleProgressBar();
-                        default:
-                            break;
-                    }
-                }else if(action.equals(BleService.ACTION_WRITE_DATA)){
-                    Navigation.findNavController(requireView()).navigate(R.id.action_connectionDashboard_to_navigation_dashboard);
+            @Override
+            public void onActionBondChanged(Context context, int status) {
+                switch(status){
+                    case BluetoothDevice.BOND_BONDED:
+                        Toast.makeText(context, "Successfully connected to breathalyzer", Toast.LENGTH_SHORT).show();
+                        break;
+                    case BluetoothDevice.BOND_BONDING:
+                        isConnected = true;
+                    case BluetoothDevice.BOND_NONE:
+                        toggleProgressBar();
+                    default:
+                        break;
                 }
             }
-        };
+        });
 
     }
 

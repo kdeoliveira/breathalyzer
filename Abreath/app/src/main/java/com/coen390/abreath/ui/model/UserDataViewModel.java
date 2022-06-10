@@ -27,16 +27,16 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-public class UserDataViewModel extends ViewModel implements Observer {
+public class UserDataViewModel extends ViewModel {
     private MutableLiveData<List<TestResultEntity>> samples;
     private MutableLiveData<UserDataEntity> info_user;
 
 
-    private final GetHistoryUseCase getHistoryUseCase;
+//    private final GetHistoryUseCase getHistoryUseCase;
     private final GetUserInfoUseCase getUserInfoUseCase;
     private final GetLastLevelsUseCase getLastLevelsUseCase;
 
-    public UserDataViewModel(MockUpRepository mockUpRepository) {
+    public UserDataViewModel() {
 //        new SaveLastLevelUseCase().call(1.5f);
         getUserInfoUseCase = new GetUserInfoUseCase();
         getLastLevelsUseCase = new GetLastLevelsUseCase();
@@ -44,13 +44,11 @@ public class UserDataViewModel extends ViewModel implements Observer {
         info_user = getUserInfoUseCase.call(null);
 
 //        MockUpRepository mockUpRepository = new MockUpRepository(MockUpServiceBuilder.create(MockUpService.class));
-        getHistoryUseCase = new GetHistoryUseCase(mockUpRepository);
+//        getHistoryUseCase = new GetHistoryUseCase(mockUpRepository);
 
         //Async call. Check https://developer.android.com/topic/libraries/architecture/livedata#java for for specific implementation
-        getHistoryUseCase.addObserver(this);
-
-
-        getHistoryUseCase.call(null);
+//        getHistoryUseCase.addObserver(this);
+//        getHistoryUseCase.call(null);
 
     }
 
@@ -61,16 +59,5 @@ public class UserDataViewModel extends ViewModel implements Observer {
 
     public LiveData<UserDataEntity> getUserInfo(){
         return Transformations.switchMap(info_user, input -> getUserInfoUseCase.call(null));
-    }
-
-    @Override
-    public void update(Observable observable, Object o) {
-
-//        if(o instanceof Tuple){
-//            samples.postValue( (Tuple<List<String>, BarData>) o );
-//        }else if(o instanceof UserDataEntity){
-//            info_user.postValue((UserDataEntity) o);
-//        }
-
     }
 }

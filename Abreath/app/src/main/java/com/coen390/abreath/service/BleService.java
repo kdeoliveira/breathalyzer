@@ -75,17 +75,10 @@ public class BleService extends Service {
 
             if(status == BluetoothGatt.GATT_SUCCESS){
                 try{
-                    Log.d("BleService", String.valueOf(characteristic.getStringValue(0)));
-
                     mBluetoothResults.postValue(Float.parseFloat(characteristic.getStringValue(0)));
                 }catch(NumberFormatException e){
                     Log.d("BleService", characteristic.getStringValue(0));
-//                    characteristic.setValue("M");
-//                    characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
-//                    bluetoothGatt.writeCharacteristic(characteristic);
                 }
-
-
                 broadcastUpdate(ACTION_READ_DATA, characteristic.getStringValue(0));
             }
         }
@@ -177,6 +170,7 @@ public class BleService extends Service {
     @SuppressLint("MissingPermission")
     public void setCharacteristicNotification(){
         if(bluetoothGatt == null || mBluetoothCharacteristic == null) return;
+
         bluetoothGatt.setCharacteristicNotification(mBluetoothCharacteristic, true);
     }
 

@@ -18,6 +18,6 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> aClass) {
-        return (T) new UserDataViewModel(this.repository);
+        return (T) new UserDataViewModel();
     }
 }
