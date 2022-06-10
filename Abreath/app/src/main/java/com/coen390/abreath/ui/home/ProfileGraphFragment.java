@@ -1,6 +1,7 @@
 package com.coen390.abreath.ui.home;
 
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 
 import com.coen390.abreath.R;
 import com.coen390.abreath.common.Tuple;
+import com.coen390.abreath.common.Utility;
 import com.coen390.abreath.data.api.MockUpRepository;
 import com.coen390.abreath.data.api.MockUpService;
 import com.coen390.abreath.data.api.MockUpServiceBuilder;
@@ -22,6 +24,7 @@ import com.coen390.abreath.data.entity.TestResultEntity;
 import com.coen390.abreath.ui.model.UserDataViewModel;
 import com.coen390.abreath.ui.model.ViewModelFactory;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -92,10 +95,12 @@ public class ProfileGraphFragment extends Fragment {
         chart = view.findViewById(R.id.fragment_verticalbarchart_chart);
 
         RoundBarRender roundBarRender = new RoundBarRender(chart, chart.getAnimator(), chart.getViewPortHandler());
-//        roundBarRender.initBuffers();
-//        roundBarRender.setRadius(20);
-        roundBarRender.setThreashold(0.2f);
+
+        roundBarRender.setThreashold(0.16f);
         chart.setRenderer(roundBarRender);
+        chart.setNoDataText("");
+
+
 
         //Note that this should be moved into onViewCreated to ensure parent activity or this view has been created before setting ViewModels
         UserDataViewModel sampleModel = new ViewModelProvider(requireParentFragment(), new ViewModelFactory(new MockUpRepository(MockUpServiceBuilder.create(MockUpService.class)))).get(UserDataViewModel.class);
@@ -104,57 +109,33 @@ public class ProfileGraphFragment extends Fragment {
 
 
         configureChartAppearance();
-//        prepareChartData(data);
 
         return view;
     }
-    private void prepareChartData(BarData data) {
 
-
-        data.setValueTextSize(12f);
-        chart.setData(data);
-        chart.invalidate();
-    }
 
     private void configureChartAppearance() {
-
         XAxis xAxis = chart.getXAxis();
         xAxis.setDrawAxisLine(false);
-
-//        xAxis.setTextSize(12);
-//        xAxis.setAxisLineColor(R.color.primaryDarkColor);
         xAxis.setCenterAxisLabels(true);
-//        xAxis.setGranularity(10f);
-//        xAxis.setGranularityEnabled(true);
-//        xAxis.setXOffset(0f); //labels x offset in dps
-
-
-//        xAxis.setYOffset(0f); //labels y offset in dps
-//        xAxis.setAvoidFirstLastClipping(true);
-
         xAxis.setDrawGridLines(false);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
         YAxis yAxis = chart.getAxisRight();
-
         yAxis.setTextColor(R.color.primaryDarkColor);
         yAxis.setTextSize(12);
         yAxis.setAxisLineColor(R.color.primaryDarkColor);
         yAxis.setDrawGridLines(true);
         yAxis.setAxisMinimum(0.0f);
-        yAxis.setAxisMaximum(0.2f);
-//        yAxis.setGranularityEnabled(true);
-
+        yAxis.setAxisMaximum(0.16f);
         yAxis.setDrawAxisLine(false);
-
         yAxis.setLabelCount(4, true); //labels (Y-Values) for 4 horizontal grid lines
         yAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
 
         YAxis leftAxis = chart.getAxisLeft();
-
         leftAxis.setDrawAxisLine(false);
         leftAxis.setAxisMinimum(0f);
-        leftAxis.setAxisMaximum(0.2f);
+        leftAxis.setAxisMaximum(0.16f);
         leftAxis.setLabelCount(0, true);
         leftAxis.setValueFormatter(new ValueFormatter() {
             @Override
@@ -174,37 +155,10 @@ public class ProfileGraphFragment extends Fragment {
     }
     //https://getridbug.com/android/plot-data-value-on-timeline-axis-in-bar-chart-using-mpandroidchart/
     private void onChanged(List<TestResultEntity> dataList) {
-//        chart.getXAxis().setAxisMaximum(dataList.size() + 1);
-        if(dataList.size() == 0) return;
+
         chart.getXAxis().setLabelCount(dataList.size() + 1, true);
-
-
-        if(dataList.get(0).compareToMonth(dataList.get(dataList.size() - 1 ).getCraetedAtDate())){
-            chart.getXAxis().setValueFormatter(new ValueFormatter() {
-                @Override
-                public String getFormattedValue(float value) {
-                    int index = (int) (value);
-                    if(dataList.size() > index)
-                        return dataList.get(index).getCreatedAt();
-                    else
-                        return "";
-
-                }
-            });
-        }else{
-            chart.getXAxis().setValueFormatter(new ValueFormatter() {
-                @Override
-                public String getFormattedValue(float value) {
-                    int index = (int) (value);
-                    if(dataList.size() > index)
-                        return dataList.get(index).getCreatedAt("dd-MMM");
-                    else
-                        return "";
-
-                }
-            });
-        }
-
+        if(dataList.size() > 0)
+            chart.getXAxis().setValueFormatter(new GraphFormatter(dataList));
 
 //        chart.setXAxisRenderer(new XAxisRenderer(chart.getViewPortHandler(), this.chart.getXAxis(), chart.getTransformer(YAxis.AxisDependency.LEFT)){
 //            @Override
@@ -223,7 +177,7 @@ public class ProfileGraphFragment extends Fragment {
         BarData barData = new BarData(dataSet);
 
         barData.setDrawValues(false);
-        barData.setBarWidth(0.3f);
+        barData.setBarWidth(Utility.map(dataList.size(), 1f, 12f, 0.3f, 0.5f));
 
         chart.setData(barData);
 

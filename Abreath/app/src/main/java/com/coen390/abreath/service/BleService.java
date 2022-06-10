@@ -11,8 +11,10 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
+import android.companion.BluetoothDeviceFilter;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -24,6 +26,9 @@ import androidx.lifecycle.ViewModelProvider;
 import com.coen390.abreath.common.Constant;
 import com.coen390.abreath.ui.model.DashboardViewModel;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
@@ -33,7 +38,9 @@ public class BleService extends Service {
     private Binder binder = new LocalBinder();;
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothGatt bluetoothGatt;
-    private MutableLiveData<Float> mBluetoothResults;
+    private List<Float> mTempResults;
+    private MutableLiveData<List<Float>> mBluetoothResults;
+    private MutableLiveData<Boolean> mBluetoothFinished;
     private BluetoothGattCharacteristic mBluetoothCharacteristic;
 
     public final static String ACTION_GATT_CONNECTED =
@@ -71,21 +78,23 @@ public class BleService extends Service {
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicRead(gatt, characteristic, status);
-            Log.d("BleService", "ON READ");
 
             if(status == BluetoothGatt.GATT_SUCCESS){
                 try{
-                    Log.d("BleService", String.valueOf(characteristic.getStringValue(0)));
+                    final float input = Float.parseFloat(characteristic.getStringValue(0));
 
-                    mBluetoothResults.postValue(Float.parseFloat(characteristic.getStringValue(0)));
+                    if(input == -1){
+                        mBluetoothFinished.postValue(true);
+                    }else{
+                        mTempResults.add(input);
+                        mBluetoothResults.postValue(mTempResults);
+                    }
+
+
+
                 }catch(NumberFormatException e){
                     Log.d("BleService", characteristic.getStringValue(0));
-//                    characteristic.setValue("M");
-//                    characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
-//                    bluetoothGatt.writeCharacteristic(characteristic);
                 }
-
-
                 broadcastUpdate(ACTION_READ_DATA, characteristic.getStringValue(0));
             }
         }
@@ -93,8 +102,8 @@ public class BleService extends Service {
         @SuppressLint("MissingPermission")
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-            super.onCharacteristicChanged(gatt, characteristic);
             gatt.readCharacteristic(characteristic);
+            super.onCharacteristicChanged(gatt, characteristic);
         }
 
         @Override
@@ -123,9 +132,11 @@ public class BleService extends Service {
         }
     };
 
-    public LiveData<Float> getBluetoothResult(){
+    public LiveData<List<Float>> getBluetoothResult(){
         return this.mBluetoothResults;
     }
+
+    public LiveData<Boolean> getBluetoothFinished(){return this.mBluetoothFinished; }
 
     @Nullable
     @Override
@@ -148,11 +159,17 @@ public class BleService extends Service {
     public void onCreate() {
         super.onCreate();
         mBluetoothResults = new MutableLiveData<>();
+        mBluetoothFinished = new MutableLiveData<>();
+        mBluetoothFinished.setValue(false);
+        mTempResults = new ArrayList<>();
     }
 
     @SuppressLint("MissingPermission")
     public void close(){
+        Log.d("BleService", "unBind");
         if(bluetoothGatt != null){
+            Log.d("BleService", "Closing");
+
             bluetoothGatt.close();
             bluetoothGatt = null;
         }
@@ -174,6 +191,7 @@ public class BleService extends Service {
     @SuppressLint("MissingPermission")
     public void setCharacteristicNotification(){
         if(bluetoothGatt == null || mBluetoothCharacteristic == null) return;
+
         bluetoothGatt.setCharacteristicNotification(mBluetoothCharacteristic, true);
     }
 
@@ -184,6 +202,14 @@ public class BleService extends Service {
         characteristic.setValue(value);
         characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
         bluetoothGatt.writeCharacteristic(characteristic);
+    }
+    @SuppressLint("MissingPermission")
+    public void writeCharacteristic(String value){
+        if(bluetoothGatt == null || mBluetoothCharacteristic == null) return;
+        Log.d("BleService", "writeCharacteristic");
+        mBluetoothCharacteristic.setValue(value);
+        mBluetoothCharacteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
+        bluetoothGatt.writeCharacteristic(mBluetoothCharacteristic);
     }
 
     @SuppressLint("MissingPermission")

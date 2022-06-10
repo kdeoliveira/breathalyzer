@@ -29,7 +29,7 @@ public class TestResultEntity {
         return simpleDateFormat.format(this.mCreatedAt);
     }
 
-    public Date getCraetedAtDate(){
+    public Date getCreatedAtDate(){
         return this.mCreatedAt;
     }
 

@@ -13,6 +13,8 @@ import androidx.lifecycle.ViewModel;
 
 import com.coen390.abreath.R;
 
+import java.util.Locale;
+
 public class DashboardViewModel extends ViewModel {
 
     private final MutableLiveData<String> mText;
@@ -63,7 +65,7 @@ public class DashboardViewModel extends ViewModel {
 
 
     public void setData(Float input){
-        DisplayData.postValue(String.valueOf(input));
+        DisplayData.postValue(String.format(Locale.CANADA, "BAC %.3f %%",input));
     }
 
 

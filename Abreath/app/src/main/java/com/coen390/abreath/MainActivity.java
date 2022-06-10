@@ -2,16 +2,24 @@ package com.coen390.abreath;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
+import android.net.NetworkRequest;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.coen390.abreath.data.entity.UserDataEntity;
 import com.coen390.abreath.service.BleService;
+import com.coen390.abreath.service.NetworkManager;
 import com.coen390.abreath.ui.Login;
 import com.google.android.material.bottomappbar.BottomAppBar;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -32,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();;
 
+    private ConnectivityManager.NetworkCallback connectionNetworkCallback;
 
     private AppBarConfiguration appBarConfiguration;
 
@@ -62,9 +71,18 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.bottomNavView, navController);
 
+        connectionNetworkCallback = new ConnectivityManager.NetworkCallback(){
+            @Override
+            public void onAvailable(@NonNull Network network) {
+                Toast.makeText(MainActivity.this, "Reconnected to internet", Toast.LENGTH_SHORT).show();
+            }
 
 
-
+            @Override
+            public void onLost(@NonNull Network network) {
+                Log.d("MainActivity", "Lost internet connection");
+            }
+        };
 
         binding.fabDashboard.setOnClickListener((View view) -> {
             //https://stackoverflow.com/questions/57529211/intercept-navigationui-onnavdestinationselected-to-make-backstack-pop-with-in
@@ -73,9 +91,8 @@ public class MainActivity extends AppCompatActivity {
             navController.navigate(R.id.to_navigation_dashboard, null, options);
 
         });
-
-
     }
+
 
     @Override
     protected void onStart() {
@@ -91,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        NetworkManager.Builder.create(this).checkConnection(connectionNetworkCallback);
     }
 
     @Override

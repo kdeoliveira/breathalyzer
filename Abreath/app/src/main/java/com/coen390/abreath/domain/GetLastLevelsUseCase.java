@@ -33,7 +33,6 @@ public class GetLastLevelsUseCase implements UseCase{
         FirebaseAuth.getInstance().addIdTokenListener((FirebaseAuth.IdTokenListener) firebaseAuth -> {
             if(firebaseAuth.getUid() != null){
                 List<TestResultEntity> testResultEntities = new ArrayList<>();
-//                testResultEntities.add(new TestResultEntity(0f, new Date()));
 //                mFirebaseRepository.child("recordings").getRef().child(firebaseAuth.getUid()).removeValue();
                 mFirebaseRepository.child("recordings").child(firebaseAuth.getUid()).limitToLast(12).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override

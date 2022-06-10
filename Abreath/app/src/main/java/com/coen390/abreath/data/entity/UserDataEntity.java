@@ -184,7 +184,15 @@ public class UserDataEntity {
         //this.age = Integer.parseInt(age);
         this.heightString = height;
         //this.height = Float.parseFloat(height);
+
         this.last_name = lastname;
+        try{
+            this.weight = Integer.parseInt(weight);
+            this.age = Integer.parseInt(age);
+            this.height = Float.parseFloat(height);
+
+        }catch (NumberFormatException ignored){
+        }
     }
 
     public UserDataEntity()//Empty Constructor
