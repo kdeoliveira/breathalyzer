@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Reconnected to internet", Toast.LENGTH_SHORT).show();
             }
 
+
             @Override
             public void onLost(@NonNull Network network) {
                 Log.d("MainActivity", "Lost internet connection");
@@ -97,10 +98,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         Intent intentRecv = getIntent();
-
-        if(user != null && intentRecv.getBooleanExtra("login_result", false)){
+        if(user == null){ //&& intentRecv.getBooleanExtra("login_result", false) was used but doesn't secure the app
             Intent intent = new Intent(this, Login.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
         }
     }
