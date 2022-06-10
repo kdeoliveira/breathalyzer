@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
         binding.fabDashboard.setOnClickListener((View view) -> {
             //https://stackoverflow.com/questions/57529211/intercept-navigationui-onnavdestinationselected-to-make-backstack-pop-with-in
             //Properly navigate from FAB to another fragment using user-defined onNavDestinationSelected behavior
@@ -82,10 +81,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         Intent intentRecv = getIntent();
-
-        if(user != null && intentRecv.getBooleanExtra("login_result", false)){
+        if(user == null){ //&& intentRecv.getBooleanExtra("login_result", false) was used but doesn't secure the app
             Intent intent = new Intent(this, Login.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
         }
     }

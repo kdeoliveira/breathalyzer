@@ -81,6 +81,7 @@
         android:padding="15dp"
         android:textColor="@color/black"
         android:textColorHint="@color/hintColor"
+        android:maxLength="30"
         tools:ignore="TextContrastCheck" />
 
     <EditText

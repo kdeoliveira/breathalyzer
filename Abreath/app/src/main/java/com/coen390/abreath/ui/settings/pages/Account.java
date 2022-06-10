@@ -2,19 +2,23 @@ package com.coen390.abreath.ui.settings.pages;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.coen390.abreath.MainActivity;
 import com.coen390.abreath.R;
 import com.coen390.abreath.data.entity.UserDataEntity;
+import com.coen390.abreath.ui.Login;
+import com.coen390.abreath.ui.settings.SettingsFragment;
 
 public class Account extends AppCompatActivity {
 
     protected EditText height_text, weight_text, age_text, phone_text, name_text, lastname;
-    protected Button save;
+    protected Button save, delete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +33,7 @@ public class Account extends AppCompatActivity {
         name_text = findViewById(R.id.name);
         save = findViewById(R.id.save);
         lastname = findViewById(R.id.LastName);
+        delete = findViewById(R.id.delete_account);
 
         Boolean[] control = {true, true, true, true, true, true};
 
@@ -60,8 +65,31 @@ public class Account extends AppCompatActivity {
 
                 ude.updateDataSettings(control);
                 Toast.makeText(Account.this, "Data successfully saved.", Toast.LENGTH_SHORT).show();
+                openMain();
             }
         });
+
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UserDataEntity ude = new UserDataEntity();
+                ude.deleteAccount();
+                openSignIn();
+            }
+        });
+    }
+
+    public void openMain()
+    {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    public void openSignIn()
+    {
+        Intent intent = new Intent(this, Login.class);
+        startActivity(intent);
     }
 
 

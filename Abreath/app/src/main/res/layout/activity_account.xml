@@ -80,6 +80,8 @@
                 android:padding="15dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/hintColor"
+                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'- "
+                android:maxLength="30"
                 tools:ignore="TextContrastCheck"
                 />
 
@@ -96,6 +98,8 @@
                 android:padding="15dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/hintColor"
+                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'- "
+                android:maxLength="30"
                 tools:ignore="TextContrastCheck" />
 
             <EditText
@@ -111,6 +115,8 @@
                 android:padding="15dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/hintColor"
+                android:digits="0123456789"
+                android:maxLength="3"
                 tools:ignore="TextContrastCheck" />
 
             <EditText
@@ -122,10 +128,12 @@
                 android:drawablePadding="15dp"
                 android:ems="10"
                 android:hint="Weight"
-                android:inputType="textPersonName"
+                android:inputType="numberSigned"
                 android:padding="15dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/hintColor"
+                android:digits="0123456789"
+                android:maxLength="3"
                 tools:ignore="TextContrastCheck" />
 
             <EditText
@@ -137,10 +145,11 @@
                 android:drawablePadding="15dp"
                 android:ems="10"
                 android:hint="Age"
-                android:inputType="textPersonName"
+                android:inputType="numberSigned"
                 android:padding="15dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/hintColor"
+                android:maxLength="3"
                 tools:ignore="TextContrastCheck" />
 
             <EditText
@@ -152,22 +161,35 @@
                 android:drawablePadding="15dp"
                 android:ems="10"
                 android:hint="Phone Number of Relative"
-                android:inputType="textPersonName"
+                android:inputType="numberSigned"
                 android:padding="15dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/hintColor"
+                android:digits="0123456789"
+                android:maxLength="10"
                 tools:ignore="TextContrastCheck" />
 
             <Button
                 android:id="@+id/save"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="45dp"
                 android:layout_marginTop="32dp"
                 android:background="@drawable/save_button"
                 android:text="Save Changes"
                 android:textColor="#FFFFFF" />
 
-
+            <Button
+                android:id="@+id/delete_account"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="100dp"
+                android:layout_marginRight="100dp"
+                android:outlineProvider="none"
+                android:text="Delete Account"
+                android:textColor="#FF0000"
+                android:textStyle="bold" />
         </LinearLayout>
 
 
