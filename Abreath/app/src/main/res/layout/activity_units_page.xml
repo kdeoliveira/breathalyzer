@@ -31,7 +31,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="55dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="17dp"
         android:orientation="horizontal"
         android:weightSum="1" >
 
@@ -41,7 +41,7 @@
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:gravity="center_vertical"
-            android:text="Weight Units"
+            android:text="@string/weight_units"
             android:textStyle = "bold"
             android:layout_marginTop="17dp"
             android:layout_marginStart="30dp"/>
@@ -49,17 +49,17 @@
         <ToggleButton
             android:id="@+id/toggleWeight"
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="50dp"
-            android:layout_height="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginStart="170dp"
             android:layout_marginTop="15dp"
             android:checked="false"
-            android:textOff="Kg"
-            android:textOn="Lbs"
+            android:textOff="@string/kg"
+            android:textOn="@string/lbs"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:text="Checkout"
-            android:textSize="12dp"/>
+            android:text=""
+            android:textSize="12sp"/>
 
     </LinearLayout>
     <View
@@ -83,7 +83,7 @@
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:gravity="center_vertical"
-            android:text="Height Units"
+            android:text="@string/height_units"
             android:textStyle = "bold"
             android:layout_marginTop="17dp"
             android:layout_marginStart="30dp"/>
@@ -92,7 +92,7 @@
             android:id="@+id/toggleHeight"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="50dp"
-            android:layout_height="40dp"
+            android:layout_height="match_parent"
             android:layout_marginStart="170dp"
             android:layout_marginTop="15dp"
             android:checked="false"

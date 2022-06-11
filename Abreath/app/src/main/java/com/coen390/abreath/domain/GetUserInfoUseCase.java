@@ -34,6 +34,7 @@ public class GetUserInfoUseCase implements UseCase {
                 mFirebaseRepository.child("user").child(firebaseAuth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Log.d("GetUserCase", snapshot.toString());
                         usersDataEntity.setValue(snapshot.getValue(UserDataEntity.class));
                     }
 
