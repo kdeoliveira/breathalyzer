@@ -79,23 +79,23 @@ public class UserDataEntity {
         return age;
     }
 
+
 //    public void setAge(int age) {
 //        this.age = age;
 //    }
     public void setAge(String age) {
         this.age = Integer.parseInt(age);
+        this.ageString = age;
     }
 
 
-    public int getWeight() {
+    public float getWeight() {
         return weight;
     }
 
-//    public void setWeight(int weight) {
-//        this.weight = weight;
-//    }
     public void setWeight(String weight) {
-        this.weight = Integer.parseInt(weight);
+        this.weight = Float.parseFloat(weight);
+        this.weightString = weight;
     }
 
 
@@ -103,15 +103,13 @@ public class UserDataEntity {
         return height;
     }
 
-//    public void setHeight(float height) {
-//        this.height = height;
-//    }
     public void setHeight(String height) {
         this.height = Float.parseFloat(height);
+        this.heightString = height;
     }
 
     private int age;
-    private int weight;
+    private float weight;
     private float height;
 
     private String ageString;
@@ -187,12 +185,13 @@ public class UserDataEntity {
 
         this.last_name = lastname;
         try{
-            this.weight = Integer.parseInt(weight);
+            this.weight = Float.parseFloat(weight);
             this.age = Integer.parseInt(age);
             this.height = Float.parseFloat(height);
 
         }catch (NumberFormatException ignored){
         }
+
     }
 
     public UserDataEntity()//Empty Constructor
@@ -218,6 +217,7 @@ public class UserDataEntity {
 
     public void setLastname(String lastname) {
         this.last_name = lastname;
+
     }
 
 
@@ -307,7 +307,7 @@ public class UserDataEntity {
         FirebaseAuth.getInstance().signOut();
     }
 
-    public void updateDataSettings(Boolean control[])
+    public void updateDataSettings(Boolean[] control)
     {
         DatabaseReference dr;
         dr = FirebaseDatabase.getInstance().getReference().child("user").getRef();
@@ -327,10 +327,12 @@ public class UserDataEntity {
                 dr.child(uid).child("name").setValue(passName);
             if (control[1])
                 dr.child(uid).child("lastname").setValue(passLastName);
-            if (control[2])
+            if (control[2]){
                 dr.child(uid).child("height").setValue(passHeight);
-            if (control[3])
+            }
+            if (control[3]){
                 dr.child(uid).child("weight").setValue(passWeight);
+            }
             if (control[4])
                 dr.child(uid).child("age").setValue(passAge);
             if (control[5])

@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import com.coen390.abreath.R;
 
+import java.util.Objects;
+
 public class AppearancePage extends AppCompatActivity {
 
     protected TextView appearance;
@@ -22,6 +24,10 @@ public class AppearancePage extends AppCompatActivity {
         setContentView(R.layout.activity_appearance_page);
 
         Switch nightmode_switch = findViewById(R.id.nightmode_switch);
+
+        Objects.requireNonNull(getSupportActionBar()).setElevation(0f);
+
+
 
         SharedPreferences night = getSharedPreferences("night",0);
         boolean booleanValue = night.getBoolean("night_mode",true);
