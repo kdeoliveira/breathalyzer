@@ -98,7 +98,7 @@ public class ProfileGraphFragment extends Fragment {
 
         roundBarRender.setThreashold(0.16f);
         chart.setRenderer(roundBarRender);
-        chart.setNoDataText("");
+        chart.setNoDataText("You don't have any test samples");
 
 
 
