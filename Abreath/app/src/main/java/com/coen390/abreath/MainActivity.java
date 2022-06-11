@@ -54,8 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(binding.getRoot());
 
-//        BottomAppBar navView = findViewById(R.id.nav_view);
-//        setSupportActionBar(navView);
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         appBarConfiguration = new AppBarConfiguration.Builder(
@@ -97,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Intent intentRecv = getIntent();
+//        Intent intentRecv = getIntent();
         if(user == null){ //&& intentRecv.getBooleanExtra("login_result", false) was used but doesn't secure the app
             Intent intent = new Intent(this, Login.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);

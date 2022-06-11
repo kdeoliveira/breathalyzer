@@ -30,6 +30,7 @@ import com.coen390.abreath.data.api.MockUpService;
 import com.coen390.abreath.data.api.MockUpServiceBuilder;
 import com.coen390.abreath.data.entity.UserDataEntity;
 import com.coen390.abreath.databinding.FragmentHomeBinding;
+import com.coen390.abreath.ui.model.SharedPreferenceController;
 import com.coen390.abreath.ui.model.UserDataViewModel;
 import com.coen390.abreath.ui.model.ViewModelFactory;
 import com.github.mikephil.charting.charts.BarChart;
@@ -64,17 +65,20 @@ public class HomeFragment extends Fragment {
     private BarChart chart;
     private TextView nameTextView, ageTextView, heightTextView, weightTextView, lastnameTextView, usernameTextView;
     private ImageView profileImage;
-    private SharedPreferences sharedPreferences;
-    private boolean heightUnits, weigthUnits;
+    private SharedPreferenceController sp;
     private Uri picture;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        sp = new SharedPreferenceController(requireContext());
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
 
-        sharedPreferences = getContext().getSharedPreferences("units", Context.MODE_PRIVATE);
-        heightUnits = sharedPreferences.getBoolean("height", false);
-        weigthUnits = sharedPreferences.getBoolean("weight", false);
+
 
 
 
@@ -110,15 +114,15 @@ public class HomeFragment extends Fragment {
             lastnameTextView.setText(userDataEntity.getLastname());
 //            usernameTextView.setText("@".concat(userDataEntity.getUsername()));
             ageTextView.setText(String.format(Locale.CANADA,"%d", userDataEntity.getAge()));
-            if(!heightUnits)
+            if(!sp.getHeight())
                 heightTextView.setText(String.format(Locale.CANADA,"%.2f cm", userDataEntity.getHeight()));
             else{
                 int[] feet = Utility.cmtoin(userDataEntity.getHeight());
                 heightTextView.setText(String.format(Locale.CANADA,"%d' %d''", feet[0], feet[1]));
             }
 
-            if(!weigthUnits)
-                weightTextView.setText(String.format(Locale.CANADA,"%d kg", userDataEntity.getWeight()));
+            if(!sp.getWeight())
+                weightTextView.setText(String.format(Locale.CANADA,"%d kg", (int)userDataEntity.getWeight()));
             else
                 weightTextView.setText(String.format(Locale.CANADA,"%d lbs", (int) Utility.kgtolbs(userDataEntity.getWeight())) );
         });
