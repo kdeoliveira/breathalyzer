@@ -193,7 +193,7 @@ private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForRes
         mHandlerConnection = new Handler();
 
         connect_button.setOnClickListener(view -> {
-            if(!bluetoothService.isBleSupported()){
+            if(!bluetoothService.isBleSupported() || !bluetoothService.isBleEnabled()){
                 Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startSystemBluetooth.launch(intent);
             }else{
@@ -267,9 +267,10 @@ private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForRes
         int permissionCheck = requireActivity().checkSelfPermission("Manifest.permission.BLUETOOTH_CONNECT");
         permissionCheck += requireActivity().checkSelfPermission("Manifest.permission.BLUETOOTH_SCAN");
         if (permissionCheck != 0) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+
                 requireActivity().requestPermissions(new String[]{Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT}, 1001); //Any number
-            }
+                Log.d("BLuetooth", "PERMISSION");
+
         }
     }
 

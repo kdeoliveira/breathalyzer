@@ -45,5 +45,17 @@
     <string name="kg">Kg</string>
     <string name="lbs">Lbs</string>
     <string name="height_units">Height Units</string>
+    <string name="you_have_no_samples_at_this_time">You have no samples at this time</string>
+    <string name="kevin_de_oliveira">Kevin de Oliveira</string>
+    <string name="li_xingze">Li Xingze</string>
+    <string name="jiaxuan_zhao">Jiaxuan Zhao</string>
+    <string name="noah_louvet">Noah Louvet</string>
+    <string name="kunyi_wang">KunYi Wang</string>
+    <string name="antoine_gaubil">Antoine Gaubil</string>
+    <string name="minnelle_zafar">Minnelle Zafar</string>
+    <string name="matthieu_pourrat">Matthieu Pourrat</string>
+    <string name="abreath_is_a_breathalyzer_created_and_developed_by_those_human_being">Abreath is a Breathalyzer created and developed by those human being:</string>
+    <string name="all_icons_used_on_the_settings_page_are_from_google_icons_and_icon8_and_are_free_to_use_under_the_apache_licence_version_2_0">All icons used on the settings page are from Google Icons and Icon8 and are free to use under the Apache Licence Version 2.0.</string>
+    <string name="picture_profile">picture_profile</string>
 
 </resources>

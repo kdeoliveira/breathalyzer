@@ -63,7 +63,7 @@ public class HomeFragment extends Fragment {
 
     private ProfileGraphFragment graph;
     private BarChart chart;
-    private TextView nameTextView, ageTextView, heightTextView, weightTextView, lastnameTextView, usernameTextView;
+    private TextView nameTextView, ageTextView, heightTextView, weightTextView, lastnameTextView, counterTextView;
     private ImageView profileImage;
     private SharedPreferenceController sp;
     private Uri picture;
@@ -87,7 +87,7 @@ public class HomeFragment extends Fragment {
 
         nameTextView = binding.profileName;
         lastnameTextView = binding.profileLastname;
-        usernameTextView = binding.profileUsername;
+        counterTextView = binding.homeCounter;
         ageTextView = binding.profileAge;
         heightTextView = binding.profileHeight;
         profileImage = binding.profileImage;
@@ -112,7 +112,6 @@ public class HomeFragment extends Fragment {
         sampleModel.getUserInfo().observe(getViewLifecycleOwner(), userDataEntity -> {
             nameTextView.setText(userDataEntity.getName());
             lastnameTextView.setText(userDataEntity.getLastname());
-//            usernameTextView.setText("@".concat(userDataEntity.getUsername()));
             ageTextView.setText(String.format(Locale.CANADA,"%d", userDataEntity.getAge()));
             if(!sp.getHeight())
                 heightTextView.setText(String.format(Locale.CANADA,"%.2f cm", userDataEntity.getHeight()));
