@@ -24,7 +24,6 @@ import com.coen390.abreath.ui.settings.pages.AboutPage;
 import com.coen390.abreath.ui.settings.pages.Account;
 import com.google.firebase.auth.FirebaseAuth;
 
-import com.coen390.abreath.ui.settings.pages.AccountPage;
 import com.coen390.abreath.ui.settings.pages.AppearancePage;
 import com.coen390.abreath.ui.settings.pages.HelpPage;
 import com.coen390.abreath.ui.settings.pages.UnitsPage;

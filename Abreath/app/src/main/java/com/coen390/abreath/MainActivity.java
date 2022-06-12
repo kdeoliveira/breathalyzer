@@ -2,6 +2,8 @@ package com.coen390.abreath;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -63,8 +65,6 @@ public class MainActivity extends AppCompatActivity {
 
         Objects.requireNonNull(getSupportActionBar()).setElevation(0f);
 
-
-
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
 
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
@@ -75,8 +75,6 @@ public class MainActivity extends AppCompatActivity {
             public void onAvailable(@NonNull Network network) {
                 Toast.makeText(MainActivity.this, "Reconnected to internet", Toast.LENGTH_SHORT).show();
             }
-
-
             @Override
             public void onLost(@NonNull Network network) {
                 Log.d("MainActivity", "Lost internet connection");

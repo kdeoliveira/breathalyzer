@@ -27,85 +27,98 @@
 // // Setup callbacks onConnect and onDisconnect
 // class MyServerCallbacks : public BLEServerCallbacks
 // {
-//   void onConnect(BLEServer *pServer)
-//   {
-//     deviceConnected = true;
-//   };
-//   void onDisconnect(BLEServer *pServer)
-//   {
-//     deviceConnected = false;
-//   }
+//     void onConnect(BLEServer *pServer)
+//     {
+//         deviceConnected = true;
+//     };
+//     void onDisconnect(BLEServer *pServer)
+//     {
+//         deviceConnected = false;
+//     }
 // };
 
 // class MyCharacteristicCallback : public BLECharacteristicCallbacks
 // {
 
-//   void onWrite(BLECharacteristic *pCharacteristic, esp_ble_gatts_cb_param_t *param)
-//   {
-//     isReadyToSend = true;
-//   }
+//     void onWrite(BLECharacteristic *pCharacteristic, esp_ble_gatts_cb_param_t *param)
+//     {
+//         isReadyToSend = true;
+//     }
 // };
 
 // BLECharacteristic *pCharacteristic;
 // BLEServer *pServer;
 // void setup()
 // {
-//   Serial.begin(115200);
-//   Serial.println("Starting BLE work!");
+//     Serial.begin(115200);
+//     Serial.println("Starting BLE work!");
 
-//   BLEDevice::init(bleServerName);
-//   pServer = BLEDevice::createServer();
-//   BLEService *pService = pServer->createService(SERVICE_UUID);
-//   pServer->setCallbacks(new MyServerCallbacks());
-//   pCharacteristic = pService->createCharacteristic(CHARACTERISTIC_UUID, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
-//   // pCharacteristic->setValue("First string sent");
-//   pCharacteristic->setCallbacks(new MyCharacteristicCallback());
+//     BLEDevice::init(bleServerName);
+//     pServer = BLEDevice::createServer();
+//     BLEService *pService = pServer->createService(SERVICE_UUID);
+//     pServer->setCallbacks(new MyServerCallbacks());
+//     pCharacteristic = pService->createCharacteristic(CHARACTERISTIC_UUID, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
+//     // pCharacteristic->setValue("First string sent");
+//     pCharacteristic->setCallbacks(new MyCharacteristicCallback());
 
-//   pService->start();
+//     pService->start();
 
-//   // BLEAdvertising *pAdvertising = pServer->getAdvertising();  // this still is working for backward compatibility
-//   BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
+//     // BLEAdvertising *pAdvertising = pServer->getAdvertising();  // this still is working for backward compatibility
+//     BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
 
-//   pAdvertising->addServiceUUID(SERVICE_UUID);
-//   pAdvertising->setScanResponse(true);
-//   pAdvertising->setMinPreferred(0x06); // functions that help with iPhone connections issue
-//   pAdvertising->setMinPreferred(0x12);
+//     pAdvertising->addServiceUUID(SERVICE_UUID);
+//     pAdvertising->setScanResponse(true);
+//     pAdvertising->setMinPreferred(0x06); // functions that help with iPhone connections issue
+//     pAdvertising->setMinPreferred(0x12);
 
-//   BLEDevice::startAdvertising();
-//   Serial.println("Characteristic defined! Now you can read it in your phone!");
+//     BLEDevice::startAdvertising();
+//     Serial.println("Characteristic defined! Now you can read it in your phone!");
 // }
-
+// static int counter = 0;
 // void loop()
 // {
-//   if (deviceConnected)
-//   {
-//     if ((millis() - lastTime) > timerDelay) {
-//     // Generating random numbers
+//     if (deviceConnected)
+//     {
+//         if ((millis() - lastTime) > timerDelay)
+//         {
+//             // Generating random numbers
 
-//       if(isReadyToSend){
-//           hum = rand() % 20;
-//           static char buff[3];
-//           dtostrf(hum, 6, 2, buff);
-//           pCharacteristic->setValue(buff);
-//           pCharacteristic->notify();  
-//           isReadyToSend = false;
-//       }
+//             if (isReadyToSend)
+//             {
+//                 hum = rand() % 20;
+//                 static char buff[3];
+//                 dtostrf(hum, 6, 2, buff);
+//                 pCharacteristic->setValue(buff);
+//                 pCharacteristic->notify();
+//                 counter++;
+//             }
 
-//       prevDeviceConnected = true;
-//       lastTime = millis();
+//             if (counter > 20)
+//             {
+//                 hum = -1;
+//                 static char buff[3];
+//                 dtostrf(hum, 6, 2, buff);
+//                 pCharacteristic->setValue(buff);
+//                 pCharacteristic->notify();
+//                 counter = 0;
+//                 isReadyToSend = false;
+//             }
+
+//             prevDeviceConnected = true;
+//             lastTime = millis();
+//         }
 //     }
-//   }
 
-//   else if (!deviceConnected && prevDeviceConnected)
-//   {
-//     delay(500);
-//     pServer->startAdvertising(); // Restart scanning
-//     Serial.println("Scanning");
-//     prevDeviceConnected = deviceConnected;
-//   }
-//   else if (deviceConnected && !prevDeviceConnected)
-//   {
-//     prevDeviceConnected = deviceConnected;
-//     Serial.println("Connecting...");
-//   }
+//     else if (!deviceConnected && prevDeviceConnected)
+//     {
+//         delay(500);
+//         pServer->startAdvertising(); // Restart scanning
+//         Serial.println("Scanning");
+//         prevDeviceConnected = deviceConnected;
+//     }
+//     else if (deviceConnected && !prevDeviceConnected)
+//     {
+//         prevDeviceConnected = deviceConnected;
+//         Serial.println("Connecting...");
+//     }
 // }
