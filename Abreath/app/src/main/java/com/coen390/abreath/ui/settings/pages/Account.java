@@ -19,10 +19,12 @@ import com.coen390.abreath.MainActivity;
 import com.coen390.abreath.R;
 import com.coen390.abreath.common.Utility;
 import com.coen390.abreath.data.entity.UserDataEntity;
+
 import com.coen390.abreath.domain.UpdateDataSettingsUseCase;
 import com.coen390.abreath.ui.Login;
 import com.coen390.abreath.ui.model.SharedPreferenceController;
 import com.coen390.abreath.ui.model.UserDataViewModel;
+
 import com.coen390.abreath.ui.settings.SettingsFragment;
 
 import java.util.Locale;
@@ -169,7 +171,11 @@ public class Account extends AppCompatActivity {
 
                 new UpdateDataSettingsUseCase(control).call(ude);
                 Toast.makeText(Account.this, "Data successfully saved.", Toast.LENGTH_SHORT).show();
+
+                //startActivity(new Intent(Account.this, SettingsFragment.class));
+
                 openMain();
+
             }
         });
 

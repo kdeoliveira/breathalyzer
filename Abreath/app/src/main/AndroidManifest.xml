@@ -33,6 +33,18 @@
         android:theme="@style/Theme.Abreath"
         tools:targetApi="31">
         <activity
+            android:name=".ui.ResetPassword"
+            android:exported="false" />
+
+
+        <activity
+            android:name=".ui.ResetPasswordVerification"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.ForgotPassword"
+            android:exported="false" />
+        <activity
             android:name=".ui.settings.pages.Account"
             android:exported="false" />
         <activity
