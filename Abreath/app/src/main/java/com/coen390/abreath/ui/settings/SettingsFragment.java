@@ -105,7 +105,6 @@ public class SettingsFragment extends Fragment {
         startActivity(intent);
 
     }
-
     public void openSignIn()
     {
         Intent intent = new Intent(getActivity(), Login.class);
@@ -128,12 +127,6 @@ public class SettingsFragment extends Fragment {
     private void openHelpPage()
     {
         Intent intent = new Intent(getActivity(), HelpPage.class);
-        startActivity(intent);
-
-    }
-    private void openAccountPage()
-    {
-        Intent intent = new Intent(getActivity(), AccountPage.class);
         startActivity(intent);
 
     }

@@ -65,7 +65,7 @@ public class DashboardViewModel extends ViewModel {
 
 
     public void setData(Float input){
-        DisplayData.postValue(String.format(Locale.CANADA, "%.2f %%",input));
+        DisplayData.postValue(String.format(Locale.CANADA, "BAC %.3f %%",input));
     }
 
 

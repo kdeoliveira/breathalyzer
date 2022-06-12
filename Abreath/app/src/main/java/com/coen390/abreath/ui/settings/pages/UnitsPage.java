@@ -10,31 +10,21 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.coen390.abreath.R;
+import com.coen390.abreath.ui.model.SharedPreferenceController;
 
 import java.util.Objects;
 
 public class UnitsPage extends AppCompatActivity {
 
     protected TextView units;
-    SharedPreferences sp;
-    //String height_data = "10";
-    //String weight_data = "1";
-    //String test = sp.getString("height","");
-
-    float feet;
-    float inch;
-    float localh,localw;
-
-
-
-
+    SharedPreferenceController sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_units_page);
 
-        sp = getSharedPreferences("units" , Context.MODE_PRIVATE);
+        sp = new SharedPreferenceController(this);
         units = findViewById(R.id.unitsText);
 
         //units.setText(test);
@@ -42,17 +32,10 @@ public class UnitsPage extends AppCompatActivity {
         weight.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {//lbs
-//                    kgtolbs();
-                    SharedPreferences.Editor editor = getSharedPreferences("units", MODE_PRIVATE).edit();
-                    editor.putBoolean("weight", true);
-                    editor.apply();
+                    sp.setWeight(true);
 
                 } else {
-//                    lbstokg();
-                    SharedPreferences.Editor editor = getSharedPreferences("units", MODE_PRIVATE).edit();
-                    editor.putBoolean("weight", false);
-                    editor.apply();
-
+                    sp.setWeight(false);
                 }
 
             }
@@ -62,25 +45,17 @@ public class UnitsPage extends AppCompatActivity {
         height.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {//inches
-//                    cmtoin();
-                    SharedPreferences.Editor editor = getSharedPreferences("units", MODE_PRIVATE).edit();
-                    editor.putBoolean("height", true);
-                    editor.apply();
+                    sp.setHeight(true);
                 } else {
-//                    intocm();
-                    SharedPreferences.Editor editor = getSharedPreferences("units", MODE_PRIVATE).edit();
-                    editor.putBoolean("height", false);
-                    editor.apply();
+                    sp.setHeight(false);
                 }
 
             }
         });
 
-        SharedPreferences weightbutton = getSharedPreferences("units", MODE_PRIVATE);
-        weight.setChecked(weightbutton.getBoolean("weight", true));
+        weight.setChecked(sp.getWeight());
 
-        SharedPreferences heightbutton = getSharedPreferences("units", MODE_PRIVATE);
-        height.setChecked(heightbutton.getBoolean("height", true));
+        height.setChecked(sp.getHeight());
 
         Objects.requireNonNull(getSupportActionBar()).setElevation(0f);
     }

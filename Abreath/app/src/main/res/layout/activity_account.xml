@@ -75,71 +75,122 @@
                 android:drawableStart="@drawable/ic_baseline_person_outline_24"
                 android:drawablePadding="15dp"
                 android:ems="10"
-                android:hint="Name"
+                android:hint="@string/name"
                 android:inputType="textPersonName"
                 android:padding="15dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/hintColor"
-                tools:ignore="TextContrastCheck" />
+                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'- "
+                android:maxLength="30"
+                tools:ignore="TextContrastCheck"
+                />
+
 
             <EditText
                 android:id="@+id/LastName"
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
                 android:layout_marginTop="17dp"
-                android:drawableLeft="@drawable/ic_baseline_person_outline_24"
-                android:drawablePadding="15dp"
-                android:ems="10"
-                android:hint="Last Name"
-                android:inputType="textPersonName"
-                android:padding="15dp"
-                android:textColor="@color/black"
-                android:textColorHint="@color/hintColor"
-                tools:ignore="TextContrastCheck" />
-
-            <EditText
-                android:id="@+id/height"
-                android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:layout_marginTop="17dp"
                 android:drawableStart="@drawable/ic_baseline_person_outline_24"
                 android:drawablePadding="15dp"
                 android:ems="10"
-                android:hint="Height"
-                android:inputType="numberSigned"
+                android:hint="@string/last_name"
+                android:inputType="textPersonName"
+                android:padding="15dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/hintColor"
+                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'- "
+                android:maxLength="30"
+                tools:ignore="TextContrastCheck" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <EditText
+                android:id="@+id/height"
+                android:layout_width="0dp"
+                android:layout_height="54dp"
+                android:layout_marginTop="17dp"
+                android:layout_weight="1"
+                android:digits="0123456789ft"
+                android:drawableStart="@drawable/ic_baseline_person_outline_24"
+                android:drawablePadding="15dp"
+                android:ems="10"
+                android:hint="@string/height"
+                android:inputType="text"
+                android:maxLength="5"
+
                 android:padding="15dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/hintColor"
                 tools:ignore="TextContrastCheck" />
 
-            <EditText
-                android:id="@+id/weight"
+            <ToggleButton
+                android:id="@+id/toggleHeight_account"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:checked="false"
+                android:textOff="cm"
+                android:textOn="in"
+                android:focusable="false"
+                android:focusableInTouchMode="false" />
+        </LinearLayout>
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:layout_marginTop="17dp"
-                android:drawableLeft="@drawable/ic_baseline_person_outline_24"
-                android:drawablePadding="15dp"
-                android:ems="10"
-                android:hint="Weight"
-                android:inputType="textPersonName"
-                android:padding="15dp"
-                android:textColor="@color/black"
-                android:textColorHint="@color/hintColor"
-                tools:ignore="TextContrastCheck" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <EditText
+                    android:id="@+id/weight"
+                    android:layout_width="0dp"
+                    android:layout_height="54dp"
+                    android:layout_weight="2"
+                    android:layout_marginTop="17dp"
+                    android:drawableStart="@drawable/ic_baseline_person_outline_24"
+                    android:drawablePadding="15dp"
+                    android:ems="10"
+                    android:hint="@string/weight"
+                    android:inputType="numberSigned"
+                    android:padding="15dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/hintColor"
+                    android:digits="0123456789"
+                    android:maxLength="3"
+                    tools:ignore="TextContrastCheck" />
+
+                <ToggleButton
+                    android:id="@+id/toggleWeight_account"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:checked="false"
+                    android:textOff="Kg"
+                    android:textOn="Lbs"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:text="Checkout"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+
+
 
             <EditText
                 android:id="@+id/age"
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
                 android:layout_marginTop="17dp"
-                android:drawableLeft="@drawable/ic_baseline_person_outline_24"
+                android:drawableStart="@drawable/ic_baseline_person_outline_24"
                 android:drawablePadding="15dp"
                 android:ems="10"
-                android:hint="Age"
-                android:inputType="textPersonName"
+                android:hint="@string/age"
+                android:inputType="numberSigned"
                 android:padding="15dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/hintColor"
+                android:maxLength="3"
                 tools:ignore="TextContrastCheck" />
 
             <EditText
@@ -147,26 +198,39 @@
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
                 android:layout_marginTop="17dp"
-                android:drawableLeft="@drawable/ic_baseline_person_outline_24"
+                android:drawableStart="@drawable/ic_baseline_person_outline_24"
                 android:drawablePadding="15dp"
                 android:ems="10"
-                android:hint="Phone Number of Relative"
-                android:inputType="textPersonName"
+                android:hint="@string/phone_number_of_relative"
+                android:inputType="phone"
                 android:padding="15dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/hintColor"
+                android:digits="0123456789"
+                android:maxLength="10"
                 tools:ignore="TextContrastCheck" />
 
             <Button
                 android:id="@+id/save"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="45dp"
                 android:layout_marginTop="32dp"
                 android:background="@drawable/save_button"
-                android:text="Save Changes"
+                android:text="@string/save_changes"
                 android:textColor="#FFFFFF" />
 
-
+            <Button
+                android:id="@+id/delete_account"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="100dp"
+                android:layout_marginRight="100dp"
+                android:outlineProvider="none"
+                android:text="@string/delete_account"
+                android:textColor="#FF0000"
+                android:textStyle="bold" />
         </LinearLayout>
 
 

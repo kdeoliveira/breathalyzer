@@ -45,7 +45,6 @@ public class Login extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setElevation(0f);
         getSupportActionBar().setTitle(null);
 
-
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -109,6 +108,9 @@ public class Login extends AppCompatActivity {
         Intent intent = new Intent(this, ForgotPassword.class);
         startActivity(intent);
     }
+    @Override
+    public void onBackPressed() //https://www.stechies.com/disable-back-button-press/
+    {}
 
 
 }

@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -36,6 +38,7 @@ import com.coen390.abreath.databinding.FragmentDashboardBinding;
 import com.coen390.abreath.domain.SaveLastLevelUseCase;
 import com.coen390.abreath.service.BleService;
 import com.coen390.abreath.service.BluetoothServiceConnection;
+import com.coen390.abreath.service.GattBroadcastReceiver;
 import com.coen390.abreath.ui.model.DashboardViewModel;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
@@ -136,26 +139,29 @@ public class DashboardFragment extends Fragment {
         loadingFragment.show(getChildFragmentManager(), LoadingFragment.TAG);
 
         serviceConnection = new BluetoothServiceConnection(new BluetoothServiceConnection.onBleService() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onConnected(BleService bleService) {
                 bluetoothService = bleService;
                 bluetoothService.setCharacteristicNotification();
-
-                bluetoothService.getBluetoothResult().observe(getViewLifecycleOwner(), aFloat -> {
-                    if(!hasRead){
-                        userdata = Utility.map(aFloat, 0, 20, 0, 0.16f);
-                        PieData();
-                        PieIndex();
-                        dashboardViewModel.setData(userdata);
-                        hasRead = true;
+                bluetoothService.getBluetoothFinished().observe(getViewLifecycleOwner(), aBoolean -> {
+                    if(aBoolean){
                         new Handler().postDelayed(() -> {
                             binding.getRoot().setVisibility(View.VISIBLE);
                             loadingFragment.dismiss();
+                            PieData();
+                            PieIndex();
                             new SaveLastLevelUseCase().call(userdata);
-                        }, 1000);
-
+                        }, 500);
                     }
+                });
+                bluetoothService.getBluetoothResult().observe(getViewLifecycleOwner(), floatList -> {
+                    double sensor_volt = floatList.stream().mapToDouble(x -> x).average().getAsDouble();
+                    Log.d("DashboardFragment", String.valueOf(sensor_volt));
+                    //                        userdata = Utility.map(floatList, 0, 20, 0, 0.16f);
+                        userdata = (float) sensor_volt*0.0001f; //TODO incorrect value provided by the sensor
 
+                        dashboardViewModel.setData(userdata);
                 });
             }
             @Override
@@ -165,19 +171,25 @@ public class DashboardFragment extends Fragment {
         });
 
 
-        gattUpdateReceiver = new BroadcastReceiver() {
+        gattUpdateReceiver = new GattBroadcastReceiver(new GattBroadcastReceiver.GattBroadcastReceiverListener() {
+
             @Override
-            public void onReceive(Context context, Intent intent) {
-                final String action = intent.getAction();
-                if(BleService.ACTION_GATT_CONNECTED.equals(action)){
-                    Log.d("TAG", "connected");
-                }else if(BleService.ACTION_GATT_DISCONNECTED.equals(action)){
-                    Toast.makeText(context, "Disconnected", Toast.LENGTH_LONG).show();
-                }else if(BleService.ACTION_READ_DATA.equals(action)){
+            public void onActionConnected(Context context) {
+                Log.d("DashboardFragment", "status connected");
+            }
+
+            @Override
+            public void onActionDisconnected(Context context) {
+                Toast.makeText(context, "Disconnected", Toast.LENGTH_LONG).show();
+            }
+            @Override
+            public void onActionReadData(Context context, String payload) {
+                if(!hasRead){
                     loadingFragment.setStateText("Calculating BAC");
+                    hasRead = true;
                 }
             }
-        };
+        });
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,

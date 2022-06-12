@@ -10,8 +10,7 @@ public class Utility {
     }
 
     public static float lbstokg(float lbs){
-        lbs *= 0.45359237f;
-        return Math.round(lbs);
+        return lbs * 0.45359237f;
     }
 
     public static float kgtolbs(float kg){
@@ -23,5 +22,11 @@ public class Utility {
         int feet = (int) length / 12;
 
         return new int[]{feet, (int) (length - 12*feet)};
+    }
+
+    public static float intocm(int feet, int inch){
+        float temp = (float) (feet*0.3048 + inch*0.0254);
+        temp *=100;
+        return temp;
     }
 }
