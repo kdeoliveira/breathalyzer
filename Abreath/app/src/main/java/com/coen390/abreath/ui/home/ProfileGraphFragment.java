@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.coen390.abreath.R;
 import com.coen390.abreath.common.Tuple;
@@ -25,6 +26,7 @@ import com.coen390.abreath.ui.model.UserDataViewModel;
 import com.coen390.abreath.ui.model.ViewModelFactory;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.Chart;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -62,7 +64,7 @@ public class ProfileGraphFragment extends Fragment {
     private static final String SET_LABEL = "App Downloads";
     private static final String[] DAYS = { "SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT" };
 
-
+    private TextView chart_no_data;
     private BarChart chart;
 
     private BarData createChartData() {
@@ -93,17 +95,18 @@ public class ProfileGraphFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile_graph, container, false);
 
         chart = view.findViewById(R.id.fragment_verticalbarchart_chart);
-
+        chart_no_data = view.findViewById(R.id.chart_no_data);
         RoundBarRender roundBarRender = new RoundBarRender(chart, chart.getAnimator(), chart.getViewPortHandler());
 
         roundBarRender.setThreashold(0.16f);
         chart.setRenderer(roundBarRender);
-        chart.setNoDataText("You don't have any test samples");
+        chart.setNoDataText("");
+
 
 
 
         //Note that this should be moved into onViewCreated to ensure parent activity or this view has been created before setting ViewModels
-        UserDataViewModel sampleModel = new ViewModelProvider(requireParentFragment(), new ViewModelFactory(new MockUpRepository(MockUpServiceBuilder.create(MockUpService.class)))).get(UserDataViewModel.class);
+        UserDataViewModel sampleModel = new ViewModelProvider(requireParentFragment()).get(UserDataViewModel.class);
 
         sampleModel.getUserData().observe(getViewLifecycleOwner(), this::onChanged);
 
@@ -157,8 +160,15 @@ public class ProfileGraphFragment extends Fragment {
     private void onChanged(List<TestResultEntity> dataList) {
 
         chart.getXAxis().setLabelCount(dataList.size() + 1, true);
-        if(dataList.size() > 0)
+        if(dataList.size() > 0){
             chart.getXAxis().setValueFormatter(new GraphFormatter(dataList));
+            chart_no_data.setVisibility(View.GONE);
+        }
+        else{
+            chart_no_data.setVisibility(View.VISIBLE);
+        }
+
+
 
 //        chart.setXAxisRenderer(new XAxisRenderer(chart.getViewPortHandler(), this.chart.getXAxis(), chart.getTransformer(YAxis.AxisDependency.LEFT)){
 //            @Override
