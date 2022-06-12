@@ -59,6 +59,7 @@ public class DashboardFragment extends Fragment implements LoadingFragment.Dissm
     private DashboardViewModel dashboardViewModel;
     private BroadcastReceiver gattUpdateReceiver;
     private ServiceConnection serviceConnection;
+    private Handler handlerAwaiting, handlerNotFound;
 
 
     private void PieData() {
@@ -131,13 +132,13 @@ public class DashboardFragment extends Fragment implements LoadingFragment.Dissm
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
+        handlerNotFound = new Handler();
+        handlerAwaiting = new Handler();
         loadingFragment = LoadingFragment.newInstance("Awaiting Results");
         loadingFragment.show(getChildFragmentManager(), LoadingFragment.TAG);
 
-        new Handler().postDelayed(() -> {
+        handlerNotFound.postDelayed(() -> {
             loadingFragment.setNotFound("Unable to fetch data");
-
         }, 15000);
 
         serviceConnection = new BluetoothServiceConnection(new BluetoothServiceConnection.onBleService() {
@@ -148,13 +149,14 @@ public class DashboardFragment extends Fragment implements LoadingFragment.Dissm
                 bluetoothService.setCharacteristicNotification();
                 bluetoothService.getBluetoothFinished().observe(getViewLifecycleOwner(), aBoolean -> {
                     if(aBoolean){
-                        new Handler().postDelayed(() -> {
+                        handlerAwaiting.postDelayed(() -> {
                             binding.getRoot().setVisibility(View.VISIBLE);
                             loadingFragment.dismiss();
                             PieData();
                             PieIndex();
                             new SaveLastLevelUseCase().call(userdata);
                         }, 500);
+                        handlerNotFound.removeCallbacksAndMessages(null);
                     }
                 });
                 bluetoothService.getBluetoothResult().observe(getViewLifecycleOwner(), floatList -> {
