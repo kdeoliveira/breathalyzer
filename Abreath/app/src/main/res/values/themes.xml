@@ -29,5 +29,11 @@
         <item name="fontFamily">@font/expletus_sans_bold</item>
         <item name="android:fontFamily">@font/expletus_sans_bold</item>
     </style>
+    <style name="Theme.Abreath.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="Theme.Abreath.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.Abreath.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>

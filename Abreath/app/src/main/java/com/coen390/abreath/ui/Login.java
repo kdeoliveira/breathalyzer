@@ -8,13 +8,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.coen390.abreath.MainActivity;
 import com.coen390.abreath.R;
-import com.coen390.abreath.data.entity.UserDataEntity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -27,7 +25,7 @@ public class Login extends AppCompatActivity {
 
     protected EditText emailLogin, passwordLogin;
     protected Button buttonLogin;
-    protected TextView forgotPWordText,signUpLogText, noAccountText, sign_up;
+    protected TextView forgotPWordText,signUpLogText, noAccountText, sign_up, forgot_pword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,10 +35,12 @@ public class Login extends AppCompatActivity {
         emailLogin = findViewById(R.id.login_email);
         passwordLogin = findViewById(R.id.login_password);
         buttonLogin = findViewById(R.id.login_button);
-        forgotPWordText = findViewById(R.id.forgot_pword_text);
+        //forgotPWordText = findViewById(R.id.forgot_pword_text);
 //        signUpLogText = findViewById(R.id.signup_login);
         noAccountText = findViewById(R.id.no_account_text);
         sign_up = findViewById(R.id.signup_login);
+        forgot_pword = findViewById(R.id.forgot_pword_text);
+
 
         Objects.requireNonNull(getSupportActionBar()).setElevation(0f);
         getSupportActionBar().setTitle(null);
@@ -79,6 +79,15 @@ public class Login extends AppCompatActivity {
             }
         });
 
+        forgot_pword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openForgotPassword();
+            }
+        });
+
+
+
     }
 
     public void openMain()
@@ -94,4 +103,12 @@ public class Login extends AppCompatActivity {
         Intent intent = new Intent(this, Registration.class);
         startActivity(intent);
     }
+
+    private void openForgotPassword()
+    {
+        Intent intent = new Intent(this, ForgotPassword.class);
+        startActivity(intent);
+    }
+
+
 }

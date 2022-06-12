@@ -2,6 +2,7 @@ package com.coen390.abreath.ui.settings.pages;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 
 import com.coen390.abreath.R;
 import com.coen390.abreath.data.entity.UserDataEntity;
+import com.coen390.abreath.ui.settings.SettingsFragment;
 
 public class Account extends AppCompatActivity {
 
@@ -60,6 +62,7 @@ public class Account extends AppCompatActivity {
 
                 ude.updateDataSettings(control);
                 Toast.makeText(Account.this, "Data successfully saved.", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(Account.this, SettingsFragment.class));
             }
         });
     }
