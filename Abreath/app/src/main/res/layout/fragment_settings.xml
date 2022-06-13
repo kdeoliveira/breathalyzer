@@ -8,6 +8,7 @@
     android:paddingBottom="17dp"
     tools:context=".ui.settings.SettingsFragment">
 
+
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"

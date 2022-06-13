@@ -3,6 +3,8 @@ package com.coen390.abreath.ui;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -32,6 +34,13 @@ public class Registration extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
+
+        SharedPreferences night = getSharedPreferences("night",0);
+        boolean booleanValue = night.getBoolean("night_mode",true);
+        if (booleanValue){
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
+                    .getColor(R.color.primaryColor)));
+        }
 
         nameSignup = findViewById(R.id.signup_name);
         emailSignup = findViewById(R.id.signup_email);

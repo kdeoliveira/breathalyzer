@@ -16,9 +16,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +50,7 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
 import java.util.ArrayList;
@@ -137,6 +142,11 @@ public class DashboardFragment extends Fragment {
 
         loadingFragment = LoadingFragment.newInstance("Awaiting Results");
         loadingFragment.show(getChildFragmentManager(), LoadingFragment.TAG);
+
+        SharedPreferences frag = getActivity().getSharedPreferences("whichfrag", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = frag.edit();
+        editor.putString("fragment", "dashboard");
+        editor.apply();
 
         serviceConnection = new BluetoothServiceConnection(new BluetoothServiceConnection.onBleService() {
             @RequiresApi(api = Build.VERSION_CODES.N)
@@ -251,6 +261,7 @@ public class DashboardFragment extends Fragment {
         pieIndex.setHoleRadius(90);
         Legend none2 = pieIndex.getLegend();
         none2.setEnabled(false);
+
 
         return root;
 
