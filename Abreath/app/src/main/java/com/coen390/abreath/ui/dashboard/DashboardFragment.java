@@ -150,7 +150,7 @@ public class DashboardFragment extends Fragment implements LoadingFragment.Dissm
 
         handlerNotFound.postDelayed(() -> {
             loadingFragment.setNotFound("Unable to fetch data");
-        }, 15000);
+        }, 30000);
 
 
         serviceConnection = new BluetoothServiceConnection(new BluetoothServiceConnection.onBleService() {
@@ -172,13 +172,15 @@ public class DashboardFragment extends Fragment implements LoadingFragment.Dissm
                     }
                 });
                 bluetoothService.getBluetoothResult().observe(getViewLifecycleOwner(), floatList -> {
-                    double sensor_volt = floatList.stream().mapToDouble(x -> x).average().getAsDouble();
+//                    double sensor_volt = floatList.stream().mapToDouble(x -> x).average().getAsDouble();
+                    float sensor_volt = floatList.get(floatList.size() - 1);
                     Log.d("DashboardFragment", String.valueOf(sensor_volt));
                     //                        userdata = Utility.map(floatList, 0, 20, 0, 0.16f);
                         userdata = (float) sensor_volt*0.0001f; //TODO incorrect value provided by the sensor
 
                         dashboardViewModel.setData(userdata);
                 });
+
             }
             @Override
             public void onDisconnected(ComponentName componentName) {

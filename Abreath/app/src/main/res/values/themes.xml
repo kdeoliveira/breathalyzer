@@ -15,9 +15,11 @@
 
 
         <!-- Customize your theme here. -->
+        <item name="listFontColor">@color/textMainColor</item>
         <item name="android:textViewStyle">@font/nunito_sans_light</item>
         <item name="fontFamily">@font/nunito_sans_light</item>
         <item name="android:fontFamily">@font/nunito_sans_light</item>
+        <item name="android:textColorPrimary">@color/textMainColor</item>
     </style>
 <!--    https://stackoverflow.com/questions/19691530/valid-values-for-androidfontfamily-and-what-they-map-to-->
     <style name="TextAppearance" parent="android:TextAppearance">

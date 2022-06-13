@@ -52,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
-            android:text="fdsfd"
+
             android:textStyle="bold" />
         <TextView
             android:id="@+id/profile_lastname"
@@ -164,15 +164,15 @@
         android:gravity="bottom"
 
         >
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="1dp"
             android:layout_marginStart="5dp"
+            android:layout_marginBottom="1dp"
             android:text="@string/previous_samples"
-            android:textStyle="bold"
             android:textSize="18sp"
-             />
+            android:textStyle="bold" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

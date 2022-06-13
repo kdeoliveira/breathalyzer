@@ -65,7 +65,7 @@ public class SettingsFragment extends Fragment {
         editor.putString("fragment", "settings");
         editor.apply();
 
-        SettingsAdapter sa = new SettingsAdapter(getActivity().getApplicationContext(), R.layout.row, al);
+        SettingsAdapter sa = new SettingsAdapter(requireContext(), R.layout.row, al);
         list.setAdapter(sa);
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {

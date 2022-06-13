@@ -30,7 +30,7 @@ public class AppearancePage extends AppCompatActivity {
 
 
         SharedPreferences night = getSharedPreferences("night",0);
-        boolean booleanValue = night.getBoolean("night_mode",true);
+        boolean booleanValue = night.getBoolean("night_mode",false);
         if (booleanValue){
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
             getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()

@@ -14,4 +14,5 @@
     <color name="black">#000000</color>
     <color name="hintColor">#5eb8ff</color>
     <color name="lightGrey">#0288d1</color>
+    <color name="textMainColor">#000000</color>
 </resources>

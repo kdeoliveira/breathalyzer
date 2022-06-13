@@ -151,6 +151,7 @@ public class BleService extends Service {
     public boolean onUnbind(Intent intent) {
 
         this.close();
+
         return super.onUnbind(intent);
 
     }

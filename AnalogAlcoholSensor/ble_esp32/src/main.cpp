@@ -9,6 +9,8 @@
 
 #define R0_BAC 400
 
+const int buttonPin = 13; // the number of the pushbutton pin
+int buttonState = 0;
 uint8_t ledR = 2;
 uint8_t ledG = 4;
 uint8_t ledB = 5;
@@ -19,9 +21,10 @@ uint8_t color = 0;        // a value from 0 to 255 representing the hue
 uint32_t R, G, B;         // the Red Green and Blue color components
 uint8_t brightness = 255; // 255 is maximum brightness, but can be changed.  Might need 256 for common anode to fully turn off.
 
-int drunk = 2000; // threshold of drunk
+int drunk = 0.08; // threshold of drunk
 int peak = 0;     // peak value
 int prepeak = 0;  // previous peak value
+int initial = 0;  // intial value
 
 std::__cxx11::string message = ""; // message from app
 char incomingChar;                 // message from app
@@ -74,23 +77,23 @@ class MyCharacteristicCallback : public BLECharacteristicCallbacks
 BLECharacteristic *pCharacteristic;
 BLEServer *pServer;
 
-float analogToBac(int analogValue){
-    
-    float RS_gas; // Get value of RS in a GAS
-    float ratio; // Get ratio RS_GAS/RS_air
-    float sensor_volt;
-    sensor_volt=(float)analogValue/1024*5.0;
-    RS_gas = (5.0-sensor_volt)/sensor_volt; // omit *RL
- 
-   /*-Replace the name "R0" with the value of R0 in the demo of First Test -*/
-    ratio = RS_gas/R0_BAC;  // ratio = RS/R0
+float analogToBac(int analogValue)
+{
 
-    return 0.1896*pow(ratio,2) - 8.6178*ratio/10 + 1.0792;   //BAC in mg/L
+  float RS_gas; // Get value of RS in a GAS
+  float ratio;  // Get ratio RS_GAS/RS_air
+  float sensor_volt;
+  sensor_volt = (float)analogValue / 1024 * 5.0;
+  RS_gas = (5.0 - sensor_volt) / sensor_volt; // omit *RL
+
+  /*-Replace the name "R0" with the value of R0 in the demo of First Test -*/
+  ratio = RS_gas / R0_BAC; // ratio = RS/R0
+
+  return 0.1896 * pow(ratio, 2) - 8.6178 * ratio / 10 + 1.0792; // BAC in mg/L
 }
 
-
-
-void sendToBluetooth(int val){
+void sendToBluetooth(int val)
+{
   float num = static_cast<float>(val);
   static char buff[8];
   dtostrf(num, 5, 2, buff);
@@ -124,8 +127,8 @@ void setup()
   pAdvertising->setMinPreferred(0x12);
 
   BLEDevice::startAdvertising();
-  Serial.println("Characteristic defined! Now you can read it in your phone!");
-  // hardware setting
+  // Serial.println("Characteristic defined! Now you can read it in your phone!");
+  //  hardware setting
   analogReadResolution(12); // adc resolution
 
   ledcAttachPin(ledR, 1); // assign RGB led pins to channels
@@ -136,56 +139,173 @@ void setup()
   ledcSetup(1, 12000, 8); // 12 kHz PWM, 8-bit resolution
   ledcSetup(2, 12000, 8);
   ledcSetup(3, 12000, 8);
+
+  pinMode(buttonPin, INPUT); // button pin
 }
+
+int lastButtonState = LOW;
+unsigned long lastDeboutTime = 0;
+unsigned long debounceDelay = 50;
+
+int buttonDebounce(int reading)
+{
+  if (reading != lastButtonState)
+    lastDeboutTime = millis();
+  if ((millis() - lastButtonState) > debounceDelay)
+  {
+    if (reading != buttonState)
+    {
+      buttonState = reading;
+      return reading;
+    }
+    else
+    {
+      return -1;
+    }
+  }
+  else
+  {
+    return -1;
+  }
+}
+
+bool flag_btn_pressed = false;
 
 void loop()
 {
+  int reading = digitalRead(buttonPin);
+
+  if (buttonDebounce(reading) == HIGH)
+  {
+    // turn LED on:
+    Flag = true;
+    initial = analogRead(14);
+    Serial.println("Button pressed");
+  }
+
+  if (Flag)
+  {
+    if (analogRead(14) > initial + 100 || analogRead(14) < initial - 100)
+    {
+      // read the analog / millivolts value for pin 2:
+      analogValue = analogRead(14);
+      // Serial.print("analogValue: ");
+      Serial.println(analogValue);
+      // Serial.print("prepeak: ");
+      // Serial.println(prepeak);
+      // Serial.print("counter: ");
+      // Serial.println(counter);
+      // Serial.print("peak: ");
+      // Serial.println(peak);
+
+      // store peak value
+      if (prepeak >= analogValue)
+      {
+        peak = prepeak;
+        counter++;
+      }
+      else
+      {
+        peak = analogValue;
+        prepeak = peak;
+        counter = 0;
+      }
+      //
+
+      R = 255;
+      G = 255;
+      B = 255;
+      // white
+      ledcWrite(1, R); // write red component to channel 1, etc.
+      ledcWrite(2, G);
+      ledcWrite(3, B);
+    }
+    // has reach the peak value
+    if (counter >= 20)
+    {
+      counter = 0;
+      prepeak = 0;
+      Flag = false;
+      if (analogToBac(peak) > drunk)
+      {
+        R = 255;
+        G = 0;
+        B = 0;
+        ledcWrite(1, R); // write red component to channel 1, etc.
+        ledcWrite(2, G);
+        ledcWrite(3, B);
+        initial = 0;
+        delay(2000);
+      }
+      else
+      {
+        R = 0;
+        G = 255;
+        B = 0;
+        ledcWrite(1, R); // write red component to channel 1, etc.
+        ledcWrite(2, G);
+        ledcWrite(3, B);
+      }
+      Flag = false;
+      peak = 0;
+      prepeak = 0;
+      initial = 0;
+      delay(2000);
+    }
+  }
+  /******************************************************/
   if (deviceConnected)
   {
-    if ((millis() - lastTime) > timerDelay)
-    {
-
-      // check from app for starting
+    // check from app for starting
       if (message == "M")
       {
         // Generating random numbers
-        Flag = true;
+        
+          initial = analogRead(14);
+          reading = digitalRead(buttonPin);
+          flag_btn_pressed = true;
+          
+          if (buttonDebounce(reading) == HIGH){
+                Serial.println("BLE Button pressed");
+          }        
       }
+      Serial.print("BLE Button State: ");
+      Serial.println(flag_btn_pressed);
 
+      Serial.print("Analog reading: ");
+      Serial.println(initial);
+
+    if ((millis() - lastTime) > timerDelay)
+    {                
       // measuring
-      if (Flag)
+      if (flag_btn_pressed)
       {
-        // read the analog / millivolts value for pin 2:
-        analogValue = analogRead(14);
-        // Serial.print("analogValue: ");
-        // Serial.println(analogValue);
-        // Serial.print("prepeak: ");
-        // Serial.println(prepeak);
-        // Serial.print("counter: ");
-        // Serial.println(counter);
-        // Serial.print("peak: ");
-        // Serial.println(peak);
-
-
-
-
-        
-        
-        // store peak value
-        if (prepeak >= analogValue)
+        if (analogRead(14) > initial + 100 || analogRead(14) < initial - 100)
         {
-          peak = prepeak;
-          counter++;
-        }
-        else
-        {
-          peak = analogValue;
-          prepeak = peak;
-          counter = 0;
-        }
-        //
-        if (counter < 20 && counter != 0)
-        {
+          // read the analog / millivolts value for pin 2:
+          analogValue = analogRead(14);
+          // Serial.print("analogValue: ");
+          Serial.println(analogValue);
+          // Serial.print("prepeak: ");
+          // Serial.println(prepeak);
+          // Serial.print("counter: ");
+          // Serial.println(counter);
+          // Serial.print("peak: ");
+          // Serial.println(peak);
+
+          // store peak value
+          if (prepeak >= analogValue)
+          {
+            peak = prepeak;
+            counter++;
+          }
+          else
+          {
+            peak = analogValue;
+            prepeak = peak;
+            counter = 0;
+          }
+
           R = 255;
           G = 255;
           B = 255;
@@ -201,7 +321,7 @@ void loop()
           }
         }
         // has reach the peak value
-        else if(counter >= 20)
+        if (counter >= 20)
         {
           if (isReadyToSend)
           {
@@ -211,7 +331,7 @@ void loop()
           counter = 0;
           prepeak = 0;
           Flag = false;
-          if (peak > drunk)
+          if (analogToBac(peak) > drunk)
           {
             R = 255;
             G = 0;
@@ -219,6 +339,8 @@ void loop()
             ledcWrite(1, R); // write red component to channel 1, etc.
             ledcWrite(2, G);
             ledcWrite(3, B);
+            initial = 0;
+            delay(2000);
           }
           else
           {
@@ -228,7 +350,13 @@ void loop()
             ledcWrite(1, R); // write red component to channel 1, etc.
             ledcWrite(2, G);
             ledcWrite(3, B);
+            initial = 0;
+            delay(2000);
           }
+          flag_btn_pressed = false;
+          peak = 0;
+          prepeak = 0;
+          message = "";
         }
       }
       prevDeviceConnected = true;

@@ -66,8 +66,8 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
 
         setContentView(binding.getRoot());
-        SharedPreferences night = getSharedPreferences("night",0);
-        boolean booleanValue = night.getBoolean("night_mode",true);
+        SharedPreferences night = getSharedPreferences("night",MODE_PRIVATE);
+        boolean booleanValue = night.getBoolean("night_mode",false);
         if (booleanValue){
             getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
                     .getColor(R.color.primaryColor)));
