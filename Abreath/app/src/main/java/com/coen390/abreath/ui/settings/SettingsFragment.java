@@ -1,13 +1,20 @@
 package com.coen390.abreath.ui.settings;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -22,6 +29,7 @@ import com.coen390.abreath.ui.Registration;
 import com.coen390.abreath.ui.model.SettingsViewModel;
 import com.coen390.abreath.ui.settings.pages.AboutPage;
 import com.coen390.abreath.ui.settings.pages.Account;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.coen390.abreath.ui.settings.pages.AppearancePage;
@@ -52,6 +60,10 @@ public class SettingsFragment extends Fragment {
         al.add(new Category(R.drawable.key_settings, "Change Password"));
         al.add(new Category(R.drawable.logout, "Logout"));
 
+        SharedPreferences frag = getActivity().getSharedPreferences("whichfrag", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = frag.edit();
+        editor.putString("fragment", "settings");
+        editor.apply();
 
         SettingsAdapter sa = new SettingsAdapter(getActivity().getApplicationContext(), R.layout.row, al);
         list.setAdapter(sa);
@@ -89,6 +101,8 @@ public class SettingsFragment extends Fragment {
                 }
             }
         });
+
+
 
         return root;
     }
@@ -158,5 +172,7 @@ public class SettingsFragment extends Fragment {
 
 
     }
+
+
 
 }

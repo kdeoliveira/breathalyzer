@@ -2,6 +2,9 @@ package com.coen390.abreath;
 
 import android.content.Context;
 import android.content.Intent;
+
+import android.content.SharedPreferences;
+
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
@@ -12,7 +15,13 @@ import android.net.NetworkRequest;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.coen390.abreath.data.entity.UserDataEntity;
@@ -24,6 +33,7 @@ import com.google.android.material.bottomappbar.BottomAppBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
@@ -31,6 +41,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.coen390.abreath.databinding.ActivityMainBinding;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -55,7 +66,15 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
 
         setContentView(binding.getRoot());
-
+        SharedPreferences night = getSharedPreferences("night",0);
+        boolean booleanValue = night.getBoolean("night_mode",true);
+        if (booleanValue){
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
+                    .getColor(R.color.primaryColor)));
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
+        //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
+                //.getColor(android.R.color.holo_blue_bright)));
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -88,6 +107,20 @@ public class MainActivity extends AppCompatActivity {
             navController.navigate(R.id.to_navigation_dashboard, null, options);
 
         });
+
+
+        FloatingActionButton help_button = (FloatingActionButton) findViewById(R.id.help_button_settings);
+        help_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                SharedPreferences frag = getSharedPreferences("whichfrag", Context.MODE_PRIVATE);
+                String which_frag = frag.getString("fragment", "");
+                PopUpFramgent.newInstance(which_frag, "").show(getSupportFragmentManager(), PopUpFramgent.TAG);
+            }
+        });
+
+
     }
 
 
@@ -114,4 +147,8 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+
+
+
+
 }

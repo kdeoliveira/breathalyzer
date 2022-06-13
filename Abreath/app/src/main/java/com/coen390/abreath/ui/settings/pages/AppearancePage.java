@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.widget.CompoundButton;
 import android.widget.Switch;
@@ -28,11 +29,12 @@ public class AppearancePage extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setElevation(0f);
 
 
-
         SharedPreferences night = getSharedPreferences("night",0);
         boolean booleanValue = night.getBoolean("night_mode",true);
         if (booleanValue){
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
+                    .getColor(R.color.primaryColor)));
             nightmode_switch.setChecked(true);
         }
 

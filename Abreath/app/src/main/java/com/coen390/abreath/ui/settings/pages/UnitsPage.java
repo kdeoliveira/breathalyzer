@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.widget.CompoundButton;
 import android.widget.TextView;
@@ -23,6 +24,13 @@ public class UnitsPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_units_page);
+
+        SharedPreferences night = getSharedPreferences("night",0);
+        boolean booleanValue = night.getBoolean("night_mode",true);
+        if (booleanValue){
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
+                    .getColor(R.color.primaryColor)));
+        }
 
         sp = new SharedPreferenceController(this);
         units = findViewById(R.id.unitsText);

@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -50,6 +52,12 @@ public class Account extends AppCompatActivity {
         lastname = findViewById(R.id.LastName);
         delete = findViewById(R.id.delete_account);
 
+        SharedPreferences night = getSharedPreferences("night",0);
+        boolean booleanValue = night.getBoolean("night_mode",true);
+        if (booleanValue){
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
+                    .getColor(R.color.primaryColor)));
+        }
 
         UserDataViewModel sampleModel = new ViewModelProvider(this).get(UserDataViewModel.class);
 

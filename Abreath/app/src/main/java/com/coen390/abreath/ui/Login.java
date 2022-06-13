@@ -2,8 +2,11 @@ package com.coen390.abreath.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -41,7 +44,12 @@ public class Login extends AppCompatActivity {
         sign_up = findViewById(R.id.signup_login);
         forgot_pword = findViewById(R.id.forgot_pword_text);
 
-
+        SharedPreferences night = getSharedPreferences("night",0);
+        boolean booleanValue = night.getBoolean("night_mode",true);
+        if (booleanValue){
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
+                    .getColor(R.color.primaryColor)));
+        }
         Objects.requireNonNull(getSupportActionBar()).setElevation(0f);
         getSupportActionBar().setTitle(null);
 

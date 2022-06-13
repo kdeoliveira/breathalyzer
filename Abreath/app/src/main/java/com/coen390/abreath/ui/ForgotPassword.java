@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -33,6 +35,13 @@ public class ForgotPassword extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
+
+        SharedPreferences night = getSharedPreferences("night",0);
+        boolean booleanValue = night.getBoolean("night_mode",true);
+        if (booleanValue){
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
+                    .getColor(R.color.primaryColor)));
+        }
 
         emailReset = findViewById(R.id.reset_email);
         buttonSendEmail = findViewById(R.id.send_email_button);
@@ -64,7 +73,7 @@ public class ForgotPassword extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()) {
-                                Toast.makeText(ForgotPassword.this, "A link to reset your password has been sent to your e-mail.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ForgotPassword.this, "A link to reset your password has been sent to your e-mail. Make sure to check your spams!", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(ForgotPassword.this, Login.class));
                             }
                             else {

@@ -8,10 +8,14 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -40,6 +44,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -80,7 +85,10 @@ public class HomeFragment extends Fragment {
 
 
 
-
+        SharedPreferences frag = getActivity().getSharedPreferences("whichfrag", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = frag.edit();
+        editor.putString("fragment", "home");
+        editor.apply();
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -125,6 +133,9 @@ public class HomeFragment extends Fragment {
             else
                 weightTextView.setText(String.format(Locale.CANADA,"%d lbs", (int) Utility.kgtolbs(userDataEntity.getWeight())) );
         });
+
+        //FloatingActionButton help_button = (FloatingActionButton) getActivity().findViewById(R.id.help_button_home);
+      //  help_button.setOnClickListener(this::onClick);
 
         return root;
 
@@ -267,5 +278,6 @@ public class HomeFragment extends Fragment {
         }
 
     }
+
 
 }
