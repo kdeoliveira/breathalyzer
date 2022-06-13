@@ -32,46 +32,54 @@
         </androidx.cardview.widget.CardView>
 
     </androidx.cardview.widget.CardView>
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:orientation="horizontal"
         android:gravity="bottom"
         android:layout_marginTop="-30dp"
         >
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-
-        >
-        <TextView
-            android:id="@+id/profile_name"
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
+            android:orientation="vertical"
 
-            android:textStyle="bold" />
+            >
+            <TextView
+                android:id="@+id/profile_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:text="fdsfd"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/profile_lastname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:text="fdsfd"
+                />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_gravity="center_horizontal"
+            />
         <TextView
-            android:id="@+id/profile_lastname"
+            android:id="@+id/home_counter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-
-             />
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
-        <TextView
-            android:id="@+id/profile_username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="1dp"
-            android:layout_marginStart="5dp"
-
-            android:textSize="12sp"
-            android:textStyle="italic" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
+            android:text="Counter Here"
+            android:gravity="end"
+            android:textStyle="bold"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMaxTextSize="100sp"
+            app:autoSizeMinTextSize="10sp"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center_vertical" />
+    </LinearLayout>
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/textContainer"
@@ -168,7 +176,7 @@
             android:text="@string/previous_samples"
             android:textStyle="bold"
             android:textSize="18sp"
-             />
+            />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
