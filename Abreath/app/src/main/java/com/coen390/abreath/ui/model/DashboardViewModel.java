@@ -13,52 +13,24 @@ import androidx.lifecycle.ViewModel;
 
 import com.coen390.abreath.R;
 
+import java.util.Locale;
+
 public class DashboardViewModel extends ViewModel {
 
-    private final MutableLiveData<String> mText;
-    private final MutableLiveData<String> Username;
-    private final MutableLiveData<String> DisplayData;
-    String username = "John";
-    float threshold = 0.08f;
-    float userdata =0.06f;
+    private final MutableLiveData<Float> mDisplayData;
 
     public DashboardViewModel() {
+        mDisplayData = new MutableLiveData<>();
+//        mDisplayData.setValue(0.0f);
+    }
 
-
-        mText = new MutableLiveData<>();
-        Username = new MutableLiveData<>();
-        DisplayData= new MutableLiveData<>();
-
-        DisplayData.setValue(userdata + "% BAC");
-        Username.setValue(username + ", the results are out :");
-
-        if(userdata >= threshold)
-        {
-            mText.setValue("You are above the legal limit! \nPlease do not take the wheel.");
-        }
-        else if(userdata >= threshold-0.02f && userdata < threshold) {
-            mText.setValue("       You are not above the legal limit. \n But it is recommended you do not drive.");
-        }
-        else
-        {
-            mText.setValue("You are under the legal limit. \n     You are good to drive! ");
-        }
-
-
+    public LiveData<Float> getData() {
+        return mDisplayData;
     }
 
 
-
-
-
-    public LiveData<String> getText() {
-        return mText;
-    }
-    public LiveData<String> getUsername() {
-        return Username;
-    }
-    public LiveData<String> getData() {
-        return DisplayData;
+    public void setData(Float input){
+        mDisplayData.setValue(input);
     }
 
 

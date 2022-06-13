@@ -59,12 +59,12 @@
         app:layout_constraintTop_toBottomOf="@id/login_header"
         app:layout_constraintBottom_toBottomOf="parent"
         android:fillViewport="true"
+        android:orientation="vertical"
         android:padding="17dp"
         >
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:orientation="vertical"
         >
     <EditText
@@ -73,14 +73,15 @@
         android:layout_height="54dp"
 
         android:layout_weight="1"
-        android:drawableLeft="@drawable/ic_baseline_person_outline_24"
+        android:drawableStart="@drawable/ic_baseline_person_outline_24"
         android:drawablePadding="15dp"
         android:ems="10"
-        android:hint="Name"
+        android:hint="@string/name"
         android:inputType="textPersonName"
         android:padding="15dp"
         android:textColor="@color/black"
         android:textColorHint="@color/hintColor"
+        android:maxLength="30"
         tools:ignore="TextContrastCheck" />
 
     <EditText
@@ -88,10 +89,10 @@
         android:layout_width="match_parent"
         android:layout_height="54dp"
         android:layout_weight="1"
-        android:drawableLeft="@drawable/ic_baseline_person_outline_24"
+        android:drawableStart="@drawable/ic_baseline_person_outline_24"
         android:drawablePadding="15dp"
         android:ems="10"
-        android:hint="Email"
+        android:hint="@string/email"
         android:inputType="textEmailAddress"
         android:padding="15dp"
         android:textColor="@color/black"
@@ -101,19 +102,21 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/pword_toggle_2"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
+        android:layout_height="54dp"
         android:layout_weight="1"
         android:textColorHint="@color/hintColor"
         app:passwordToggleEnabled="true" >
+
         <EditText
             android:id="@+id/signup_password"
             android:layout_width="match_parent"
-            android:layout_height="52dp"
+            android:layout_height="54dp"
+            android:layout_weight="1"
             android:background="@android:color/transparent"
             android:drawableStart="@drawable/ic_baseline_lock_open_24"
             android:drawablePadding="15dp"
             android:ems="10"
-            android:hint="Password"
+            android:hint="@string/password"
             android:inputType="textPassword"
             android:padding="15dp"
             android:textColor="@color/black"
@@ -130,19 +133,21 @@
         android:textColorHint="@color/hintColor"
         app:passwordToggleEnabled="true" >
 
-    <EditText
-        android:id="@+id/signup_confirm_password"
-        android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:background="@android:color/transparent"
-        android:drawableLeft="@drawable/ic_baseline_lock_open_24"
-        android:drawablePadding="15dp"
-        android:ems="10"
-        android:hint="Confirm Password"
-        android:inputType="textPassword"
-        android:padding="15dp"
-        android:textColor="@color/black"
-        android:textColorHint="@color/hintColor" />
+        <EditText
+            android:id="@+id/signup_confirm_password"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:drawableStart="@drawable/ic_baseline_lock_open_24"
+            android:drawablePadding="15dp"
+            android:ems="10"
+            android:hint="Confirm Password"
+            android:inputType="textPassword"
+            android:padding="15dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/hintColor" />
+
 
     </com.google.android.material.textfield.TextInputLayout>
     <CheckBox
@@ -150,14 +155,14 @@
         android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:text="I agree with ABREATH's Terms and Privacy Policy" />
+        android:text="@string/i_agree_with_abreath_s_terms_and_privacy_policy" />
 
     <Button
         android:id="@+id/signup_button"
         android:layout_width="match_parent"
         android:layout_height="52dp"
         android:background="@drawable/save_button"
-        android:text="Signup"
+        android:text="@string/signup"
         android:textColor="#FFFFFF" />
     <LinearLayout
         android:layout_width="match_parent"
@@ -172,7 +177,7 @@
             android:id="@+id/have_account_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Already have an account?"
+            android:text="@string/already_have_an_account"
             android:textSize="16sp" />
         <TextView
             android:id="@+id/login_on_signup"

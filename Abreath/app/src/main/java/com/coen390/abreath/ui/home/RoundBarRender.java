@@ -25,11 +25,15 @@ import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 //https://gist.github.com/xanscale/e971cc4f2f0712a8a3bcc35e85325c27
 public class RoundBarRender extends BarChartRenderer {
     private RectF barShadowRectBuffer = new RectF();
+
+    private static List<Integer> mArrayGradient;
 
 
     public float getThreashold() {
@@ -38,11 +42,14 @@ public class RoundBarRender extends BarChartRenderer {
 
     public void setThreashold(float m_threashold) {
         this.m_threashold = m_threashold;
+
     }
 
     private float m_threashold;
     public RoundBarRender(BarDataProvider chart, ChartAnimator animator, ViewPortHandler viewPortHandler){
         super(chart, animator, viewPortHandler);
+        mArrayGradient = new ArrayList<>();
+        Collections.addAll(mArrayGradient, Color.rgb(25, 156, 23), Color.rgb(99, 137, 17), Color.rgb(145, 125, 5), Color.rgb(173, 117,1), Color.rgb(155, 90, 3), Color.rgb(136, 54, 6), Color.rgb(100, 10, 10));
         m_threashold = 0.08f;
     }
 
@@ -153,11 +160,15 @@ public class RoundBarRender extends BarChartRenderer {
                 BarEntry e = dataSet.getEntryForIndex(j/4);
                 float y = e.getY();
 
-            if(y > m_threashold/2){
-                    mRenderPaint.setColor(Color.rgb((int)Utility.map(y, m_threashold/2,m_threashold,2,209), 136, 206));
-            }else{
-                mRenderPaint.setColor(Color.rgb(2, 136, 206));
-            }
+                mRenderPaint.setColor(mArrayGradient.get((int)Utility.map(y, m_threashold* 0.4f,m_threashold*0.7f,0,mArrayGradient.size()-1)) );
+
+//            if(y > m_threashold/2){
+//                    mRenderPaint.setColor(Color.rgb((int)Utility.map(y, m_threashold* 0.2f,m_threashold*0.8f,2,209), 136, 206));
+
+//            }else{
+
+//                mRenderPaint.setColor(Color.rgb(2, 136, 206));
+//            }
 
             c.drawRoundRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
                     buffer.buffer[j + 3], m_radius, m_radius, mRenderPaint);

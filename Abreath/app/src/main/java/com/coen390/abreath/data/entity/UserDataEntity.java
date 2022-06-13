@@ -2,11 +2,15 @@ package com.coen390.abreath.data.entity;
 
 import static android.content.ContentValues.TAG;
 
+import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import com.coen390.abreath.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -24,12 +28,21 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.ktx.Firebase;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicMarkableReference;
 
 /**
  * Entity representing the data fetched from mock API
@@ -43,39 +56,60 @@ public class UserDataEntity {
     @SerializedName("createdAt")
     private Date created_at;
     private static String result[] = {"","","",""};
+    private static ArrayList<String> list = new ArrayList<>();
 
     private int id;
     private String name;
     @SerializedName("lastName")
     private String last_name;
-    private String email, password, phone;
+    private String email;
+    private String password;
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    private String phone;
 
     public int getAge() {
         return age;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+
+//    public void setAge(int age) {
+//        this.age = age;
+//    }
+    public void setAge(String age) {
+        this.age = Integer.parseInt(age);
+        this.ageString = age;
     }
 
-    public int getWeight() {
+
+    public float getWeight() {
         return weight;
     }
 
-    public void setWeight(int weight) {
-        this.weight = weight;
+    public void setWeight(String weight) {
+        this.weight = Float.parseFloat(weight);
+        this.weightString = weight;
     }
+
 
     public float getHeight() {
         return height;
     }
 
-    public void setHeight(float height) {
-        this.height = height;
+    public void setHeight(String height) {
+        this.height = Float.parseFloat(height);
+        this.heightString = height;
     }
 
     private int age;
-    private int weight;
+    private float weight;
     private float height;
 
     private String ageString;
@@ -123,6 +157,8 @@ public class UserDataEntity {
         this.height = height;
     }
 
+
+
     public UserDataEntity(String email, String password, String name) //For sign up
     {
         this.email = email;
@@ -136,16 +172,26 @@ public class UserDataEntity {
         this.password = password;
     }
 
-    public UserDataEntity(String name, String height, String weight, String age, String phone) //For the account page.
+    public UserDataEntity(String name, String lastname, String height, String weight, String age, String phone) //For the account page.
     {
         this.name = name;
         this.phone = phone;
         this.weightString = weight;
-        this.weight = Integer.parseInt(weight);
+        //this.weight = Integer.parseInt(weight); They create an error when the user does not enter this information
         this.ageString = age;
-        this.age = Integer.parseInt(age);
+        //this.age = Integer.parseInt(age);
         this.heightString = height;
-        this.height = Float.parseFloat(height);
+        //this.height = Float.parseFloat(height);
+
+        this.last_name = lastname;
+        try{
+            this.weight = Float.parseFloat(weight);
+            this.age = Integer.parseInt(age);
+            this.height = Float.parseFloat(height);
+
+        }catch (NumberFormatException ignored){
+        }
+
     }
 
     public UserDataEntity()//Empty Constructor
@@ -165,12 +211,13 @@ public class UserDataEntity {
         this.name = name;
     }
 
-    public String getLast_name() {
+    public String getLastname() {
         return last_name;
     }
 
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
+    public void setLastname(String lastname) {
+        this.last_name = lastname;
+
     }
 
 
@@ -201,26 +248,38 @@ public class UserDataEntity {
         this.created_at = created_at;
     }
 
+    public ArrayList<String> getRecordingsArray()
+    {
+        ArrayList<String> returnArrayList = new ArrayList<>();
+        for(int i = list.size() - 1; 0 <= i; i--)
+        {
+            if (i == 12)
+                break;
+            returnArrayList.add(list.get(i));
+        }
+        return returnArrayList;
+    }
+
+
     public void createAccount()
     {
         FirebaseAuth auth;
         auth = FirebaseAuth.getInstance();
 
+            auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = auth.getCurrentUser();
+                        String uid = user.getUid();
+                        DatabaseReference dr;
+                        dr = FirebaseDatabase.getInstance().getReference().child("user").child(uid);
+                        String nameString = name;
+                        dr.child("name").setValue(nameString);
+                    }
+                }
 
-       auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-           @Override
-           public void onComplete(@NonNull Task<AuthResult> task) {
-               if(task.isSuccessful())
-               {
-                   FirebaseUser user = auth.getCurrentUser();
-                   String uid = user.getUid();
-                   DatabaseReference dr;
-                   dr = FirebaseDatabase.getInstance().getReference().child("user").child(uid);
-                   String nameString = name;
-                   dr.child("name").setValue(nameString);
-               }
-           }
-       });
+            });
     }
 
     public void signIn()
@@ -248,51 +307,110 @@ public class UserDataEntity {
         FirebaseAuth.getInstance().signOut();
     }
 
-    public void updateDataSettings(Boolean control[])
+    public void updateDataSettings(Boolean[] control)
     {
         DatabaseReference dr;
         dr = FirebaseDatabase.getInstance().getReference().child("user").getRef();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String uid = user.getUid();
-        String passName = name;
-        String passWeight = weightString;
-        String passHeight = heightString;
-        String passAge = ageString;
-        String passPhone = phone;
 
-        if (control[0] == true)
-            dr.child(uid).child("name").setValue(passName);
-        if (control[1] == true)
-            dr.child(uid).child("height").setValue(passHeight);
-        if (control[2] == true)
-            dr.child(uid).child("weight").setValue(passWeight);
-        if (control[3] == true)
-            dr.child(uid).child("age").setValue(passAge);
-        if (control[4] == true)
-            dr.child(uid).child("phone").setValue(passPhone);
+
+        if (user != null)
+        {
+            String uid = user.getUid();
+            String passName = name;
+            String passWeight = weightString;
+            String passHeight = heightString;
+            String passAge = ageString;
+            String passPhone = phone;
+            String passLastName = last_name;
+            if (control[0])
+                dr.child(uid).child("name").setValue(passName);
+            if (control[1])
+                dr.child(uid).child("lastname").setValue(passLastName);
+            if (control[2]){
+                dr.child(uid).child("height").setValue(passHeight);
+            }
+            if (control[3]){
+                dr.child(uid).child("weight").setValue(passWeight);
+            }
+            if (control[4])
+                dr.child(uid).child("age").setValue(passAge);
+            if (control[5])
+                dr.child(uid).child("phone").setValue(passPhone);
+        }
+       else
+            System.out.println("User is not signed in: null pointer reference");
     }
 
-    public void getDataForHome()
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void storelastLevels(double result)
+    {
+        DatabaseReference dr;
+        dr = FirebaseDatabase.getInstance().getReference().child("recordings").getRef();
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = user.getUid();
+
+        if(user != null)
+        {
+            String dateTime = (java.time.LocalDateTime.now()).toString(); //Take system time and convert to string.
+            String date = dateTime.substring(0,10); //Take the first 11 characters and store them in date.
+            String time = dateTime.substring(11,19); //Take the last characters and store them in time.
+            dateTime = date+" @ "+time; //Format a string that is returned for use in other classes by setting a format date @ time
+
+            dateTime = dateTime + "," + result;
+
+            dr.child(uid).push().setValue(dateTime);
+        }
+        else
+            System.out.println("User is not signed in: null pointer reference");
+
+    }
+
+    public void getLastLevels()
     {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String uid = user.getUid();
-        DatabaseReference auth = FirebaseDatabase.getInstance().getReference().child("user");
+        DatabaseReference auth = FirebaseDatabase.getInstance().getReference().child("recordings");
 
-        auth.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                result[0] = snapshot.child("name").getValue(String.class);
-                result[1] = snapshot.child("age").getValue(String.class);
-                result[2] = snapshot.child("height").getValue(String.class);
-                result[3] = snapshot.child("weight").getValue(String.class);
-            }
+        if(user != null)
+        {
+            auth.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for(DataSnapshot dataSnapshot: snapshot.getChildren()) {
+                        list.add(dataSnapshot.getValue(String.class));
+                    }
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
+        }
+        else
+            System.out.println("User is not signed in: null pointer reference");
     }
+
+    public void deleteAccount()
+    {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user != null)
+        {
+            user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful())
+                    {
+                        Log.d(TAG, "User Account Deleted");
+                    }
+                }
+            });
+        }
+    }
+
 
 
     public String[] getData()
