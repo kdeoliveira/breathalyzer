@@ -30,14 +30,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.coen390.abreath.R;
-import com.coen390.abreath.common.Constant;
-import com.coen390.abreath.common.Utility;
 import com.coen390.abreath.databinding.FragmentDashboardBinding;
 import com.coen390.abreath.domain.SaveLastLevelUseCase;
 import com.coen390.abreath.service.BleService;
@@ -57,7 +54,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class DashboardFragment extends Fragment {
+public class DashboardFragment extends Fragment implements LoadingFragment.Dissmissable {
 
     private PieChart pieChart;
     private PieChart pieIndex;
@@ -67,6 +64,7 @@ public class DashboardFragment extends Fragment {
     private DashboardViewModel dashboardViewModel;
     private BroadcastReceiver gattUpdateReceiver;
     private ServiceConnection serviceConnection;
+    private Handler handlerAwaiting, handlerNotFound;
 
 
     private void PieData() {
@@ -139,14 +137,21 @@ public class DashboardFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
+        handlerNotFound = new Handler();
+        handlerAwaiting = new Handler();
         loadingFragment = LoadingFragment.newInstance("Awaiting Results");
         loadingFragment.show(getChildFragmentManager(), LoadingFragment.TAG);
+
 
         SharedPreferences frag = getActivity().getSharedPreferences("whichfrag", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = frag.edit();
         editor.putString("fragment", "dashboard");
         editor.apply();
+
+        handlerNotFound.postDelayed(() -> {
+            loadingFragment.setNotFound("Unable to fetch data");
+        }, 15000);
+
 
         serviceConnection = new BluetoothServiceConnection(new BluetoothServiceConnection.onBleService() {
             @RequiresApi(api = Build.VERSION_CODES.N)
@@ -156,13 +161,14 @@ public class DashboardFragment extends Fragment {
                 bluetoothService.setCharacteristicNotification();
                 bluetoothService.getBluetoothFinished().observe(getViewLifecycleOwner(), aBoolean -> {
                     if(aBoolean){
-                        new Handler().postDelayed(() -> {
+                        handlerAwaiting.postDelayed(() -> {
                             binding.getRoot().setVisibility(View.VISIBLE);
                             loadingFragment.dismiss();
                             PieData();
                             PieIndex();
                             new SaveLastLevelUseCase().call(userdata);
                         }, 500);
+                        handlerNotFound.removeCallbacksAndMessages(null);
                     }
                 });
                 bluetoothService.getBluetoothResult().observe(getViewLifecycleOwner(), floatList -> {
@@ -297,7 +303,6 @@ public class DashboardFragment extends Fragment {
         if(bluetoothService != null){
             bluetoothService.close();
             requireActivity().unbindService(serviceConnection);
-
         }
     }
 
@@ -324,4 +329,9 @@ public class DashboardFragment extends Fragment {
 
     }
 
+    @Override
+    public void onDismissAction() {
+        Navigation.findNavController(requireView()).navigate(R.id.to_navigation_dashboard);
+
+    }
 }

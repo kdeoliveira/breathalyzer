@@ -65,6 +65,7 @@ public class ResetPassword extends AppCompatActivity {
             }
         });
 
+        Objects.requireNonNull(getSupportActionBar()).setElevation(0f);
 
 
 
@@ -100,6 +101,8 @@ public class ResetPassword extends AppCompatActivity {
                                 Log.d(TAG, "User password updated.");
                                 Toast.makeText(getApplicationContext(), "Password successfully updated", Toast.LENGTH_SHORT).show();
                                 openMain();
+                            }else{
+                                Toast.makeText(ResetPassword.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

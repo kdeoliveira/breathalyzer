@@ -20,6 +20,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.Objects;
+
 public class ResetPasswordVerification extends AppCompatActivity {
 
     protected EditText confirmPword, confirmEmail;
@@ -60,6 +62,7 @@ public class ResetPasswordVerification extends AppCompatActivity {
                 verifyPassword();
             }
         });
+        Objects.requireNonNull(getSupportActionBar()).setElevation(0f);
 
 
     }

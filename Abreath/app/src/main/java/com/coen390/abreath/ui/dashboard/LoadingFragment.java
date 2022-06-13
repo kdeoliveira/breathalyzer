@@ -1,5 +1,6 @@
 package com.coen390.abreath.ui.dashboard;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -7,17 +8,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.TextSwitcher;
-import android.widget.TextView;
-import android.widget.ViewSwitcher;
 
-import com.coen390.abreath.R;
 import com.coen390.abreath.databinding.FragmentLoadingBinding;
+import com.github.ybq.android.spinkit.SpinKitView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -69,8 +66,34 @@ public class LoadingFragment extends DialogFragment {
         fragmentLoadingBinding = FragmentLoadingBinding.inflate(inflater, container, false);
         View view = fragmentLoadingBinding.getRoot();
         setCancelable(false);
-
+        fragmentLoadingBinding.button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Fragment parentFragment = getParentFragment();
+                if(parentFragment instanceof Dissmissable)
+                    ((Dissmissable) parentFragment).onDismissAction();
+            }
+        });
         return view;
+    }
+
+    public SpinKitView getSpinKit(){
+
+        return null;
+    }
+
+    public void setNotFound(String title){
+        if(fragmentLoadingBinding == null) return;
+        textSwitcher.setText(title);
+        fragmentLoadingBinding.loadingProgressBar.setVisibility(View.GONE);
+        fragmentLoadingBinding.button2.setVisibility(View.VISIBLE);
+        setCancelable(true);
+
+    }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
     }
 
     @Override
@@ -85,5 +108,9 @@ public class LoadingFragment extends DialogFragment {
 
     public void setStateText(String text){
         textSwitcher.setText(text);
+    }
+
+    public interface Dissmissable {
+        void onDismissAction();
     }
 }

@@ -14,11 +14,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.coen390.abreath.MainActivity;
 import com.coen390.abreath.R;
 import com.coen390.abreath.data.entity.UserDataEntity;
 import com.coen390.abreath.ui.settings.pages.Account;
-import com.coen390.abreath.ui.settings.pages.AccountPage;
 
 import java.util.Objects;
 
