@@ -27,6 +27,7 @@ import com.coen390.abreath.ui.ResetPasswordVerification;
 import com.coen390.abreath.ui.Login;
 import com.coen390.abreath.ui.Registration;
 import com.coen390.abreath.ui.model.SettingsViewModel;
+import com.coen390.abreath.ui.model.SharedPreferenceController;
 import com.coen390.abreath.ui.settings.pages.AboutPage;
 import com.coen390.abreath.ui.settings.pages.Account;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -44,12 +45,15 @@ public class SettingsFragment extends Fragment {
 
     private FragmentSettingsBinding binding;
     protected ListView list;
+    private SharedPreferenceController sp;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         SettingsViewModel settingsViewModel = new ViewModelProvider(this).get(SettingsViewModel.class);
+
         binding = FragmentSettingsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        sp = new SharedPreferenceController(root.getContext());
         list = binding.listView;
         ArrayList<Category> al = new ArrayList<>();
         al.add(new Category(R.drawable.account, "Account"));
@@ -93,6 +97,7 @@ public class SettingsFragment extends Fragment {
                         openResetPass();
                         break;
                     case 6:
+                        sp.setUserData(0.0f);
                         FirebaseAuth.getInstance().signOut();
                         openSignIn();
                         break;

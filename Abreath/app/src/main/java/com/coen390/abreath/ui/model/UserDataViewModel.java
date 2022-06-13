@@ -54,8 +54,9 @@ public class UserDataViewModel extends ViewModel {
 
     public LiveData<List<TestResultEntity>> getUserData(){
         return Transformations.switchMap(samples, input -> getLastLevelsUseCase.call(null));
-
     }
+
+
 
     public LiveData<UserDataEntity> getUserInfo(){
         return Transformations.switchMap(info_user, input -> getUserInfoUseCase.call(null));

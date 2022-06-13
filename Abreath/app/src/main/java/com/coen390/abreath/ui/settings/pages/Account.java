@@ -22,6 +22,7 @@ import com.coen390.abreath.R;
 import com.coen390.abreath.common.Utility;
 import com.coen390.abreath.data.entity.UserDataEntity;
 
+import com.coen390.abreath.domain.GetUserInfoUseCase;
 import com.coen390.abreath.domain.UpdateDataSettingsUseCase;
 import com.coen390.abreath.ui.Login;
 import com.coen390.abreath.ui.model.SharedPreferenceController;
@@ -53,6 +54,7 @@ public class Account extends AppCompatActivity {
         delete = findViewById(R.id.delete_account);
 
         UserDataViewModel sampleModel = new ViewModelProvider(this).get(UserDataViewModel.class);
+        new GetUserInfoUseCase().call(null);
 
         sampleModel.getUserInfo().observe(this, userDataEntity -> {
             if(!sp.getHeight())
