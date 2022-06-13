@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
@@ -47,8 +48,11 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
@@ -67,6 +71,13 @@ public class HomeFragment extends Fragment {
     private Uri picture;
     private CountDownTimer countDownTimer;
     private boolean countDownStarted = false;
+    @SuppressLint("NewApi")
+    private static final Instant start_of_counter = Instant.now();
+    private Duration timeElapsed;
+    private Context context;
+    private String checking;
+    private long hour, minute;
+    private static Instant start;
 
 
     @SuppressLint("NewApi")
@@ -185,24 +196,30 @@ public class HomeFragment extends Fragment {
         super.onResume();
         uploadImage();
         getProfilePicture();
-        if(!countDownStarted)
-            timer(sp.getUserData());
-
-//        try {
-//            Intent intent = Intent.getIntentOld("comesFrom");
-//            checking = intent.getStringExtra("comesFrom");
-//        } catch (URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//
-//
-//        if(!Objects.equals(checking, "Dashboard"))
-//            counterTextView.setText("");
-//        else
-//        {
-//        }
 
 
+
+        /*
+        Intent intent = null;
+        try {
+            intent = Intent.getIntentOld("comesFrom");
+            checking = intent.getStringExtra("comesFrom");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+
+        if(checking != "Dashboard")
+            counterTextView.setText("");
+        else
+        {
+            SharedPreferences valueForTimer = context.getSharedPreferences("UserData", Context.MODE_PRIVATE);
+            timer(valueForTimer.getFloat("value", 0.0f));
+        }
+
+         */
+
+        timer(0.15f);
 
     }
 
@@ -313,58 +330,70 @@ public class HomeFragment extends Fragment {
     @SuppressLint("NewApi")
     public void timer(float a)
     {
-        if(a == 0.0f || sp.getUserDateTime() == 0){
-            counterTextView.setText("");
-            return;
+        double bac = a;
+        double time = ((-0.08 + bac) / 0.015);
+
+        System.out.println("This is the time" + time);
+
+        time = time * 3600;
+
+        if(bac < 0.08)
+        {
+           String message = "You are safe to drive";
+            counterTextView.setText(message);
         }
+        else if (0.08 <= bac && bac <= 0.37)
+        {
+            start = Instant.now();
+            if (start_of_counter != null && start != null)
+            {
+                System.out.println("This is the start: " + start);
+                System.out.println("This is the start: " + start_of_counter);
+                long difference = timeDifferenceFromStart();
+                if (difference > 0)
+                {
+                    time = (time - (difference / 1000));
+                }
+            }
+            countDownTimer = new CountDownTimer((long)time * 1000,1000)
+            {
+                @Override
+                public void onTick(long l) { // CODE FROM https://www.geeksforgeeks.org/countdowntimer-in-android-with-example/ Has been updated for this specific use.
+                    NumberFormat f = new DecimalFormat("00");
+                    long hour, minute;
+                    hour = (l/3600000) % 24;
+                    minute = (l/60000) % 60;
+                    counterTextView.setText(f.format(hour) + " h, " + f.format(minute) + " m.");
 
-        counterTextView.setText("");
-
-//        double bac = a;
-//        long time = (long) ((-0.08 + bac) / 0.015);
-//
-//        time = time * 3600;
-//
-//        if(bac < 0.08)
-//        {
-//            String message = "You are safe to drive";
-//            counterTextView.setText(message);
-//        }
-//        else if (0.08 <= bac && bac <= 0.37)
-//        {
-//            time = (new Date().getTime() - sp.getUserDateTime());
-//            Log.d("HomeFragment", String.valueOf(time));
-//            countDownStarted = true;
-//            countDownTimer = new CountDownTimer((long)time * 1000,1000)
-//            {
-//                @Override
-//                public void onTick(long l) { // CODE FROM https://www.geeksforgeeks.org/countdowntimer-in-android-with-example/ Has been updated for this specific use.
-//                    NumberFormat f = new DecimalFormat("00");
-//                    long hour, minute;
-//                    hour = (l/3600000) % 24;
-//                    minute = (l/60000) % 60;
-//                    counterTextView.setText(f.format(hour) + " h, " + f.format(minute) + " m.");
-//
-//                }
-//                @Override
-//                public void onFinish() {
-//                    String message = "Please breathe again before taking the wheel";
-//                    counterTextView.setText(message);
-//                    countDownStarted = false;
-//                }
-//            };
-//            countDownTimer.start();
-//        }
-//        else
-//        {
-//            String message = "SEEK MEDICAL ASSISTANCE";
-//            counterTextView.setText(message);
-//        }
+                }
+                @Override
+               public void onFinish() {
+                    String message = "Please breathe again before taking the wheel";
+                    counterTextView.setText(message);
+                    countDownStarted = false;
+                }
+            };
+            countDownTimer.start();
+        }
+        else
+       {
+            String message = "SEEK MEDICAL ASSISTANCE";
+           counterTextView.setText(message);
+       }
 
     }
 
+    @SuppressLint("NewApi")
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause()
+    {
+        super.onPause();
+    }
+
+    @SuppressLint("NewApi")
+    public long timeDifferenceFromStart() //CODE FROM https://stackoverflow.com/questions/4927856/how-can-i-calculate-a-time-difference-in-java Has been updated for this specific use.
+    {
+        timeElapsed = Duration.between(start_of_counter, start);
+        return timeElapsed.toMillis();
     }
 }

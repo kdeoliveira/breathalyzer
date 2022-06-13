@@ -304,11 +304,11 @@ public class DashboardFragment extends Fragment implements LoadingFragment.Dissm
         }
     }
 
-//    @Override
-//    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-//        Intent intent = new Intent(getActivity(), HomeFragment.class); //https://stackoverflow.com/questions/21953839/how-to-decide-which-activity-we-came-from
-//        intent.putExtra("comesFrom", "Dashboard");
-//    }
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        Intent intent = new Intent(getActivity(), HomeFragment.class); //https://stackoverflow.com/questions/21953839/how-to-decide-which-activity-we-came-from
+       intent.putExtra("comesFrom", "Dashboard");
+   }
 
     @Override
     public void onDismissAction() {
