@@ -49,12 +49,15 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
 
 //https://developer.android.com/guide/fragments/communicate
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
@@ -65,8 +68,7 @@ public class HomeFragment extends Fragment {
     private ImageView profileImage;
     private SharedPreferenceController sp;
     private Uri picture;
-    private CountDownTimer countDownTimer;
-    private boolean countDownStarted = false;
+    private static Instant mStartOfCounter = Instant.now();
 
 
     @SuppressLint("NewApi")
@@ -76,7 +78,6 @@ public class HomeFragment extends Fragment {
         sp = new SharedPreferenceController(requireContext());
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -185,8 +186,7 @@ public class HomeFragment extends Fragment {
         super.onResume();
         uploadImage();
         getProfilePicture();
-        if(!countDownStarted)
-            timer(sp.getUserData());
+//        timer(sp.getUserData());
 
 //        try {
 //            Intent intent = Intent.getIntentOld("comesFrom");
@@ -308,58 +308,66 @@ public class HomeFragment extends Fragment {
         }
 
     }
-
+    private long timeDifferenceFromStart(Instant start_of_counter, Instant start) //CODE FROM https://stackoverflow.com/questions/4927856/how-can-i-calculate-a-time-difference-in-java Has been updated for this specific use.
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return Duration.between(start_of_counter, start).toMillis();
+        }else{
+            return 0;
+        }
+    }
 
     @SuppressLint("NewApi")
-    public void timer(float a)
+    public void timer(float bac)
     {
-        if(a == 0.0f || sp.getUserDateTime() == 0){
+        if(bac == 0.0f){
             counterTextView.setText("");
             return;
         }
 
-        counterTextView.setText("");
+        double time = (-0.08 + bac) / 0.015;
 
-//        double bac = a;
-//        long time = (long) ((-0.08 + bac) / 0.015);
-//
-//        time = time * 3600;
-//
-//        if(bac < 0.08)
-//        {
-//            String message = "You are safe to drive";
-//            counterTextView.setText(message);
-//        }
-//        else if (0.08 <= bac && bac <= 0.37)
-//        {
-//            time = (new Date().getTime() - sp.getUserDateTime());
-//            Log.d("HomeFragment", String.valueOf(time));
-//            countDownStarted = true;
-//            countDownTimer = new CountDownTimer((long)time * 1000,1000)
-//            {
-//                @Override
-//                public void onTick(long l) { // CODE FROM https://www.geeksforgeeks.org/countdowntimer-in-android-with-example/ Has been updated for this specific use.
-//                    NumberFormat f = new DecimalFormat("00");
-//                    long hour, minute;
-//                    hour = (l/3600000) % 24;
-//                    minute = (l/60000) % 60;
-//                    counterTextView.setText(f.format(hour) + " h, " + f.format(minute) + " m.");
-//
-//                }
-//                @Override
-//                public void onFinish() {
-//                    String message = "Please breathe again before taking the wheel";
-//                    counterTextView.setText(message);
-//                    countDownStarted = false;
-//                }
-//            };
-//            countDownTimer.start();
-//        }
-//        else
-//        {
-//            String message = "SEEK MEDICAL ASSISTANCE";
-//            counterTextView.setText(message);
-//        }
+        time = time * 3600;
+
+        if(bac < 0.08)
+        {
+            String message = "You are safe to drive.";
+            counterTextView.setText(message);
+        }
+        else if (0.08 <= bac && bac <= 0.37)
+        {
+            mStartOfCounter = Instant.ofEpochMilli(sp.getUserDateTime());
+            final Instant start = Instant.now();
+
+            if (mStartOfCounter != null && start != null)
+            {
+                long difference = timeDifferenceFromStart(start, mStartOfCounter);
+                if (difference > 0)
+                {
+                    time = (time - difference);
+                }
+            }
+            new CountDownTimer((long)time * 1000,1000)
+            {
+                @Override
+                public void onTick(long l) { // CODE FROM https://www.geeksforgeeks.org/countdowntimer-in-android-with-example/ Has been updated for this specific use.
+                    NumberFormat f = new DecimalFormat("00");
+                    long hour = (l/3600000) % 24;
+                    long minute = (l/60000) % 60;
+                    counterTextView.setText(f.format(hour) + " h, " + f.format(minute) + " m.");
+                }
+                @Override
+                public void onFinish() {
+                    String message = "Please breathe again before taking the wheel.";
+                    counterTextView.setText(message);
+                }
+            }.start();
+        }
+        else
+        {
+            String message = "SEEK MEDICAL ASSISTANCE.";
+            counterTextView.setText(message);
+        }
 
     }
 

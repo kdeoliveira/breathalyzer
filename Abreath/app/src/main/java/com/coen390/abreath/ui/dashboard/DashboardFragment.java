@@ -43,6 +43,7 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -76,15 +77,15 @@ public class DashboardFragment extends Fragment implements LoadingFragment.Dissm
         if(userdata >= THRESHOLD) {
             colors.add(0xffD32121);
             colors.add(80000000);
-            View red_triangle = (View) getView().findViewById(R.id.red_display);
-            red_triangle.setVisibility(View.INVISIBLE);
+
             textView.setTextColor(0xffD32121);
         }
         else if(userdata >= THRESHOLD -0.02f && userdata < THRESHOLD){
             colors.add(0xffFE9B24);
             colors.add(80000000);
             textView.setTextColor(0xffFE9B24);
-
+            View red_triangle = (View) getView().findViewById(R.id.red_display);
+            red_triangle.setVisibility(View.INVISIBLE);
         }
         else
         {
@@ -309,6 +310,8 @@ public class DashboardFragment extends Fragment implements LoadingFragment.Dissm
 //        Intent intent = new Intent(getActivity(), HomeFragment.class); //https://stackoverflow.com/questions/21953839/how-to-decide-which-activity-we-came-from
 //        intent.putExtra("comesFrom", "Dashboard");
 //    }
+
+
 
     @Override
     public void onDismissAction() {

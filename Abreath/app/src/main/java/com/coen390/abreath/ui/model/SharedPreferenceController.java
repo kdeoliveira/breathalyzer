@@ -2,7 +2,9 @@ package com.coen390.abreath.ui.model;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 
+import java.time.Instant;
 import java.util.Date;
 
 public class SharedPreferenceController {
@@ -35,7 +37,9 @@ public class SharedPreferenceController {
         SharedPreferences.Editor editor = user_data.edit();
         editor.putFloat("value", input);
         editor.apply();
-        this.setUserDateTime((new Date().getTime()) + (long) (-0.08 + input) * 240000);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            this.setUserDateTime(Instant.now().toEpochMilli());
+        }
     }
     private void setUserDateTime(long time){
         SharedPreferences.Editor editor = user_data.edit();

@@ -30,10 +30,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:checked="false"
+        android:textColor="@color/black"
         android:layout_gravity="center"
         android:text="@string/set_dark_mode"
         android:textSize="15sp"
-        android:textStyle=""
+        android:textStyle="bold"
       />
 
     <View
