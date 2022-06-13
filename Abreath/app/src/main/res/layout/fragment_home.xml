@@ -52,14 +52,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
-                android:text="fdsfd"
+                android:text=""
                 android:textStyle="bold" />
             <TextView
                 android:id="@+id/profile_lastname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
-                android:text="fdsfd"
+                android:text=""
                 />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -73,15 +73,9 @@
             android:id="@+id/home_counter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Counter Here"
+            android:textSize="12sp"
             android:gravity="end"
-            android:textStyle="bold"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMaxTextSize="100sp"
-            app:autoSizeMinTextSize="10sp"
             android:layout_marginTop="10dp"
-            android:layout_gravity="center_vertical" />
-
             android:layout_gravity="center" />
     </LinearLayout>
 

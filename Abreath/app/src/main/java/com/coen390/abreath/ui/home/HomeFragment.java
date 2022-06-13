@@ -4,21 +4,16 @@ import static android.content.ContentValues.TAG;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -33,14 +28,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.coen390.abreath.R;
 import com.coen390.abreath.common.Utility;
-import com.coen390.abreath.data.api.MockUpRepository;
-import com.coen390.abreath.data.api.MockUpService;
-import com.coen390.abreath.data.api.MockUpServiceBuilder;
-import com.coen390.abreath.data.entity.UserDataEntity;
 import com.coen390.abreath.databinding.FragmentHomeBinding;
 import com.coen390.abreath.ui.model.SharedPreferenceController;
 import com.coen390.abreath.ui.model.UserDataViewModel;
-import com.coen390.abreath.ui.model.ViewModelFactory;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -48,11 +38,8 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -60,15 +47,11 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Random;
 
 //https://developer.android.com/guide/fragments/communicate
@@ -82,20 +65,15 @@ public class HomeFragment extends Fragment {
     private ImageView profileImage;
     private SharedPreferenceController sp;
     private Uri picture;
-    private long hour, minute;
-    private static Instant start;
-    @SuppressLint("NewApi")
-    private static final Instant start_of_counter = Instant.now();
-    private Duration timeElapsed;
-    private Context context;
-    private String checking;
+    private CountDownTimer countDownTimer;
+    private boolean countDownStarted = false;
+
 
     @SuppressLint("NewApi")
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sp = new SharedPreferenceController(requireContext());
-        System.out.println("Start of program: " + start_of_counter);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -117,7 +95,6 @@ public class HomeFragment extends Fragment {
         nameTextView = binding.profileName;
         lastnameTextView = binding.profileLastname;
 
-        counterTextView = binding.homeCounter;
         ageTextView = binding.profileAge;
         heightTextView = binding.profileHeight;
         profileImage = binding.profileImage;
@@ -208,23 +185,22 @@ public class HomeFragment extends Fragment {
         super.onResume();
         uploadImage();
         getProfilePicture();
+        if(!countDownStarted)
+            timer(sp.getUserData());
 
-        
-        try {
-            Intent intent = Intent.getIntentOld("comesFrom");
-            checking = intent.getStringExtra("comesFrom");
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-
-
-        if(checking != "Dashboard")
-            counterTextView.setText("");
-        else
-        {
-            SharedPreferences valueForTimer = context.getSharedPreferences("UserData", Context.MODE_PRIVATE);
-            timer(valueForTimer.getFloat("value", 0.0f));
-        }
+//        try {
+//            Intent intent = Intent.getIntentOld("comesFrom");
+//            checking = intent.getStringExtra("comesFrom");
+//        } catch (URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//        if(!Objects.equals(checking, "Dashboard"))
+//            counterTextView.setText("");
+//        else
+//        {
+//        }
 
 
 
@@ -335,66 +311,60 @@ public class HomeFragment extends Fragment {
 
 
     @SuppressLint("NewApi")
-    public void timer(float a )
+    public void timer(float a)
     {
-        double bac = a;
-        double time = (-0.08 + bac) / 0.015;
+        if(a == 0.0f || sp.getUserDateTime() == 0){
+            counterTextView.setText("");
+            return;
+        }
 
-        time = time * 3600;
+        counterTextView.setText("");
 
-        if(bac < 0.08)
-        {
-            String message = "You are safe to drive.";
-            counterTextView.setText(message);
-        }
-        else if (0.08 <= bac && bac <= 0.37)
-        {
-            start = Instant.now();
-            if (start_of_counter != null && start != null)
-            {
-                long difference = timeDifferenceFromStart();
-                if (difference > 0)
-                {
-                    time = (time - difference);
-                }
-            }
-            new CountDownTimer((long)time * 1000,1000)
-            {
-                @Override
-                public void onTick(long l) { // CODE FROM https://www.geeksforgeeks.org/countdowntimer-in-android-with-example/ Has been updated for this specific use.
-                    NumberFormat f = new DecimalFormat("00");
-                    hour = (l/3600000) % 24;
-                    minute = (l/60000) % 60;
-                    counterTextView.setText(f.format(hour) + " h, " + f.format(minute) + " m.");
-                }
-                @Override
-                public void onFinish() {
-                    String message = "Please breathe again before taking the wheel.";
-                    counterTextView.setText(message);
-                }
-            }.start();
-        }
-        else
-        {
-            String message = "SEEK MEDICAL ASSISTANCE.";
-            counterTextView.setText(message);
-        }
+//        double bac = a;
+//        long time = (long) ((-0.08 + bac) / 0.015);
+//
+//        time = time * 3600;
+//
+//        if(bac < 0.08)
+//        {
+//            String message = "You are safe to drive";
+//            counterTextView.setText(message);
+//        }
+//        else if (0.08 <= bac && bac <= 0.37)
+//        {
+//            time = (new Date().getTime() - sp.getUserDateTime());
+//            Log.d("HomeFragment", String.valueOf(time));
+//            countDownStarted = true;
+//            countDownTimer = new CountDownTimer((long)time * 1000,1000)
+//            {
+//                @Override
+//                public void onTick(long l) { // CODE FROM https://www.geeksforgeeks.org/countdowntimer-in-android-with-example/ Has been updated for this specific use.
+//                    NumberFormat f = new DecimalFormat("00");
+//                    long hour, minute;
+//                    hour = (l/3600000) % 24;
+//                    minute = (l/60000) % 60;
+//                    counterTextView.setText(f.format(hour) + " h, " + f.format(minute) + " m.");
+//
+//                }
+//                @Override
+//                public void onFinish() {
+//                    String message = "Please breathe again before taking the wheel";
+//                    counterTextView.setText(message);
+//                    countDownStarted = false;
+//                }
+//            };
+//            countDownTimer.start();
+//        }
+//        else
+//        {
+//            String message = "SEEK MEDICAL ASSISTANCE";
+//            counterTextView.setText(message);
+//        }
 
     }
 
-    @SuppressLint("NewApi")
     @Override
-    public void onPause()
-    {
-        super.onPause();
+    public void onStop() {
+        super.onStop();
     }
-
-    @SuppressLint("NewApi")
-    public long timeDifferenceFromStart() //CODE FROM https://stackoverflow.com/questions/4927856/how-can-i-calculate-a-time-difference-in-java Has been updated for this specific use.
-    {
-        timeElapsed = Duration.between(start_of_counter, start);
-        return timeElapsed.toSeconds();
-    }
-
-
 }

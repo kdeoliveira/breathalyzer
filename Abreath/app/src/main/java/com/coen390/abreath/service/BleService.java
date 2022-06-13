@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class BleService extends Service {
-    private Binder binder = new LocalBinder();;
+    private final Binder binder = new LocalBinder();;
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothGatt bluetoothGatt;
     private List<Float> mTempResults;
@@ -77,7 +77,8 @@ public class BleService extends Service {
         @SuppressLint("MissingPermission")
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-            super.onCharacteristicRead(gatt, characteristic, status);
+//            super.onCharacteristicRead(gatt, characteristic, status);
+            Log.d("BleService", "onCharacteristicRead");
 
             if(status == BluetoothGatt.GATT_SUCCESS){
                 try{
@@ -86,6 +87,7 @@ public class BleService extends Service {
                     if(input == -1){
                         mBluetoothFinished.postValue(true);
                     }else{
+                        mBluetoothFinished.postValue(false);
                         mTempResults.add(input);
                         mBluetoothResults.postValue(mTempResults);
                     }
@@ -143,10 +145,6 @@ public class BleService extends Service {
     public IBinder onBind(Intent intent) {
         BluetoothManager manager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
         bluetoothAdapter = manager.getAdapter();
-        mBluetoothResults = new MutableLiveData<>();
-        mBluetoothFinished = new MutableLiveData<>();
-        mBluetoothFinished.setValue(false);
-        mTempResults = new ArrayList<>();
 
         return binder;
     }
@@ -155,9 +153,6 @@ public class BleService extends Service {
     public boolean onUnbind(Intent intent) {
 
         this.close();
-        mBluetoothResults = null;
-        mBluetoothFinished = null;
-        mTempResults.clear();
         return super.onUnbind(intent);
 
     }
@@ -165,7 +160,10 @@ public class BleService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        mBluetoothResults = new MutableLiveData<>();
+        mBluetoothFinished = new MutableLiveData<>();
+        mBluetoothFinished.setValue(false);
+        mTempResults = new ArrayList<>();
     }
 
     @SuppressLint("MissingPermission")
@@ -177,6 +175,10 @@ public class BleService extends Service {
             bluetoothGatt.close();
             bluetoothGatt = null;
         }
+
+        mTempResults.clear();
+        mBluetoothResults.setValue(mTempResults);
+        mBluetoothFinished.setValue(false);
     }
 
     @SuppressLint("MissingPermission")

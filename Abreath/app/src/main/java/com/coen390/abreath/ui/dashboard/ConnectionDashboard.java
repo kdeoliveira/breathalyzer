@@ -78,8 +78,8 @@ public class ConnectionDashboard extends Fragment {
     //TODO To be changed
     private BluetoothGattCharacteristic mCharacteristic;
 
-@SuppressLint("MissingPermission")
-private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForResult;
+    @SuppressLint("MissingPermission")
+    private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForResult;
 
     public ConnectionDashboard() {}
 
@@ -275,8 +275,8 @@ private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForRes
         permissionCheck += requireActivity().checkSelfPermission("Manifest.permission.BLUETOOTH_SCAN");
         if (permissionCheck != 0) {
 
-                requireActivity().requestPermissions(new String[]{Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT}, 1001); //Any number
-                Log.d("BLuetooth", "PERMISSION");
+            requireActivity().requestPermissions(new String[]{Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT}, 1001); //Any number
+            Log.d("BLuetooth", "PERMISSION");
 
         }
     }
