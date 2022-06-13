@@ -2,11 +2,14 @@ package com.coen390.abreath.ui.home;
 
 import static android.content.ContentValues.TAG;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -23,6 +26,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
@@ -56,6 +60,12 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
@@ -72,13 +82,23 @@ public class HomeFragment extends Fragment {
     private ImageView profileImage;
     private SharedPreferenceController sp;
     private Uri picture;
+    private long hour, minute;
+    private static Instant start;
+    @SuppressLint("NewApi")
+    private static final Instant start_of_counter = Instant.now();
+    private Duration timeElapsed;
+    private Context context;
+    private String checking;
 
+    @SuppressLint("NewApi")
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sp = new SharedPreferenceController(requireContext());
+        System.out.println("Start of program: " + start_of_counter);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -90,16 +110,21 @@ public class HomeFragment extends Fragment {
         editor.putString("fragment", "home");
         editor.apply();
 
+
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         nameTextView = binding.profileName;
         lastnameTextView = binding.profileLastname;
+
         counterTextView = binding.homeCounter;
         ageTextView = binding.profileAge;
         heightTextView = binding.profileHeight;
         profileImage = binding.profileImage;
         weightTextView = binding.profileWeight;
+        counterTextView = binding.homeCounter;
+
+
 
 
         profileImage.setOnClickListener(new View.OnClickListener() {
@@ -110,6 +135,8 @@ public class HomeFragment extends Fragment {
         });
 
         getProfilePicture();
+
+
 
 
         //Note that this should be moved into onViewCreated to ensure parent activity or this view has been created before setting ViewModels
@@ -175,13 +202,37 @@ public class HomeFragment extends Fragment {
         binding = null;
     }
 
+    @SuppressLint("NewApi")
     @Override
     public void onResume() {
         super.onResume();
         uploadImage();
         getProfilePicture();
+
+        
+        try {
+            Intent intent = Intent.getIntentOld("comesFrom");
+            checking = intent.getStringExtra("comesFrom");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+
+        if(checking != "Dashboard")
+            counterTextView.setText("");
+        else
+        {
+            SharedPreferences valueForTimer = context.getSharedPreferences("UserData", Context.MODE_PRIVATE);
+            timer(valueForTimer.getFloat("value", 0.0f));
+        }
+
+
+
     }
 
+
+    //CODE FROM https://www.youtube.com/watch?v=7p4MBsz__ao&list=LL&index=2&t=43s&ab_channel=CodewithLove%28RSTechnoSmart%29
+    //has been adapted to work with the requirements of this project.
     ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
             new ActivityResultCallback<Uri>() {
                 @Override
@@ -216,7 +267,8 @@ public class HomeFragment extends Fragment {
                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                         Uri uri = Uri.fromFile(localFile);
                         profileImage.setImageURI(uri);
-                    }
+                    } //CODE FROM https://www.youtube.com/watch?v=7p4MBsz__ao&list=LL&index=2&t=43s&ab_channel=CodewithLove%28RSTechnoSmart%29
+                    //has been adapted to work with the requirements of this project.
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
@@ -243,6 +295,8 @@ public class HomeFragment extends Fragment {
             Log.d(TAG, "Download not successful");
     }
 
+    //CODE FROM https://www.youtube.com/watch?v=7p4MBsz__ao&list=LL&index=2&t=43s&ab_channel=CodewithLove%28RSTechnoSmart%29
+    //has been adapted to work with the requirements of this project.
     public void uploadImage()
     {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -277,6 +331,69 @@ public class HomeFragment extends Fragment {
             System.out.println("User not Signed In");
         }
 
+    }
+
+
+    @SuppressLint("NewApi")
+    public void timer(float a )
+    {
+        double bac = a;
+        double time = (-0.08 + bac) / 0.015;
+
+        time = time * 3600;
+
+        if(bac < 0.08)
+        {
+            String message = "You are safe to drive.";
+            counterTextView.setText(message);
+        }
+        else if (0.08 <= bac && bac <= 0.37)
+        {
+            start = Instant.now();
+            if (start_of_counter != null && start != null)
+            {
+                long difference = timeDifferenceFromStart();
+                if (difference > 0)
+                {
+                    time = (time - difference);
+                }
+            }
+            new CountDownTimer((long)time * 1000,1000)
+            {
+                @Override
+                public void onTick(long l) { // CODE FROM https://www.geeksforgeeks.org/countdowntimer-in-android-with-example/ Has been updated for this specific use.
+                    NumberFormat f = new DecimalFormat("00");
+                    hour = (l/3600000) % 24;
+                    minute = (l/60000) % 60;
+                    counterTextView.setText(f.format(hour) + " h, " + f.format(minute) + " m.");
+                }
+                @Override
+                public void onFinish() {
+                    String message = "Please breathe again before taking the wheel.";
+                    counterTextView.setText(message);
+                }
+            }.start();
+        }
+        else
+        {
+            String message = "SEEK MEDICAL ASSISTANCE.";
+            counterTextView.setText(message);
+        }
+
+    }
+
+    @SuppressLint("NewApi")
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+    }
+
+    @SuppressLint("NewApi")
+    public long timeDifferenceFromStart() //CODE FROM https://stackoverflow.com/questions/4927856/how-can-i-calculate-a-time-difference-in-java Has been updated for this specific use.
+    {
+        timeElapsed = Duration.between(start_of_counter, start);
+        return timeElapsed.toSeconds();
     }
 
 

@@ -34,12 +34,14 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import com.coen390.abreath.MainActivity;
 import com.coen390.abreath.R;
 import com.coen390.abreath.databinding.FragmentDashboardBinding;
 import com.coen390.abreath.domain.SaveLastLevelUseCase;
 import com.coen390.abreath.service.BleService;
 import com.coen390.abreath.service.BluetoothServiceConnection;
 import com.coen390.abreath.service.GattBroadcastReceiver;
+import com.coen390.abreath.ui.home.HomeFragment;
 import com.coen390.abreath.ui.model.DashboardViewModel;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
@@ -64,7 +66,9 @@ public class DashboardFragment extends Fragment implements LoadingFragment.Dissm
     private DashboardViewModel dashboardViewModel;
     private BroadcastReceiver gattUpdateReceiver;
     private ServiceConnection serviceConnection;
+    private Context context;
     private Handler handlerAwaiting, handlerNotFound;
+
 
 
     private void PieData() {
@@ -328,6 +332,13 @@ public class DashboardFragment extends Fragment implements LoadingFragment.Dissm
             View orange_triangle = (View) getView().findViewById(R.id.orange_display);
             orange_triangle .setVisibility(View.INVISIBLE);
         }
+        SharedPreferences userDataSP = context.getSharedPreferences("UserData", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = userDataSP.edit();
+        editor.putFloat("value", userdata);
+        editor.apply();
+
+        Intent intent = new Intent(getActivity(), HomeFragment.class); //https://stackoverflow.com/questions/21953839/how-to-decide-which-activity-we-came-from
+        intent.putExtra("comesFrom", "Dashboard");
 
     }
 

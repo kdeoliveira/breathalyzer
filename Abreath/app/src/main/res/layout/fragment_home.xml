@@ -41,27 +41,28 @@
         android:gravity="bottom"
         android:layout_marginTop="-30dp"
         >
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-
-        >
-        <TextView
-            android:id="@+id/profile_name"
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
+            android:orientation="vertical"
 
-            android:textStyle="bold" />
-        <TextView
-            android:id="@+id/profile_lastname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:text="fdsfd"
-             />
-    </androidx.appcompat.widget.LinearLayoutCompat>
+            >
+            <TextView
+                android:id="@+id/profile_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:text="fdsfd"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/profile_lastname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:text="fdsfd"
+                />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
         <Space
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -74,6 +75,13 @@
             android:layout_height="wrap_content"
             android:text="Counter Here"
             android:gravity="end"
+            android:textStyle="bold"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMaxTextSize="100sp"
+            app:autoSizeMinTextSize="10sp"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center_vertical" />
+
             android:layout_gravity="center" />
     </LinearLayout>
 
@@ -173,6 +181,7 @@
             android:text="@string/previous_samples"
             android:textSize="18sp"
             android:textStyle="bold" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
