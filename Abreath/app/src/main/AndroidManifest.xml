@@ -33,29 +33,48 @@
         android:theme="@style/Theme.Abreath"
         tools:targetApi="31">
         <activity
+            android:label="@string/reset_pwd"
+            android:name=".ui.ResetPassword"
+            android:exported="false" />
+
+
+        <activity
+            android:label="@string/reset_pwd"
+            android:name=".ui.ResetPasswordVerification"
+            android:exported="false" />
+
+        <activity
+            android:label="@string/forgot_psw"
+            android:name=".ui.ForgotPassword"
+            android:exported="false" />
+        <activity
+            android:label="@string/my_account"
             android:name=".ui.settings.pages.Account"
             android:exported="false" />
         <activity
+            android:label="@string/signup"
             android:name=".ui.Registration"
             android:exported="false" />
         <activity
+            android:label="@string/login"
             android:name=".ui.Login"
             android:exported="false" /> <!-- <service android:name=".service.BluetoothClassicService" /> -->
         <service android:name=".service.BleService" />
 
         <activity
+            android:label="@string/about_us"
             android:name=".ui.settings.pages.AboutPage"
             android:exported="false" />
         <activity
+            android:label="@string/help"
             android:name=".ui.settings.pages.HelpPage"
             android:exported="false" />
         <activity
-            android:name=".ui.settings.pages.AccountPage"
-            android:exported="false" />
-        <activity
+            android:label="@string/theme_mode"
             android:name=".ui.settings.pages.AppearancePage"
             android:exported="false" />
         <activity
+            android:label="@string/units"
             android:name=".ui.settings.pages.UnitsPage"
             android:exported="false" />
         <activity

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/border"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.PopUpFramgent">
+
+
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:minWidth="500dp"
+        android:padding="17dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/popup_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/expletus_sans_bold"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="ABreath is an application that has for goal to reduce the number of drunk drivers on the road.\n\nThis is where you will find your profile page and your personalized data chart that displays your test history over time.\n\nIf you have recently done a test and were above the limit, a counter will give you an estimation on how long it will take for you to go under the limit driving limit.\n\nIf you wish to see if you are legally eligible to take the wheel, tap the main button!\n\n"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="15sp"
+            tools:ignore="MissingConstraints"/>
+
+        <ImageView
+            android:layout_width="70dp"
+            android:layout_height="85dp"
+            android:layout_gravity="center"
+
+            android:background="@drawable/beer"
+/>
+
+        <Button
+            android:id="@+id/esc_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="OK!"
+             />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+</FrameLayout>
+
+

@@ -20,6 +20,16 @@
     <string name="weight">Weight</string>
     <string name="previous_samples">Previous Samples</string>
     <string name="graph_units">in BAC %</string>
+    <string name="title_activity_forgot_password">ForgotPassword</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+
     <string name="name">Name</string>
     <string name="delete_account">Delete Account</string>
     <string name="save_changes">Save Changes</string>
@@ -35,5 +45,39 @@
     <string name="kg">Kg</string>
     <string name="lbs">Lbs</string>
     <string name="height_units">Height Units</string>
+    <string name="you_have_no_samples_at_this_time">You have no samples at this time</string>
+    <string name="kevin_de_oliveira">Kevin de Oliveira</string>
+    <string name="li_xingze">Li Xingze</string>
+    <string name="jiaxuan_zhao">Jiaxuan Zhao</string>
+    <string name="noah_louvet">Noah Louvet</string>
+    <string name="kunyi_wang">KunYi Wang</string>
+    <string name="antoine_gaubil">Antoine Gaubil</string>
+    <string name="minnelle_zafar">Minnelle Zafar</string>
+    <string name="matthieu_pourrat">Matthieu Pourrat</string>
+    <string name="abreath_is_a_breathalyzer_created_and_developed_by_those_human_being">Abreath is a Breathalyzer created and developed by those human being:</string>
+    <string name="all_icons_used_on_the_settings_page_are_from_google_icons_and_icon8_and_are_free_to_use_under_the_apache_licence_version_2_0">All icons used on the settings page are from Google Icons and Icon8 and are free to use under the Apache Licence Version 2.0.</string>
+    <string name="picture_profile">picture_profile</string>
+    <string name="change_password">Change password?</string>
+    <string name="save">SAVE</string>
+    <string name="my_account">My Account</string>
+    <string name="reset_pwd">Reset Password</string>
+    <string name="login">Login</string>
+    <string name="about_us">About Us</string>
+    <string name="help">Help</string>
+    <string name="theme_mode">Theme Mode</string>
+    <string name="units">Units</string>
+    <string name="forgot_psw">Forgot Password</string>
+    <string name="go_back">Go back</string>
+    <string name="abreath_is_an_application_to_help_you_make_the_right_choice">ABreath is an application to help you make the right choice!</string>
+    <string name="when_you_drink_always_make_sure_it_is_safe_for_you_to_drive_before_taking_the_wheel">When you drink, always make sure it is safe for you to drive before taking the wheel.</string>
+    <string name="when_you_drink_always_make_sure_it_is_safe_for_you_to_drive">When you drink, always make sure it is safe for you to drive.</string>
+    <string name="alcohol_levels_are_presented_in_of_bac_blood_alcohol_content_in_your_body">Alcohol levels are presented in % of BAC (Blood Alcohol Content) in your body.</string>
+    <string name="the_legal_limit_in_canada_is_set_currently_set_to_0_08_bac">The legal limit in Canada is set currently set to 0.08% BAC.</string>
+    <string name="click_on_the_start_button_to_connect_with_your_breathalyzer">Click on the start button to connect with your breathalyzer</string>
+    <string name="the_results_will_be_displayed_after_you_have_blown_into_the_breathalyzer">The results will be displayed after you have blown into the breathalyzer</string>
+    <string name="you_can_keep_track_and_compare_all_your_previous_tests_on_the_main_screen">You can keep track and compare all your previous tests on the main screen</string>
+    <string name="cm">cm</string>
+    <string name="in">in</string>
+    <string name="set_dark_mode">Set Dark Mode</string>
 
 </resources>

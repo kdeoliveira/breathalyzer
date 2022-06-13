@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.widget.CompoundButton;
 import android.widget.TextView;
@@ -16,7 +17,6 @@ import java.util.Objects;
 
 public class UnitsPage extends AppCompatActivity {
 
-    protected TextView units;
     SharedPreferenceController sp;
 
     @Override
@@ -25,7 +25,6 @@ public class UnitsPage extends AppCompatActivity {
         setContentView(R.layout.activity_units_page);
 
         sp = new SharedPreferenceController(this);
-        units = findViewById(R.id.unitsText);
 
         //units.setText(test);
         ToggleButton weight = (ToggleButton) findViewById(R.id.toggleWeight);

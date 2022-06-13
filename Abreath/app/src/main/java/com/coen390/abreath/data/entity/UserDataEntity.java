@@ -260,26 +260,26 @@ public class UserDataEntity {
         return returnArrayList;
     }
 
+
     public void createAccount()
     {
         FirebaseAuth auth;
         auth = FirebaseAuth.getInstance();
 
+            auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = auth.getCurrentUser();
+                        String uid = user.getUid();
+                        DatabaseReference dr;
+                        dr = FirebaseDatabase.getInstance().getReference().child("user").child(uid);
+                        String nameString = name;
+                        dr.child("name").setValue(nameString);
+                    }
+                }
 
-       auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-           @Override
-           public void onComplete(@NonNull Task<AuthResult> task) {
-               if(task.isSuccessful())
-               {
-                   FirebaseUser user = auth.getCurrentUser();
-                   String uid = user.getUid();
-                   DatabaseReference dr;
-                   dr = FirebaseDatabase.getInstance().getReference().child("user").child(uid);
-                   String nameString = name;
-                   dr.child("name").setValue(nameString);
-               }
-           }
-       });
+            });
     }
 
     public void signIn()
@@ -410,6 +410,8 @@ public class UserDataEntity {
             });
         }
     }
+
+
 
     public String[] getData()
     {

@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/primaryBgColor"
+    android:elevation="2dp"
     tools:context=".ui.dashboard.LoadingFragment">
 
     <LinearLayout
@@ -45,6 +47,15 @@
                 android:textAlignment="center"
                 android:textSize="24sp" />
         </TextSwitcher>
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/go_back"
+            android:layout_margin="17dp"
+            android:visibility="gone"/>
+
     </LinearLayout>
 
 

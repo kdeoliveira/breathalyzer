@@ -82,7 +82,7 @@ public class BleService extends Service {
             if(status == BluetoothGatt.GATT_SUCCESS){
                 try{
                     final float input = Float.parseFloat(characteristic.getStringValue(0));
-
+                    Log.d("BleService", Float.toString(input));
                     if(input == -1){
                         mBluetoothFinished.postValue(true);
                     }else{
@@ -143,6 +143,10 @@ public class BleService extends Service {
     public IBinder onBind(Intent intent) {
         BluetoothManager manager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
         bluetoothAdapter = manager.getAdapter();
+        mBluetoothResults = new MutableLiveData<>();
+        mBluetoothFinished = new MutableLiveData<>();
+        mBluetoothFinished.setValue(false);
+        mTempResults = new ArrayList<>();
 
         return binder;
     }
@@ -151,6 +155,9 @@ public class BleService extends Service {
     public boolean onUnbind(Intent intent) {
 
         this.close();
+        mBluetoothResults = null;
+        mBluetoothFinished = null;
+        mTempResults.clear();
         return super.onUnbind(intent);
 
     }
@@ -158,10 +165,7 @@ public class BleService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        mBluetoothResults = new MutableLiveData<>();
-        mBluetoothFinished = new MutableLiveData<>();
-        mBluetoothFinished.setValue(false);
-        mTempResults = new ArrayList<>();
+
     }
 
     @SuppressLint("MissingPermission")
@@ -169,7 +173,7 @@ public class BleService extends Service {
         Log.d("BleService", "unBind");
         if(bluetoothGatt != null){
             Log.d("BleService", "Closing");
-
+            bluetoothGatt.disconnect();
             bluetoothGatt.close();
             bluetoothGatt = null;
         }

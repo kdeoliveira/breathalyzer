@@ -2,26 +2,27 @@ package com.coen390.abreath;
 
 import android.content.Context;
 import android.content.Intent;
+
+import android.content.SharedPreferences;
+
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.Network;
-import android.net.NetworkCapabilities;
-import android.net.NetworkInfo;
-import android.net.NetworkRequest;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.coen390.abreath.data.entity.UserDataEntity;
-import com.coen390.abreath.service.BleService;
 import com.coen390.abreath.service.NetworkManager;
 import com.coen390.abreath.ui.Login;
-import com.google.android.material.bottomappbar.BottomAppBar;
+import com.coen390.abreath.ui.PopUpFramgent;
+import com.coen390.abreath.ui.model.SharedPreferenceController;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
@@ -29,6 +30,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.coen390.abreath.databinding.ActivityMainBinding;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -54,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(binding.getRoot());
 
+        //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
+                //.getColor(android.R.color.holo_blue_bright)));
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -62,8 +66,6 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         Objects.requireNonNull(getSupportActionBar()).setElevation(0f);
-
-
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
 
@@ -75,8 +77,6 @@ public class MainActivity extends AppCompatActivity {
             public void onAvailable(@NonNull Network network) {
                 Toast.makeText(MainActivity.this, "Reconnected to internet", Toast.LENGTH_SHORT).show();
             }
-
-
             @Override
             public void onLost(@NonNull Network network) {
                 Log.d("MainActivity", "Lost internet connection");
@@ -90,6 +90,20 @@ public class MainActivity extends AppCompatActivity {
             navController.navigate(R.id.to_navigation_dashboard, null, options);
 
         });
+
+
+        FloatingActionButton help_button = (FloatingActionButton) findViewById(R.id.help_button_settings);
+        help_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                SharedPreferences frag = getSharedPreferences("whichfrag", Context.MODE_PRIVATE);
+                String which_frag = frag.getString("fragment", "");
+                PopUpFramgent.newInstance(which_frag, "").show(getSupportFragmentManager(), PopUpFramgent.TAG);
+            }
+        });
+
+
     }
 
 
@@ -108,6 +122,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         NetworkManager.Builder.create(this).checkConnection(connectionNetworkCallback);
+        SharedPreferenceController sp = new SharedPreferenceController(this);
+        if (sp.getNightMode()){
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
+                    .getColor(R.color.primaryColor)));
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }else{
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
     }
 
     @Override
@@ -116,4 +138,8 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+
+
+
+
 }

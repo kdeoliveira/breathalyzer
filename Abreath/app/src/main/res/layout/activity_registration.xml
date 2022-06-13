@@ -102,14 +102,16 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/pword_toggle_2"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
+        android:layout_height="54dp"
         android:layout_weight="1"
         android:textColorHint="@color/hintColor"
         app:passwordToggleEnabled="true" >
+
         <EditText
             android:id="@+id/signup_password"
             android:layout_width="match_parent"
-            android:layout_height="52dp"
+            android:layout_height="54dp"
+            android:layout_weight="1"
             android:background="@android:color/transparent"
             android:drawableStart="@drawable/ic_baseline_lock_open_24"
             android:drawablePadding="15dp"
@@ -131,19 +133,21 @@
         android:textColorHint="@color/hintColor"
         app:passwordToggleEnabled="true" >
 
-    <EditText
-        android:id="@+id/signup_confirm_password"
-        android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:background="@android:color/transparent"
-        android:drawableStart="@drawable/ic_baseline_lock_open_24"
-        android:drawablePadding="15dp"
-        android:ems="10"
-        android:hint="@string/confirm_password"
-        android:inputType="textPassword"
-        android:padding="15dp"
-        android:textColor="@color/black"
-        android:textColorHint="@color/hintColor" />
+        <EditText
+            android:id="@+id/signup_confirm_password"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:drawableStart="@drawable/ic_baseline_lock_open_24"
+            android:drawablePadding="15dp"
+            android:ems="10"
+            android:hint="Confirm Password"
+            android:inputType="textPassword"
+            android:padding="15dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/hintColor" />
+
 
     </com.google.android.material.textfield.TextInputLayout>
     <CheckBox

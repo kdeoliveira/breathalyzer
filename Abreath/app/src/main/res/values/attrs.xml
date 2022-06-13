@@ -2,4 +2,5 @@
 <resources>
     <declare-styleable name="BarChart">
     </declare-styleable>
+    <attr name="listFontColor" format="color" />
 </resources>

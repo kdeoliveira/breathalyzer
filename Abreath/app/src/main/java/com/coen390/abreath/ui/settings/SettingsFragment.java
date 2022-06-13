@@ -1,13 +1,20 @@
 package com.coen390.abreath.ui.settings;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -16,22 +23,22 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.coen390.abreath.R;
 import com.coen390.abreath.databinding.FragmentSettingsBinding;
+import com.coen390.abreath.ui.ResetPasswordVerification;
 import com.coen390.abreath.ui.Login;
 import com.coen390.abreath.ui.Registration;
 import com.coen390.abreath.ui.model.SettingsViewModel;
 import com.coen390.abreath.ui.settings.pages.AboutPage;
 import com.coen390.abreath.ui.settings.pages.Account;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 
-import com.coen390.abreath.ui.settings.pages.AccountPage;
 import com.coen390.abreath.ui.settings.pages.AppearancePage;
 import com.coen390.abreath.ui.settings.pages.HelpPage;
 import com.coen390.abreath.ui.settings.pages.UnitsPage;
-import com.google.firebase.firestore.auth.User;
+import com.google.firebase.auth.FirebaseUser;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class SettingsFragment extends Fragment {
 
@@ -50,10 +57,15 @@ public class SettingsFragment extends Fragment {
         al.add(new Category(R.drawable.graph, "Units"));
         al.add(new Category(R.drawable.help, "Help"));
         al.add(new Category(R.drawable.info, "About"));
+        al.add(new Category(R.drawable.key_settings, "Change Password"));
         al.add(new Category(R.drawable.logout, "Logout"));
-      
 
-        SettingsAdapter sa = new SettingsAdapter(getActivity().getApplicationContext(), R.layout.row, al);
+        SharedPreferences frag = getActivity().getSharedPreferences("whichfrag", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = frag.edit();
+        editor.putString("fragment", "settings");
+        editor.apply();
+
+        SettingsAdapter sa = new SettingsAdapter(requireContext(), R.layout.row, al);
         list.setAdapter(sa);
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -78,6 +90,9 @@ public class SettingsFragment extends Fragment {
                         openAboutPage();
                         break;
                     case 5:
+                        openResetPass();
+                        break;
+                    case 6:
                         FirebaseAuth.getInstance().signOut();
                         openSignIn();
                         break;
@@ -86,6 +101,8 @@ public class SettingsFragment extends Fragment {
                 }
             }
         });
+
+
 
         return root;
     }
@@ -138,5 +155,24 @@ public class SettingsFragment extends Fragment {
         startActivity(intent);
 
     }
+
+    private void openResetPass()
+    {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user != null) {
+            // User is signed in
+
+            Intent intent = new Intent(getActivity(), ResetPasswordVerification.class);
+            startActivity(intent);
+        }
+        else {
+            openSignIn();
+        }
+
+
+    }
+
+
 
 }

@@ -18,6 +18,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -86,6 +87,12 @@ private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForRes
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        SharedPreferences frag = getActivity().getSharedPreferences("whichfrag", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = frag.edit();
+        editor.putString("fragment", "bluetooth");
+        editor.apply();
 
         serviceConnection = new BluetoothServiceConnection(new BluetoothServiceConnection.onBleService() {
             @Override
@@ -193,7 +200,7 @@ private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForRes
         mHandlerConnection = new Handler();
 
         connect_button.setOnClickListener(view -> {
-            if(!bluetoothService.isBleSupported()){
+            if(!bluetoothService.isBleSupported() || !bluetoothService.isBleEnabled()){
                 Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startSystemBluetooth.launch(intent);
             }else{
@@ -267,9 +274,10 @@ private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForRes
         int permissionCheck = requireActivity().checkSelfPermission("Manifest.permission.BLUETOOTH_CONNECT");
         permissionCheck += requireActivity().checkSelfPermission("Manifest.permission.BLUETOOTH_SCAN");
         if (permissionCheck != 0) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+
                 requireActivity().requestPermissions(new String[]{Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT}, 1001); //Any number
-            }
+                Log.d("BLuetooth", "PERMISSION");
+
         }
     }
 
@@ -286,6 +294,7 @@ private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForRes
         intentFilter.addAction(BleService.ACTION_WRITE_DATA);
         requireContext().registerReceiver(gattUpdateReceiver, intentFilter);
 
+
     }
 
     @Override
@@ -295,6 +304,7 @@ private ActivityResultLauncher<IntentSenderRequest> startBluetoothActivityForRes
         //implementation depends on design and protocol chosen for communication
         Intent intent = new Intent(getContext(), BleService.class);
         requireActivity().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+
     }
 
     @SuppressLint("MissingPermission")

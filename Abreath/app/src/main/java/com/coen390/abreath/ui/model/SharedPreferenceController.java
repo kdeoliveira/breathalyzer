@@ -5,8 +5,10 @@ import android.content.SharedPreferences;
 
 public class SharedPreferenceController {
     private final SharedPreferences units;
+    private final SharedPreferences night_mode;
     public SharedPreferenceController(Context context){
         units = context.getSharedPreferences("units", Context.MODE_PRIVATE);
+        night_mode = context.getSharedPreferences("night",Context.MODE_PRIVATE);
     }
 
     public boolean getWeight(){
@@ -15,6 +17,15 @@ public class SharedPreferenceController {
 
     public boolean getHeight(){
         return units.getBoolean("height", true);
+    }
+
+
+    public boolean getNightMode(){return night_mode.getBoolean("night_mode", false); }
+
+    public void setNightMode(boolean value){
+        SharedPreferences.Editor editor = night_mode.edit();
+        editor.putBoolean("night_mode", value);
+        editor.apply();
     }
 
     public void setWeight(boolean value){

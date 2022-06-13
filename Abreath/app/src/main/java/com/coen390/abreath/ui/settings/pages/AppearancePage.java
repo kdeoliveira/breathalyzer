@@ -2,39 +2,40 @@ package com.coen390.abreath.ui.settings.pages;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.SwitchCompat;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import com.coen390.abreath.R;
+import com.coen390.abreath.ui.model.SharedPreferenceController;
 
 import java.util.Objects;
 
 public class AppearancePage extends AppCompatActivity {
 
-    protected TextView appearance;
+    private SharedPreferenceController sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_appearance_page);
 
-        Switch nightmode_switch = findViewById(R.id.nightmode_switch);
+        SwitchCompat nightmode_switch = findViewById(R.id.nightmode_switch);
+
+        sp = new SharedPreferenceController(this);
 
         Objects.requireNonNull(getSupportActionBar()).setElevation(0f);
 
 
 
-        SharedPreferences night = getSharedPreferences("night",0);
-        boolean booleanValue = night.getBoolean("night_mode",true);
-        if (booleanValue){
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            nightmode_switch.setChecked(true);
-        }
+        nightmode_switch.setChecked(sp.getNightMode());
+
 
         nightmode_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -42,18 +43,11 @@ public class AppearancePage extends AppCompatActivity {
                 if (isChecked){
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                     nightmode_switch.setChecked(true);
-                    SharedPreferences.Editor editor = night.edit();
-                    editor.putBoolean("night_mode",true);
-                    editor.apply();
-
-
+                    sp.setNightMode(true);
                 }else {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                     nightmode_switch.setChecked(false);
-                    SharedPreferences.Editor editor = night.edit();
-                    editor.putBoolean("night_mode",false);
-                    editor.apply();
-
+                    sp.setNightMode(false);
                 }
             }
         });

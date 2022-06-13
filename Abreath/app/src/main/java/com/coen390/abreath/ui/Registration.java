@@ -3,6 +3,8 @@ package com.coen390.abreath.ui;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,11 +14,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.coen390.abreath.MainActivity;
 import com.coen390.abreath.R;
 import com.coen390.abreath.data.entity.UserDataEntity;
 import com.coen390.abreath.ui.settings.pages.Account;
-import com.coen390.abreath.ui.settings.pages.AccountPage;
 
 import java.util.Objects;
 
@@ -32,6 +32,7 @@ public class Registration extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
+
 
         nameSignup = findViewById(R.id.signup_name);
         emailSignup = findViewById(R.id.signup_email);
@@ -56,10 +57,15 @@ public class Registration extends AppCompatActivity {
                 {
                     Toast.makeText(getApplicationContext(), "You need to agree to the Terms and Privacy Policy to SignUp", Toast.LENGTH_SHORT).show();
                 }
+                else if(passwordSignup.getText().toString().length() < 6){
+                    Toast.makeText(getApplicationContext(), "Password must have at least 6 characters", Toast.LENGTH_SHORT).show();
+
+                }
                 else
                 {
                     UserDataEntity ude = new UserDataEntity(emailSignup.getText().toString(), passwordSignup.getText().toString(), nameSignup.getText().toString());
                     ude.createAccount();
+
                     Toast.makeText(getApplicationContext(), "Account Created", Toast.LENGTH_SHORT).show();
                     ude.signIn(); //To sign the user in.
                     openAccount();
