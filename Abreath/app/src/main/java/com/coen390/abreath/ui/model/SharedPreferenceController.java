@@ -37,9 +37,6 @@ public class SharedPreferenceController {
         SharedPreferences.Editor editor = user_data.edit();
         editor.putFloat("value", input);
         editor.apply();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            this.setUserDateTime(Instant.now().toEpochMilli());
-        }
     }
     private void setUserDateTime(long time){
         SharedPreferences.Editor editor = user_data.edit();

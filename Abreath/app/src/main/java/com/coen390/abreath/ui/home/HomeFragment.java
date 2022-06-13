@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
@@ -29,6 +30,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.coen390.abreath.R;
 import com.coen390.abreath.common.Utility;
 import com.coen390.abreath.databinding.FragmentHomeBinding;
+import com.coen390.abreath.ui.model.DashboardViewModel;
 import com.coen390.abreath.ui.model.SharedPreferenceController;
 import com.coen390.abreath.ui.model.UserDataViewModel;
 import com.github.mikephil.charting.charts.BarChart;
@@ -47,6 +49,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.Duration;
@@ -68,7 +71,8 @@ public class HomeFragment extends Fragment {
     private ImageView profileImage;
     private SharedPreferenceController sp;
     private Uri picture;
-    private static Instant mStartOfCounter = Instant.now();
+    private static final Instant mStartOfCounter = Instant.now();
+    private static Instant start;
 
 
     @SuppressLint("NewApi")
@@ -186,21 +190,27 @@ public class HomeFragment extends Fragment {
         super.onResume();
         uploadImage();
         getProfilePicture();
-//        timer(sp.getUserData());
+
+        timer(sp.getUserData());
+
+//        Intent intent = null;
 
 //        try {
-//            Intent intent = Intent.getIntentOld("comesFrom");
+//            intent = Intent.getIntentOld("comesFrom");
 //            checking = intent.getStringExtra("comesFrom");
-//        } catch (URISyntaxException e) {
+//            Log.d("HomeFragment", checking);
+//            if(!checking.equals("Dashboard"))
+//                counterTextView.setText("");
+//            else
+//            {
+//                SharedPreferences valueForTimer = requireContext().getSharedPreferences("UserData", Context.MODE_PRIVATE);
+//                timer(valueForTimer.getFloat("value", 0.0f));
+//            }
+//        } catch (URISyntaxException | NullPointerException e) {
 //            e.printStackTrace();
 //        }
-//
-//
-//        if(!Objects.equals(checking, "Dashboard"))
-//            counterTextView.setText("");
-//        else
-//        {
-//        }
+
+
 
 
 
@@ -320,14 +330,17 @@ public class HomeFragment extends Fragment {
     @SuppressLint("NewApi")
     public void timer(float bac)
     {
-        if(bac == 0.0f){
-            counterTextView.setText("");
-            return;
-        }
+//        if(bac == 0.0f){
+//            counterTextView.setText("");
+//            return;
+//        }
 
         double time = (-0.08 + bac) / 0.015;
 
         time = time * 3600;
+
+        Log.d("ViewModel", "timer func");
+        System.out.println("timer func");
 
         if(bac < 0.08)
         {
@@ -336,15 +349,17 @@ public class HomeFragment extends Fragment {
         }
         else if (0.08 <= bac && bac <= 0.37)
         {
-            mStartOfCounter = Instant.ofEpochMilli(sp.getUserDateTime());
-            final Instant start = Instant.now();
+            Log.d("ViewModel", "timer more than 0.08");
+
+            System.out.println("2");
+            start = Instant.now();
 
             if (mStartOfCounter != null && start != null)
             {
-                long difference = timeDifferenceFromStart(start, mStartOfCounter);
+                long difference = timeDifferenceFromStart(mStartOfCounter, start);
                 if (difference > 0)
                 {
-                    time = (time - difference);
+                    time = time - (difference/1000f);
                 }
             }
             new CountDownTimer((long)time * 1000,1000)
@@ -365,6 +380,8 @@ public class HomeFragment extends Fragment {
         }
         else
         {
+            Log.d("ViewModel", "seek mdec");
+            System.out.println("3");
             String message = "SEEK MEDICAL ASSISTANCE.";
             counterTextView.setText(message);
         }

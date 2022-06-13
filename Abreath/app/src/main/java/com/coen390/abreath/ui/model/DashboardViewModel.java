@@ -21,7 +21,7 @@ public class DashboardViewModel extends ViewModel {
 
     public DashboardViewModel() {
         mDisplayData = new MutableLiveData<>();
-        mDisplayData.setValue(0.0f);
+//        mDisplayData.setValue(0.0f);
     }
 
     public LiveData<Float> getData() {

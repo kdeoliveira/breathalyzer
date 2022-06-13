@@ -192,6 +192,8 @@ public class DashboardFragment extends Fragment implements LoadingFragment.Dissm
                         userdata = (float) sensor_volt*0.01f; //TODO incorrect value provided by the sensor
 
                         dashboardViewModel.setData(userdata);
+                    Log.d("ViewModel", "dashbaordViewModel");
+
                 });
 
             }
@@ -305,12 +307,12 @@ public class DashboardFragment extends Fragment implements LoadingFragment.Dissm
         }
     }
 
-//    @Override
-//    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-//        Intent intent = new Intent(getActivity(), HomeFragment.class); //https://stackoverflow.com/questions/21953839/how-to-decide-which-activity-we-came-from
-//        intent.putExtra("comesFrom", "Dashboard");
-//    }
-
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        Intent intent = new Intent(getActivity(), HomeFragment.class); //https://stackoverflow.com/questions/21953839/how-to-decide-which-activity-we-came-from
+        intent.putExtra("comesFrom", "Dashboard");
+    }
 
 
     @Override
