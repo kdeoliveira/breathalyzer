@@ -1,4 +1,4 @@
-package com.coen390.abreath;
+package com.coen390.abreath.ui;
 
 import android.os.Bundle;
 
@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.coen390.abreath.databinding.FragmentPopUpFramgentBinding;
-import com.google.android.material.tabs.TabLayout;
 
 /**
  * A simple {@link Fragment} subclass.

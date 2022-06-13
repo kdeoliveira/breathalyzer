@@ -10,123 +10,104 @@
     >
 
     <FrameLayout
-        android:layout_width="500dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/gradient_header" >
         <ImageView
             android:id="@+id/imageView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="124dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="124dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-
+            android:layout_gravity="center"
             app:srcCompat="@drawable/logo" />
     </FrameLayout>
 
-
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="17dp"
+        android:orientation="vertical"
+        >
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:layout_marginTop="17dp"
         android:orientation="horizontal"
-        android:weightSum="1" >
+        >
 
         <TextView
-            android:layout_width="100dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:gravity="center_vertical"
             android:text="@string/weight_units"
+            android:layout_weight="1"
             android:textStyle = "bold"
             android:layout_marginTop="17dp"
-            android:layout_marginStart="30dp"/>
+            />
 
         <ToggleButton
             android:id="@+id/toggleWeight"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginStart="170dp"
             android:layout_marginTop="15dp"
             android:checked="false"
             android:textOff="@string/kg"
             android:textOn="@string/lbs"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:text=""
-            android:textSize="12sp"/>
+            android:textSize="14sp"
+            android:textAllCaps="true"
+            android:textAppearance="@style/Theme.Abreath"/>
 
     </LinearLayout>
     <View
-        android:layout_width="320dp"
+        android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="1dp"
-        android:layout_marginStart="30dp"
         android:background="@android:color/black" />
-
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="55dp"
-        android:layout_marginTop="15dp"
-        android:orientation="horizontal"
-        android:weightSum="1" >
+        android:layout_marginTop="17dp"
+        android:orientation="horizontal">
 
         <TextView
-            android:layout_width="100dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:gravity="center_vertical"
             android:text="@string/height_units"
             android:textStyle = "bold"
+            android:layout_weight="1"
             android:layout_marginTop="17dp"
-            android:layout_marginStart="30dp"/>
+            />
 
         <ToggleButton
             android:id="@+id/toggleHeight"
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="50dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginStart="170dp"
             android:layout_marginTop="15dp"
             android:checked="false"
-            android:textOff="cm"
-            android:textOn="in"
+            android:textOff="@string/cm"
+            android:textOn="@string/in"
             android:focusable="false"
-            android:focusableInTouchMode="false" />
+            android:focusableInTouchMode="false"
+            android:textSize="14sp"
+            android:textAllCaps="true"
+            android:textAppearance="@style/Theme.Abreath"/>
 
     </LinearLayout>
 
-    <View
-        android:layout_width="320dp"
-        android:layout_height="1dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginStart="30dp"
-        android:background="@android:color/black" />
-
-    <TextView
-        android:id="@+id/unitsText"
-        android:layout_width="265dp"
-        android:layout_height="209dp"
-        android:layout_marginStart="17dp"
-        android:layout_marginTop="17dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="70dp"
-        android:text=""
-        android:textAlignment="center"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/black" />
 
 
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </LinearLayout>

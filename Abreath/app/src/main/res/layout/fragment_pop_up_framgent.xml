@@ -5,48 +5,17 @@
     android:layout_height="match_parent"
     android:background="@drawable/border"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".PopUpFramgent">
+    tools:context=".ui.PopUpFramgent">
 
 
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:minWidth="225dp"
+        android:minWidth="500dp"
         android:padding="17dp"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textAlignment="center"
-            android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="30dp"
-                android:layout_height="match_parent"
-                app:srcCompat="@drawable/logo"
-                tools:ignore="MissingConstraints"
-                tools:layout_editor_absoluteX="101dp"
-                tools:layout_editor_absoluteY="-27dp" />
-
-            <TextView
-                android:id="@+id/textView"
-                style="@style/TextAppearanceLogo"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="@font/expletus_sans_bold"
-                android:text="@string/breath"
-                android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                tools:ignore="MissingConstraints"
-                tools:layout_editor_absoluteX="131dp"
-                tools:layout_editor_absoluteY="16dp" />
-
-        </LinearLayout>
 
         <TextView
             android:id="@+id/popup_text"
@@ -55,7 +24,7 @@
             android:fontFamily="@font/expletus_sans_bold"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Welcome to the Home Page!\n\nABreath is an application that has for goal to reduce the number of drunk drivers on the road.\n\nThis is where you will find your profile page and your personalized data chart that displays your test history over time.\n\nIf you have recently done a test and were above the limit, a counter will give you an estimation on how long it will take for you to go under the limit driving limit.\n\nIf you wish to see if you are legally eligible to take the wheel, tap the main button!\n\n"
+            android:text="ABreath is an application that has for goal to reduce the number of drunk drivers on the road.\n\nThis is where you will find your profile page and your personalized data chart that displays your test history over time.\n\nIf you have recently done a test and were above the limit, a counter will give you an estimation on how long it will take for you to go under the limit driving limit.\n\nIf you wish to see if you are legally eligible to take the wheel, tap the main button!\n\n"
             android:textColor="@color/primaryTextColor"
             android:textSize="15sp"
             tools:ignore="MissingConstraints"/>

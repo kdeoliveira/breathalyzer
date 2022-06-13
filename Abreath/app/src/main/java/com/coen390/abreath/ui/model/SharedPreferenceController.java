@@ -22,6 +22,12 @@ public class SharedPreferenceController {
 
     public boolean getNightMode(){return night_mode.getBoolean("night_mode", false); }
 
+    public void setNightMode(boolean value){
+        SharedPreferences.Editor editor = night_mode.edit();
+        editor.putBoolean("night_mode", value);
+        editor.apply();
+    }
+
     public void setWeight(boolean value){
         SharedPreferences.Editor editor = units.edit();
         editor.putBoolean("weight", value);

@@ -52,13 +52,6 @@ public class Account extends AppCompatActivity {
         lastname = findViewById(R.id.LastName);
         delete = findViewById(R.id.delete_account);
 
-        SharedPreferences night = getSharedPreferences("night",0);
-        boolean booleanValue = night.getBoolean("night_mode",true);
-        if (booleanValue){
-            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
-                    .getColor(R.color.primaryColor)));
-        }
-
         UserDataViewModel sampleModel = new ViewModelProvider(this).get(UserDataViewModel.class);
 
         sampleModel.getUserInfo().observe(this, userDataEntity -> {

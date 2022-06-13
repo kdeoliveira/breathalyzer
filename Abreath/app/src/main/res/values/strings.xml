@@ -76,5 +76,8 @@
     <string name="click_on_the_start_button_to_connect_with_your_breathalyzer">Click on the start button to connect with your breathalyzer</string>
     <string name="the_results_will_be_displayed_after_you_have_blown_into_the_breathalyzer">The results will be displayed after you have blown into the breathalyzer</string>
     <string name="you_can_keep_track_and_compare_all_your_previous_tests_on_the_main_screen">You can keep track and compare all your previous tests on the main screen</string>
+    <string name="cm">cm</string>
+    <string name="in">in</string>
+    <string name="set_dark_mode">Set Dark Mode</string>
 
 </resources>
