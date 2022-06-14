@@ -62,6 +62,7 @@ public class ResetPasswordVerification extends AppCompatActivity {
 
     }
 
+    //resource: https://firebase.google.com/docs/auth/web/password-auth
     private void verifyPassword() {
         String checkPass = confirmPword.getText().toString();
 
