@@ -8,6 +8,11 @@ import androidx.lifecycle.ViewModelProvider;
 import com.coen390.abreath.data.api.MockUpRepository;
 import com.google.firebase.database.DatabaseReference;
 
+/**
+ * Factory class for ViewModel provider
+ * This was used when model was sourced from REST API
+ * No longer required
+ */
 public class ViewModelFactory implements ViewModelProvider.Factory {
     private final MockUpRepository repository;
 

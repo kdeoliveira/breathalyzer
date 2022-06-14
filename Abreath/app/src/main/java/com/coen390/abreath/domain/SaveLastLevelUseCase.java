@@ -20,6 +20,10 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Save last results received by Breathalyzer into Firebase repository
+ * Note that at this moment, only one column is used for the Recording tables (as string).
+ */
 public class SaveLastLevelUseCase implements UseCase{
     private final DatabaseReference mFirebaseRepository;
 

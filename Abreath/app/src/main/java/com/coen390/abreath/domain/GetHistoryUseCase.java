@@ -20,7 +20,8 @@ import java.util.Locale;
 import java.util.Observable;
 
 /**
- * Business logic for each Use Case that application should provide
+ * Get history results of each user from Mock Up API
+ * Notifies passive object of any new object fetched
  */
 public class GetHistoryUseCase extends Observable implements UseCase {
 

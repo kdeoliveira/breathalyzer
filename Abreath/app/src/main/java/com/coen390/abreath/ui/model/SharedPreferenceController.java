@@ -2,11 +2,13 @@ package com.coen390.abreath.ui.model;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Build;
 
-import java.time.Instant;
-import java.util.Date;
 
+/**
+ * Shared preference controller following the same specification provided in Assignment 1
+ * Provides and define handlers for settings and getting values stored via shared preferences
+ * The values defined here are essentially set in the Settings page and used across the application
+ */
 public class SharedPreferenceController {
     private final SharedPreferences units;
     private final SharedPreferences night_mode;

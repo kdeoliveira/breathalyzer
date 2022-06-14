@@ -7,6 +7,10 @@ import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import java.util.List;
 
+/**
+ * Formatter class implementation used by the MPAndroidChart library
+ * Properly displays the x-axis label according to the number of elements present
+ */
 public class GraphFormatter extends ValueFormatter {
     private boolean formatMonth;
     private int size;

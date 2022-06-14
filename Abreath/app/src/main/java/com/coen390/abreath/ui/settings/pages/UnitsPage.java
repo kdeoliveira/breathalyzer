@@ -15,6 +15,10 @@ import com.coen390.abreath.ui.model.SharedPreferenceController;
 
 import java.util.Objects;
 
+/**
+ * Changes unit used in this application
+ * The units set are stored using SharedPreference and can be accessed anywhere in the app
+ */
 public class UnitsPage extends AppCompatActivity {
 
     SharedPreferenceController sp;

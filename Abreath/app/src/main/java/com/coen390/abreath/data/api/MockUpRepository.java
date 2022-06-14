@@ -1,5 +1,4 @@
 package com.coen390.abreath.data.api;
-// api url: https://628ea476dc478523653294a8.mockapi.io/api/v1/bac_results
 
 
 
@@ -16,6 +15,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+// api url: https://628ea476dc478523653294a8.mockapi.io/api/v1/bac_results
 
 /**
  * Repository class providing handlers to access mock API via retrofit
@@ -29,6 +29,10 @@ public class MockUpRepository {
         this.service = service;
     }
 
+    /**
+     * Fetch a single sample from the mocked API
+     * @param controllerListener callback
+     */
     public void fetchSample(ControllerListener<UserDataEntity> controllerListener){
         Call<UserDataEntity> samples = this.service.getById(1);
 
@@ -56,7 +60,10 @@ public class MockUpRepository {
 
     }
 
-
+    /**
+     * Fetch all data from the mocked API
+     * @param controllerListener callback
+     */
     public void fetchAllSamples(ControllerListener<List<UserDataEntity>> controllerListener){
         Call<List<UserDataEntity>> samples = this.service.getAll();
 
@@ -83,6 +90,10 @@ public class MockUpRepository {
         );
     }
 
+    /**
+     * Listener interface used as a callback when all fetch operations have either been completed or failed
+     * @param <T>
+     */
     public interface ControllerListener<T>{
         void onCompleted(T data);
         void onFailure(Throwable t);

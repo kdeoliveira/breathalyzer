@@ -11,29 +11,28 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
-import android.companion.BluetoothDeviceFilter;
 import android.content.Intent;
 import android.os.Binder;
-import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.coen390.abreath.common.Constant;
-import com.coen390.abreath.ui.model.DashboardViewModel;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Bluetooth BLE bounded service used for managing and establishing proper BLE connection with a remote device
+ * Since the remote device is already known in advance, no need to generify this class
+ * This class provides an alternative for Bluetooth Classic, which was initially used to communicate with the esp32
+ *
+ * NOTE: Some permission checks warnings have been suppressed since they have been properly handled in the Activity
+ */
 public class BleService extends Service {
     private final Binder binder = new LocalBinder();;
     private BluetoothAdapter bluetoothAdapter;
@@ -57,8 +56,18 @@ public class BleService extends Service {
 
     //Get Client Descriptor UUID https://stackoverflow.com/questions/47475431/how-to-find-out-client-characteristic-config
     //Sample Description Class https://github.com/googlearchive/android-BluetoothLeGatt/blob/master/Application/src/main/java/com/example/android/bluetoothlegatt/SampleGattAttributes.java
+
+    /**
+     * Bluetooth Gatt Server state listener
+     * Responds to each new state of the Gatt Server
+     * Service sends a broadcast intent back to Activities in order to notify state changed
+     */
     private final BluetoothGattCallback bluetoothGattCallback = new BluetoothGattCallback() {
 
+        /**
+         * Action when bluetooth has initially connected to the device
+         * Initialize discovery of services
+         */
         @SuppressLint("MissingPermission")
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
@@ -74,6 +83,14 @@ public class BleService extends Service {
 
         }
 
+        /**
+         * Handling of incoming data received by the Ble
+         * All incoming data are buffered into a LiveData object that can be accessed by Activities
+         *
+         * EXPECTED DATA:
+         *  (float) [0-9][0-9][0-9].[0-9][0-9] : test results
+         *  (float) - 1 : last packet (end of test results)
+         */
         @SuppressLint("MissingPermission")
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
@@ -84,6 +101,7 @@ public class BleService extends Service {
                 try{
                     final float input = Float.parseFloat(characteristic.getStringValue(0));
                     Log.d("BleService", Float.toString(input));
+
                     if(input == -1){
                         mBluetoothFinished.postValue(true);
                     }else{
@@ -108,10 +126,12 @@ public class BleService extends Service {
             super.onCharacteristicChanged(gatt, characteristic);
         }
 
+        /**
+         * Callback used for notified of successful write operation in Ble
+         */
         @Override
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicWrite(gatt, characteristic, status);
-            Log.d("BleService", "onCharacteristicWrite");
 
             if(status == BluetoothGatt.GATT_SUCCESS){
                 broadcastUpdate(ACTION_WRITE_DATA);
@@ -120,9 +140,11 @@ public class BleService extends Service {
             }
         }
 
+        /**
+         * Callback used for notify activity when bluetooth has been discovered
+         */
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-
 
             if(status == BluetoothGatt.GATT_SUCCESS){{
 
@@ -160,12 +182,16 @@ public class BleService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        //Init live data objects only once
         mBluetoothResults = new MutableLiveData<>();
         mBluetoothFinished = new MutableLiveData<>();
         mBluetoothFinished.setValue(false);
         mTempResults = new ArrayList<>();
     }
 
+    /**
+     * Close and disconnect bluetooth connection
+     */
     @SuppressLint("MissingPermission")
     public void close(){
         Log.d("BleService", "unBind");
@@ -175,11 +201,15 @@ public class BleService extends Service {
             bluetoothGatt.close();
             bluetoothGatt = null;
         }
-
+        //Resets live data values so they can be reused
         mTempResults.clear();
         mBluetoothResults.setValue(mTempResults);
         mBluetoothFinished.setValue(false);
     }
+
+    /**
+     * Provides acces to regular operation performed on the BluetoothGatt class
+     */
 
     @SuppressLint("MissingPermission")
     public void readCharacteristics(BluetoothGattCharacteristic characteristic){
@@ -218,6 +248,9 @@ public class BleService extends Service {
         bluetoothGatt.writeCharacteristic(mBluetoothCharacteristic);
     }
 
+    /**
+     * Check if any device is connected or bonded to this bluetooth adapter
+     */
     @SuppressLint("MissingPermission")
     public boolean isBluetoothConnected(){
         if(bluetoothAdapter == null) return false;
@@ -240,6 +273,10 @@ public class BleService extends Service {
         return bluetoothAdapter.isEnabled();
     }
 
+    /**
+     * Connects a given device via Ble and returns a GattServer object
+     * Implementation based on examples provided by the android documentation website
+     */
     @SuppressLint("MissingPermission")
     public boolean connectTo(final String address){
         if(bluetoothAdapter == null || address == null) return false;
@@ -258,6 +295,9 @@ public class BleService extends Service {
         return bluetoothGatt.getServices();
     }
 
+    /**
+     * Internally sets the right characteristic that will be used during Ble communication according to a known service UUID
+     */
     public void setCharacteristicsGattServices(UUID serviceUUID, UUID characteristicUUID){
         if(bluetoothGatt == null) return;
 
@@ -270,11 +310,18 @@ public class BleService extends Service {
             }
         }
     }
+
+    /**
+     * Notifies activities of any new state
+     */
     private void broadcastUpdate(final String action){
         final Intent intent = new Intent(action);
         sendBroadcast(intent);
     }
 
+    /**
+     * Notifies with a payload fof any new state
+     */
     private void broadcastUpdate(final String action, final String payload){
         final Intent intent = new Intent(action);
         intent.putExtra(BLE_READ_STRING, payload);

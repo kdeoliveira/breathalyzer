@@ -55,11 +55,15 @@ import java.text.NumberFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
+
 import java.util.Locale;
 import java.util.Random;
 
 //https://developer.android.com/guide/fragments/communicate
+
+/**
+ * Home screen (HBar chart) providing user access to its information and most recent test results, if any
+ */
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class HomeFragment extends Fragment {
 
@@ -122,10 +126,12 @@ public class HomeFragment extends Fragment {
 
 
         //Note that this should be moved into onViewCreated to ensure parent activity or this view has been created before setting ViewModels
-//        UserDataViewModel sampleModel = new ViewModelProvider(this, new ViewModelFactory(new MockUpRepository(MockUpServiceBuilder.create(MockUpService.class)))).get(UserDataViewModel.class);
+        //UserDataViewModel sampleModel = new ViewModelProvider(this, new ViewModelFactory(new MockUpRepository(MockUpServiceBuilder.create(MockUpService.class)))).get(UserDataViewModel.class);
+
+        /*
+        Creates or gets instance of the view models used by this fragment
+         */
         UserDataViewModel sampleModel = new ViewModelProvider(requireActivity()).get(UserDataViewModel.class);
-
-
         DashboardViewModel dashboardViewModel = new ViewModelProvider(requireActivity()).get(DashboardViewModel.class);
 
         dashboardViewModel.getData().observe(getViewLifecycleOwner(), aFloat -> {
@@ -133,6 +139,9 @@ public class HomeFragment extends Fragment {
                 timer(aFloat);
         });
 
+        /*
+        Sets UI components based on new values stored in the View Model
+         */
 
         sampleModel.getUserInfo().observe(getViewLifecycleOwner(), userDataEntity -> {
             nameTextView.setText(userDataEntity.getName());
@@ -165,25 +174,11 @@ public class HomeFragment extends Fragment {
         Fragment profileGraphFragment = new ProfileGraphFragment();
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
+        /*
+        Inflates the HBar graph fragment
+         */
         transaction.replace(R.id.fragmentContainerView, profileGraphFragment).commit();
 
-    }
-
-    private BarData createChartData() {
-        ArrayList<BarEntry> values = new ArrayList<>();
-        for (int i = 0; i < 7; i++) {
-            float x = i;
-
-            float y = 5 + new Random().nextFloat() * (50 - 5);
-            values.add(new BarEntry(x, y));
-        }
-
-        BarDataSet set1 = new BarDataSet(values, "Tests");
-
-        ArrayList<IBarDataSet> dataSets = new ArrayList<>();
-        dataSets.add(set1);
-
-        return new BarData(dataSets);
     }
 
     @Override
@@ -199,7 +194,7 @@ public class HomeFragment extends Fragment {
         uploadImage();
         getProfilePicture();
 
-        timer(sp.getUserData());
+//        timer(sp.getUserData());
 
 //        Intent intent = null;
 
@@ -240,6 +235,9 @@ public class HomeFragment extends Fragment {
                 }
             });
 
+    /**
+     * Get and sets profile picture for user
+     */
     public void getProfilePicture()
     {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -326,7 +324,8 @@ public class HomeFragment extends Fragment {
         }
 
     }
-    private long timeDifferenceFromStart(Instant start_of_counter, Instant start) //CODE FROM https://stackoverflow.com/questions/4927856/how-can-i-calculate-a-time-difference-in-java Has been updated for this specific use.
+    //CODE FROM https://stackoverflow.com/questions/4927856/how-can-i-calculate-a-time-difference-in-java Has been updated for this specific use.
+    private long timeDifferenceFromStart(Instant start_of_counter, Instant start)
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             return Duration.between(start_of_counter, start).toMillis();
@@ -335,20 +334,17 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    /**
+     * Verifies input bac value and starts timer for user if required
+     * Function for time required until user reaches value is based in a constant
+     * However, ideally this equation should take in account the user's weight, age and height
+     */
     @SuppressLint("NewApi")
     public void timer(float bac)
     {
-//        if(bac == 0.0f){
-//            counterTextView.setText("");
-//            return;
-//        }
-
         double time = (-0.08 + bac) / 0.015;
 
         time = time * 3600;
-
-        Log.d("ViewModel", "timer func");
-        System.out.println("timer func");
 
         if(bac < 0.08)
         {
@@ -357,9 +353,7 @@ public class HomeFragment extends Fragment {
         }
         else if (0.08 <= bac && bac <= 0.37)
         {
-            Log.d("ViewModel", "timer more than 0.08");
 
-            System.out.println("2");
             start = Instant.now();
 
             if (mStartOfCounter != null && start != null)
@@ -388,8 +382,6 @@ public class HomeFragment extends Fragment {
         }
         else
         {
-            Log.d("ViewModel", "seek mdec");
-            System.out.println("3");
             String message = "SEEK MEDICAL ASSISTANCE.";
             counterTextView.setText(message);
         }

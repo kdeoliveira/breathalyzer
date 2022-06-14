@@ -32,6 +32,10 @@ import com.coen390.abreath.ui.settings.SettingsFragment;
 
 import java.util.Locale;
 
+/**
+ * Activity allowing the user to modify its information
+ * Note that since this activity should be transformed into a fragment instead, in order to take advantage of the View Models defined for the Main Activities
+ */
 public class Account extends AppCompatActivity {
     private SharedPreferenceController sp;
     protected EditText height_text, weight_text, age_text, phone_text, name_text, lastname;

@@ -18,6 +18,9 @@ import com.coen390.abreath.ui.model.SharedPreferenceController;
 
 import java.util.Objects;
 
+/**
+ * Sets or unset night mode
+ */
 public class AppearancePage extends AppCompatActivity {
 
     private SharedPreferenceController sp;

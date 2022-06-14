@@ -37,6 +37,9 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.Objects;
 
 
+/**
+ * Attempt to implement Single activity architecture in order to facilitate and bound the view models used by the other fragments
+ */
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
@@ -123,6 +126,9 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         NetworkManager.Builder.create(this).checkConnection(connectionNetworkCallback);
         SharedPreferenceController sp = new SharedPreferenceController(this);
+        /* *
+         * Sets the night mode if set
+         */
         if (sp.getNightMode()){
             getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
                     .getColor(R.color.primaryColor)));

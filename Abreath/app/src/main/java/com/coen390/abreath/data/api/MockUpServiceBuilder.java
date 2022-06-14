@@ -2,6 +2,7 @@ package com.coen390.abreath.data.api;
 
 import android.util.Log;
 
+import com.coen390.abreath.common.Constant;
 import com.coen390.abreath.common.Utility;
 import com.coen390.abreath.data.entity.UserDataEntity;
 import com.google.gson.Gson;
@@ -17,10 +18,12 @@ import java.util.Locale;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Factory class for MockupRepository
+ * Initialize repository and overrides json deserialization so each instance can be properly converted into a UserDataEntity object
+ */
 public class MockUpServiceBuilder {
     //https://stackoverflow.com/questions/48043931/how-to-use-retrofit-2-and-gson-to-model-data-where-the-json-response-keys-chan
-
-    private static final String BASE_URL = "https://628ea476dc478523653294a8.mockapi.io/";
     private static final JsonDeserializer<UserDataEntity> deserializer = (json, typeOfT, context) -> {
 
         JsonObject jsonObject = json.getAsJsonObject();
@@ -37,7 +40,7 @@ public class MockUpServiceBuilder {
     };
     private static Gson gson = new GsonBuilder().registerTypeAdapter(UserDataEntity.class, deserializer).create();
 
-    private static Retrofit retrofit = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create(gson)).baseUrl(BASE_URL).build();
+    private static Retrofit retrofit = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create(gson)).baseUrl(Constant.BASE_URL).build();
 
 
     public static <T> T create(Class<T> builderClass){
