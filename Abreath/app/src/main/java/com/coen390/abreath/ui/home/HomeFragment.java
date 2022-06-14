@@ -123,7 +123,15 @@ public class HomeFragment extends Fragment {
 
         //Note that this should be moved into onViewCreated to ensure parent activity or this view has been created before setting ViewModels
 //        UserDataViewModel sampleModel = new ViewModelProvider(this, new ViewModelFactory(new MockUpRepository(MockUpServiceBuilder.create(MockUpService.class)))).get(UserDataViewModel.class);
-        UserDataViewModel sampleModel = new ViewModelProvider(this).get(UserDataViewModel.class);
+        UserDataViewModel sampleModel = new ViewModelProvider(requireActivity()).get(UserDataViewModel.class);
+
+
+        DashboardViewModel dashboardViewModel = new ViewModelProvider(requireActivity()).get(DashboardViewModel.class);
+
+        dashboardViewModel.getData().observe(getViewLifecycleOwner(), aFloat -> {
+            if(aFloat > 0.0f)
+                timer(aFloat);
+        });
 
 
         sampleModel.getUserInfo().observe(getViewLifecycleOwner(), userDataEntity -> {
