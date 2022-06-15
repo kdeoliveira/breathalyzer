@@ -40,7 +40,7 @@ public class AppearancePage extends AppCompatActivity {
 
         nightmode_switch.setChecked(sp.getNightMode());
 
-
+        //Help to set to Dark Mode : https://stackoverflow.com/questions/70804416/system-dark-mode-setting-problem-more-dark-mode-options
         nightmode_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
