@@ -11,6 +11,5 @@
         android:endColor="@color/hintColor"
 
         android:angle="90" />
-  \
 </shape>
 
