@@ -95,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        //floating action button : https://developer.android.com/guide/topics/ui/floating-action-button
         FloatingActionButton help_button = (FloatingActionButton) findViewById(R.id.help_button_settings);
         help_button.setOnClickListener(new View.OnClickListener() {
             @Override
