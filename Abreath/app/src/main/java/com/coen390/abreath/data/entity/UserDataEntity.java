@@ -261,6 +261,15 @@ public class UserDataEntity {
     }
 
 
+<<<<<<< Updated upstream
+=======
+    /** All the functions used below were created using the Google Firebase API documentation available at: https://firebase.google.com/docs/build
+     * for Android Studio using Java
+     *
+     * Handler for created new account
+     * Since this handelr is only used once, no need to move to domain
+     */
+>>>>>>> Stashed changes
     public void createAccount()
     {
         FirebaseAuth auth;

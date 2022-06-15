@@ -253,6 +253,8 @@ public class HomeFragment extends Fragment {
 
             System.out.println(storageRef);
 
+            //CODE FROM https://www.youtube.com/watch?v=7p4MBsz__ao&list=LL&index=2&t=43s&ab_channel=CodewithLove%28RSTechnoSmart%29
+            //has been adapted to work with the requirements of this project. The google firebase documentation has also been used.
             try {
                 File localFile = File.createTempFile("images", "temp");
                 storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
@@ -260,8 +262,7 @@ public class HomeFragment extends Fragment {
                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                         Uri uri = Uri.fromFile(localFile);
                         profileImage.setImageURI(uri);
-                    } //CODE FROM https://www.youtube.com/watch?v=7p4MBsz__ao&list=LL&index=2&t=43s&ab_channel=CodewithLove%28RSTechnoSmart%29
-                    //has been adapted to work with the requirements of this project.
+                    }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
@@ -289,7 +290,7 @@ public class HomeFragment extends Fragment {
     }
 
     //CODE FROM https://www.youtube.com/watch?v=7p4MBsz__ao&list=LL&index=2&t=43s&ab_channel=CodewithLove%28RSTechnoSmart%29
-    //has been adapted to work with the requirements of this project.
+    //has been adapted to work with the requirements of this project. The google firebase documentation has also been used.
     public void uploadImage()
     {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -326,7 +327,19 @@ public class HomeFragment extends Fragment {
 
     }
 
+<<<<<<< Updated upstream
 
+=======
+    /**
+     * Verifies input bac value and starts timer for user if required
+     * Function for time required until user reaches value is based in a constant
+     * However, ideally this equation should take in account the user's weight, age and height
+     * It is set to equal to 0.08% BAC which is the legal limit in Quebec and was rearanged to find the time.
+     * The equation is derived from the Widmark's formula:
+     * J. Searle, “Alcohol calculations and their uncertainty” Medicine, science, and the law, Jan-2015.
+     * [Online]. Available: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4361698/. [Accessed: 14-Jun-2022].
+     */
+>>>>>>> Stashed changes
     @SuppressLint("NewApi")
     public void timer(float a)
     {
@@ -355,10 +368,15 @@ public class HomeFragment extends Fragment {
                     time = (time - (difference / 1000));
                 }
             }
+<<<<<<< Updated upstream
             countDownTimer = new CountDownTimer((long)time * 1000,1000)
+=======
+            new CountDownTimer((long)time * 1000,1000) // CODE FROM https://www.geeksforgeeks.org/countdowntimer-in-android-with-example/
+                    // Has been updated for this specific use.
+>>>>>>> Stashed changes
             {
                 @Override
-                public void onTick(long l) { // CODE FROM https://www.geeksforgeeks.org/countdowntimer-in-android-with-example/ Has been updated for this specific use.
+                public void onTick(long l) {
                     NumberFormat f = new DecimalFormat("00");
                     long hour, minute;
                     hour = (l/3600000) % 24;

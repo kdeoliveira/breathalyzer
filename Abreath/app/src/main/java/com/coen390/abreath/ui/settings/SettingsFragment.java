@@ -40,6 +40,14 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
+<<<<<<< Updated upstream
+=======
+/**
+ * Fragment used for displaying app settings
+ * Each item of the settings are displayed using a List adapter class
+ * Some of the code is adapted to this project but solely belongs to the owner of the following video https://www.youtube.com/watch?v=zS8jYzLKirM&ab_channel=PhucVR
+ */
+>>>>>>> Stashed changes
 public class SettingsFragment extends Fragment {
 
     private FragmentSettingsBinding binding;
