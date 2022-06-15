@@ -30,7 +30,7 @@ public class UnitsPage extends AppCompatActivity {
 
         sp = new SharedPreferenceController(this);
 
-        //units.setText(test);
+        //Help from code : https://stackoverflow.com/questions/50902178/try-to-click-a-togglebutton-and-make-the-other-togglebutton-unchecked-android-s
         ToggleButton weight = (ToggleButton) findViewById(R.id.toggleWeight);
         weight.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
