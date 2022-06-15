@@ -15,11 +15,11 @@ import com.coen390.abreath.R;
 
 import java.util.ArrayList;
 
-//This class has been implemented using the following video https://www.youtube.com/watch?v=zS8jYzLKirM&ab_channel=PhucVR
-//The code is adapted to this project but solely belongs to the owner.
-
-
-
+/**
+ * List adapter used for display the settings
+ * The code is adapted to this project but solely belongs to the owner.
+ * This class has been implemented using the following video https://www.youtube.com/watch?v=zS8jYzLKirM&ab_channel=PhucVR
+ */
 public class SettingsAdapter extends ArrayAdapter<Category> {
 
     private Context cContext;

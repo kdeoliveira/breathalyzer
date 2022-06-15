@@ -7,6 +7,11 @@ import android.content.Intent;
 
 import kotlin.NotImplementedError;
 
+/**
+ * Broadcast listener used for notification received by the BleService
+ * This is classes is used to decrease the size of function override required when implementing the BroadcastReceiver.
+ * Instead, a customized GattBroadcastReceiverListener class is provided so only required function needs to defined.
+ */
 public class GattBroadcastReceiver extends BroadcastReceiver {
     private final GattBroadcastReceiverListener listener;
     public GattBroadcastReceiver(GattBroadcastReceiverListener listener){
@@ -42,6 +47,9 @@ public class GattBroadcastReceiver extends BroadcastReceiver {
         }
     }
 
+    /**
+     * New BroadcastReceiver definition
+     */
     public abstract static class GattBroadcastReceiverListener{
 
         public abstract void onActionConnected(Context context);

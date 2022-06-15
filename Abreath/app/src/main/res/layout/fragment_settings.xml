@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:paddingTop="100dp"
     android:paddingBottom="17dp"
+
     tools:context=".ui.settings.SettingsFragment">
 
 

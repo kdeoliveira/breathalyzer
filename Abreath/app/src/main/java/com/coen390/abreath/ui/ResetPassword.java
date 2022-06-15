@@ -29,6 +29,9 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
 
+/**
+ * Activity provides user access to the reset password page
+ */
 public class ResetPassword extends AppCompatActivity {
 
     protected EditText newPassword, confirmNewPassword;

@@ -13,4 +13,5 @@
     <color name="black">#edf2f2</color>
     <color name="hintColor">#455a64</color>
     <color name="lightGrey">#1c313a</color>
+    <color name="textMainColor">#edf2f2</color>
 </resources>

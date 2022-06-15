@@ -22,6 +22,9 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
 
+/**
+ * Activity used for checking if user is properly logged in before performing his password reset
+ */
 public class ResetPasswordVerification extends AppCompatActivity {
 
     protected EditText confirmPword, confirmEmail;
@@ -42,12 +45,7 @@ public class ResetPasswordVerification extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        SharedPreferences night = getSharedPreferences("night",0);
-        boolean booleanValue = night.getBoolean("night_mode",true);
-        if (booleanValue){
-            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
-                    .getColor(R.color.primaryColor)));
-        }
+
 
         forgot_pword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,6 +65,7 @@ public class ResetPasswordVerification extends AppCompatActivity {
 
     }
 
+    //resource: https://firebase.google.com/docs/auth/web/password-auth
     private void verifyPassword() {
         String checkPass = confirmPword.getText().toString();
 

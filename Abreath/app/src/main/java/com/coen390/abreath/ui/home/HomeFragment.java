@@ -2,20 +2,19 @@ package com.coen390.abreath.ui.home;
 
 import static android.content.ContentValues.TAG;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -23,20 +22,17 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.coen390.abreath.R;
 import com.coen390.abreath.common.Utility;
-import com.coen390.abreath.data.api.MockUpRepository;
-import com.coen390.abreath.data.api.MockUpService;
-import com.coen390.abreath.data.api.MockUpServiceBuilder;
-import com.coen390.abreath.data.entity.UserDataEntity;
 import com.coen390.abreath.databinding.FragmentHomeBinding;
+import com.coen390.abreath.ui.model.DashboardViewModel;
 import com.coen390.abreath.ui.model.SharedPreferenceController;
 import com.coen390.abreath.ui.model.UserDataViewModel;
-import com.coen390.abreath.ui.model.ViewModelFactory;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -44,11 +40,8 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -56,12 +49,22 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
+
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Random;
 
 //https://developer.android.com/guide/fragments/communicate
+
+/**
+ * Home screen (HBar chart) providing user access to its information and most recent test results, if any
+ */
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
@@ -72,7 +75,11 @@ public class HomeFragment extends Fragment {
     private ImageView profileImage;
     private SharedPreferenceController sp;
     private Uri picture;
+    private static final Instant mStartOfCounter = Instant.now();
+    private static Instant start;
 
+
+    @SuppressLint("NewApi")
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,16 +97,20 @@ public class HomeFragment extends Fragment {
         editor.putString("fragment", "home");
         editor.apply();
 
+
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         nameTextView = binding.profileName;
         lastnameTextView = binding.profileLastname;
-        counterTextView = binding.homeCounter;
+
         ageTextView = binding.profileAge;
         heightTextView = binding.profileHeight;
         profileImage = binding.profileImage;
         weightTextView = binding.profileWeight;
+        counterTextView = binding.homeCounter;
+
+
 
 
         profileImage.setOnClickListener(new View.OnClickListener() {
@@ -112,10 +123,25 @@ public class HomeFragment extends Fragment {
         getProfilePicture();
 
 
-        //Note that this should be moved into onViewCreated to ensure parent activity or this view has been created before setting ViewModels
-//        UserDataViewModel sampleModel = new ViewModelProvider(this, new ViewModelFactory(new MockUpRepository(MockUpServiceBuilder.create(MockUpService.class)))).get(UserDataViewModel.class);
-        UserDataViewModel sampleModel = new ViewModelProvider(this).get(UserDataViewModel.class);
 
+
+        //Note that this should be moved into onViewCreated to ensure parent activity or this view has been created before setting ViewModels
+        //UserDataViewModel sampleModel = new ViewModelProvider(this, new ViewModelFactory(new MockUpRepository(MockUpServiceBuilder.create(MockUpService.class)))).get(UserDataViewModel.class);
+
+        /*
+        Creates or gets instance of the view models used by this fragment
+         */
+        UserDataViewModel sampleModel = new ViewModelProvider(requireActivity()).get(UserDataViewModel.class);
+        DashboardViewModel dashboardViewModel = new ViewModelProvider(requireActivity()).get(DashboardViewModel.class);
+
+        dashboardViewModel.getData().observe(getViewLifecycleOwner(), aFloat -> {
+            if(aFloat > 0.0f)
+                timer(aFloat);
+        });
+
+        /*
+        Sets UI components based on new values stored in the View Model
+         */
 
         sampleModel.getUserInfo().observe(getViewLifecycleOwner(), userDataEntity -> {
             nameTextView.setText(userDataEntity.getName());
@@ -148,25 +174,11 @@ public class HomeFragment extends Fragment {
         Fragment profileGraphFragment = new ProfileGraphFragment();
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
+        /*
+        Inflates the HBar graph fragment
+         */
         transaction.replace(R.id.fragmentContainerView, profileGraphFragment).commit();
 
-    }
-
-    private BarData createChartData() {
-        ArrayList<BarEntry> values = new ArrayList<>();
-        for (int i = 0; i < 7; i++) {
-            float x = i;
-
-            float y = 5 + new Random().nextFloat() * (50 - 5);
-            values.add(new BarEntry(x, y));
-        }
-
-        BarDataSet set1 = new BarDataSet(values, "Tests");
-
-        ArrayList<IBarDataSet> dataSets = new ArrayList<>();
-        dataSets.add(set1);
-
-        return new BarData(dataSets);
     }
 
     @Override
@@ -175,13 +187,41 @@ public class HomeFragment extends Fragment {
         binding = null;
     }
 
+    @SuppressLint("NewApi")
     @Override
     public void onResume() {
         super.onResume();
         uploadImage();
         getProfilePicture();
+
+//        timer(sp.getUserData());
+
+//        Intent intent = null;
+
+//        try {
+//            intent = Intent.getIntentOld("comesFrom");
+//            checking = intent.getStringExtra("comesFrom");
+//            Log.d("HomeFragment", checking);
+//            if(!checking.equals("Dashboard"))
+//                counterTextView.setText("");
+//            else
+//            {
+//                SharedPreferences valueForTimer = requireContext().getSharedPreferences("UserData", Context.MODE_PRIVATE);
+//                timer(valueForTimer.getFloat("value", 0.0f));
+//            }
+//        } catch (URISyntaxException | NullPointerException e) {
+//            e.printStackTrace();
+//        }
+
+
+
+
+
     }
 
+
+    //CODE FROM https://www.youtube.com/watch?v=7p4MBsz__ao&list=LL&index=2&t=43s&ab_channel=CodewithLove%28RSTechnoSmart%29
+    //has been adapted to work with the requirements of this project.
     ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
             new ActivityResultCallback<Uri>() {
                 @Override
@@ -195,6 +235,9 @@ public class HomeFragment extends Fragment {
                 }
             });
 
+    /**
+     * Get and sets profile picture for user
+     */
     public void getProfilePicture()
     {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -216,7 +259,8 @@ public class HomeFragment extends Fragment {
                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                         Uri uri = Uri.fromFile(localFile);
                         profileImage.setImageURI(uri);
-                    }
+                    } //CODE FROM https://www.youtube.com/watch?v=7p4MBsz__ao&list=LL&index=2&t=43s&ab_channel=CodewithLove%28RSTechnoSmart%29
+                    //has been adapted to work with the requirements of this project.
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
@@ -243,6 +287,8 @@ public class HomeFragment extends Fragment {
             Log.d(TAG, "Download not successful");
     }
 
+    //CODE FROM https://www.youtube.com/watch?v=7p4MBsz__ao&list=LL&index=2&t=43s&ab_channel=CodewithLove%28RSTechnoSmart%29
+    //has been adapted to work with the requirements of this project.
     public void uploadImage()
     {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -278,6 +324,72 @@ public class HomeFragment extends Fragment {
         }
 
     }
+    //CODE FROM https://stackoverflow.com/questions/4927856/how-can-i-calculate-a-time-difference-in-java Has been updated for this specific use.
+    private long timeDifferenceFromStart(Instant start_of_counter, Instant start)
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return Duration.between(start_of_counter, start).toMillis();
+        }else{
+            return 0;
+        }
+    }
 
+    /**
+     * Verifies input bac value and starts timer for user if required
+     * Function for time required until user reaches value is based in a constant
+     * However, ideally this equation should take in account the user's weight, age and height
+     */
+    @SuppressLint("NewApi")
+    public void timer(float bac)
+    {
+        double time = (-0.08 + bac) / 0.015;
 
+        time = time * 3600;
+
+        if(bac < 0.08)
+        {
+            String message = "You are safe to drive.";
+            counterTextView.setText(message);
+        }
+        else if (0.08 <= bac && bac <= 0.37)
+        {
+
+            start = Instant.now();
+
+            if (mStartOfCounter != null && start != null)
+            {
+                long difference = timeDifferenceFromStart(mStartOfCounter, start);
+                if (difference > 0)
+                {
+                    time = time - (difference/1000f);
+                }
+            }
+            new CountDownTimer((long)time * 1000,1000)
+            {
+                @Override
+                public void onTick(long l) { // CODE FROM https://www.geeksforgeeks.org/countdowntimer-in-android-with-example/ Has been updated for this specific use.
+                    NumberFormat f = new DecimalFormat("00");
+                    long hour = (l/3600000) % 24;
+                    long minute = (l/60000) % 60;
+                    counterTextView.setText(f.format(hour) + " h, " + f.format(minute) + " m.");
+                }
+                @Override
+                public void onFinish() {
+                    String message = "Please breathe again before taking the wheel.";
+                    counterTextView.setText(message);
+                }
+            }.start();
+        }
+        else
+        {
+            String message = "SEEK MEDICAL ASSISTANCE.";
+            counterTextView.setText(message);
+        }
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
 }

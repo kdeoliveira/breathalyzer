@@ -5,30 +5,19 @@ import android.content.Intent;
 
 import android.content.SharedPreferences;
 
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.Network;
-import android.net.NetworkCapabilities;
-import android.net.NetworkInfo;
-import android.net.NetworkRequest;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.coen390.abreath.data.entity.UserDataEntity;
-import com.coen390.abreath.service.BleService;
 import com.coen390.abreath.service.NetworkManager;
 import com.coen390.abreath.ui.Login;
-import com.google.android.material.bottomappbar.BottomAppBar;
+import com.coen390.abreath.ui.PopUpFramgent;
+import com.coen390.abreath.ui.model.SharedPreferenceController;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -48,6 +37,9 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.Objects;
 
 
+/**
+ * Attempt to implement Single activity architecture in order to facilitate and bound the view models used by the other fragments
+ */
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
@@ -66,13 +58,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
 
         setContentView(binding.getRoot());
-        SharedPreferences night = getSharedPreferences("night",0);
-        boolean booleanValue = night.getBoolean("night_mode",true);
-        if (booleanValue){
-            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
-                    .getColor(R.color.primaryColor)));
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        }
+
         //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
                 //.getColor(android.R.color.holo_blue_bright)));
 
@@ -139,6 +125,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         NetworkManager.Builder.create(this).checkConnection(connectionNetworkCallback);
+        SharedPreferenceController sp = new SharedPreferenceController(this);
+        /* *
+         * Sets the night mode if set
+         */
+        if (sp.getNightMode()){
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
+                    .getColor(R.color.primaryColor)));
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }else{
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
     }
 
     @Override

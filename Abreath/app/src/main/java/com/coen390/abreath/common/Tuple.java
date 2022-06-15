@@ -1,5 +1,10 @@
 package com.coen390.abreath.common;
 
+/**
+ * Helper class that implements an equivalent std::c++ tuple
+ * @param <T> First item
+ * @param <S> Second item
+ */
 public class Tuple <T,S>{
     private T first;
 

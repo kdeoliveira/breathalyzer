@@ -1,8 +1,5 @@
 package com.coen390.abreath.ui.dashboard;
 
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattService;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -14,15 +11,10 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,55 +32,77 @@ import com.coen390.abreath.domain.SaveLastLevelUseCase;
 import com.coen390.abreath.service.BleService;
 import com.coen390.abreath.service.BluetoothServiceConnection;
 import com.coen390.abreath.service.GattBroadcastReceiver;
+import com.coen390.abreath.ui.home.HomeFragment;
 import com.coen390.abreath.ui.model.DashboardViewModel;
+import com.coen390.abreath.ui.model.SharedPreferenceController;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
+import java.time.Duration;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Locale;
 
 
+/**
+ * Fragment displaying the test results received via bluetooth
+ * PieChart is used to provide complete details of the BAC value calculated by the sensors
+ */
 public class DashboardFragment extends Fragment implements LoadingFragment.Dissmissable {
 
     private PieChart pieChart;
     private PieChart pieIndex;
-    float userdata = 0.06f;
-    float threshold = 0.08f;
+    private TextView textView;
+    private float userdata;
+    private final static float THRESHOLD = 0.08f;
     private BleService bluetoothService;
     private DashboardViewModel dashboardViewModel;
     private BroadcastReceiver gattUpdateReceiver;
     private ServiceConnection serviceConnection;
     private Handler handlerAwaiting, handlerNotFound;
+    private SharedPreferenceController sp;
 
 
+    /**
+     * Initializes and dsplays the Pie chart with the test results
+     */
     private void PieData() {
-        if(userdata > 2*threshold)
+        if(userdata > 2* THRESHOLD)
         {
-            userdata = 2*threshold;
+            userdata = 2* THRESHOLD;
         }
         ArrayList<PieEntry> DataIn = new ArrayList<>();
         DataIn.add(new PieEntry(userdata));
         DataIn.add(new PieEntry(0.16f - userdata));
 
         ArrayList<Integer> colors = new ArrayList<>();
-        if(userdata >= threshold) {
+        if(userdata >= THRESHOLD) {
             colors.add(0xffD32121);
             colors.add(80000000);
+
+            textView.setTextColor(0xffD32121);
         }
-        else if(userdata >= threshold-0.02f && userdata < threshold){
+        else if(userdata >= THRESHOLD -0.02f && userdata < THRESHOLD){
             colors.add(0xffFE9B24);
             colors.add(80000000);
+            textView.setTextColor(0xffFE9B24);
+            View red_triangle = (View) getView().findViewById(R.id.red_display);
+            red_triangle.setVisibility(View.INVISIBLE);
         }
         else
         {
             colors.add(0xff387524);
             colors.add(80000000);
+            View red_triangle = (View) getView().findViewById(R.id.red_display);
+            red_triangle .setVisibility(View.INVISIBLE);
+            View orange_triangle = (View) getView().findViewById(R.id.orange_display);
+            orange_triangle .setVisibility(View.INVISIBLE);
+            textView.setTextColor(0xff387524);
+
         }
 
 
@@ -104,6 +118,10 @@ public class DashboardFragment extends Fragment implements LoadingFragment.Dissm
         pieChart.setHoleColor(80000000);
         pieChart.animateY(2000, Easing.EaseInOutQuad);
     }
+
+    /**
+     * Initializes the displays the index representing the level at which the user is intoxicated.
+     */
     private void PieIndex() {
 
         ArrayList<PieEntry> DataIndex = new ArrayList<>();
@@ -136,7 +154,6 @@ public class DashboardFragment extends Fragment implements LoadingFragment.Dissm
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         handlerNotFound = new Handler();
         handlerAwaiting = new Handler();
         loadingFragment = LoadingFragment.newInstance("Awaiting Results");
@@ -150,35 +167,58 @@ public class DashboardFragment extends Fragment implements LoadingFragment.Dissm
 
         handlerNotFound.postDelayed(() -> {
             loadingFragment.setNotFound("Unable to fetch data");
-        }, 15000);
+        }, 20000);
 
-
+        /**
+         * Callback fired when BleService has first started
+         */
         serviceConnection = new BluetoothServiceConnection(new BluetoothServiceConnection.onBleService() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onConnected(BleService bleService) {
+                /*
+                Starts user service and search of available services
+                 */
                 bluetoothService = bleService;
                 bluetoothService.setCharacteristicNotification();
+                /*
+                Attach live data objects provided by the BleService class to the UI components
+                 */
                 bluetoothService.getBluetoothFinished().observe(getViewLifecycleOwner(), aBoolean -> {
+                    /*
+                    Checks if all data has been properly received
+                     */
                     if(aBoolean){
+                        /*
+                        Handler provides a postponed action when the user has already received all the required data from the sensor
+                         */
                         handlerAwaiting.postDelayed(() -> {
                             binding.getRoot().setVisibility(View.VISIBLE);
                             loadingFragment.dismiss();
                             PieData();
                             PieIndex();
                             new SaveLastLevelUseCase().call(userdata);
+                            sp.setUserData(userdata);
                         }, 500);
                         handlerNotFound.removeCallbacksAndMessages(null);
                     }
                 });
+                /*
+                Gets and sets the BAC value received by the sensor and updates the Pie Chart accordingly
+                 */
                 bluetoothService.getBluetoothResult().observe(getViewLifecycleOwner(), floatList -> {
-                    double sensor_volt = floatList.stream().mapToDouble(x -> x).average().getAsDouble();
-                    Log.d("DashboardFragment", String.valueOf(sensor_volt));
-                    //                        userdata = Utility.map(floatList, 0, 20, 0, 0.16f);
-                        userdata = (float) sensor_volt*0.0001f; //TODO incorrect value provided by the sensor
+//                    double sensor_volt = floatList.stream().mapToDouble(x -> x).average().getAsDouble();
+                    if(floatList.size() == 0) {
+                        dashboardViewModel.setData(0.0f);
+                        return;
+                    }
 
-                        dashboardViewModel.setData(userdata);
+                    float sensor_volt = floatList.get(floatList.size() - 1);
+                    userdata = (float) sensor_volt*0.01f;
+
+                    dashboardViewModel.setData(userdata);
                 });
+
             }
             @Override
             public void onDisconnected(ComponentName componentName) {
@@ -187,6 +227,9 @@ public class DashboardFragment extends Fragment implements LoadingFragment.Dissm
         });
 
 
+        /* *
+         * Action to be taken when fragment is notified of any new bluetooth state
+         */
         gattUpdateReceiver = new GattBroadcastReceiver(new GattBroadcastReceiver.GattBroadcastReceiverListener() {
 
             @Override
@@ -200,6 +243,9 @@ public class DashboardFragment extends Fragment implements LoadingFragment.Dissm
             }
             @Override
             public void onActionReadData(Context context, String payload) {
+                /* *
+                 * Allows loading dialog fragment to change text switcher value once
+                 */
                 if(!hasRead){
                     loadingFragment.setStateText("Calculating BAC");
                     hasRead = true;
@@ -211,43 +257,32 @@ public class DashboardFragment extends Fragment implements LoadingFragment.Dissm
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
+        binding = FragmentDashboardBinding.inflate(inflater, container, false);
 
         dashboardViewModel =
-                new ViewModelProvider(this).get(DashboardViewModel.class);
+                new ViewModelProvider(requireActivity()).get(DashboardViewModel.class);
 
-        binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        sp = new SharedPreferenceController(root.getContext());
+
         root.setVisibility(View.GONE);
-
-        final TextView textView = binding.textDashboard;
-
-        final TextView UserView = binding.textUsername;
+        textView = binding.textDashboard;
         final TextView DataView = binding.resultsDisplay;
 
 
-        dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-
-        dashboardViewModel.getUsername().observe(getViewLifecycleOwner(), UserView::setText);
-
-
-
-        dashboardViewModel.getData().observe(getViewLifecycleOwner(), DataView::setText);
-
-        if(userdata >= threshold)
-        {
-            textView.setTextColor(0xffD32121);
-        }
-        else if(userdata >= threshold-0.02f && userdata < threshold)
-        {
-
-
-            textView.setTextColor(0xffFE9B24);
-        }
-        else
-        {
-            textView.setTextColor(0xff387524);
-        }
-
+        /* *
+         * Gets and sets the Value which Pie Chart is displaying
+         * Displays helper message according to this value
+         */
+        dashboardViewModel.getData().observe(getViewLifecycleOwner(), aFloat -> {
+            DataView.setText(String.format(Locale.CANADA, "BAC %.3f %%",aFloat));
+            if(aFloat >= THRESHOLD)
+                textView.setText("You are above the legal limit! \nPlease do not take the wheel.");
+            else if(aFloat >= THRESHOLD - .02f && aFloat < THRESHOLD)
+                textView.setText("You are not above the legal limit. \n But it is recommended you do not drive.");
+            else
+                textView.setText(("You are under the legal limit.\nYou are good to drive! "));
+        });
 
         pieChart = binding.piechartDisplay;
         pieChart.setNoDataText("");
@@ -255,9 +290,6 @@ public class DashboardFragment extends Fragment implements LoadingFragment.Dissm
         pieIndex.setNoDataText("");
 
 
-
-//        PieData();
-//        PieIndex();
         pieChart.getDescription().setEnabled(false);
         pieChart.setHoleRadius(60);
         Legend none = pieChart.getLegend();
@@ -284,6 +316,9 @@ public class DashboardFragment extends Fragment implements LoadingFragment.Dissm
     public void onResume() {
         super.onResume();
         final IntentFilter intentFilter = new IntentFilter();
+        /* *
+         * Sets filter for actions this fragment can receive intents
+         */
         intentFilter.addAction(BleService.ACTION_GATT_CONNECTED);
         intentFilter.addAction(BleService.ACTION_GATT_DISCONNECTED);
         intentFilter.addAction(BleService.ACTION_READ_DATA);
@@ -301,33 +336,19 @@ public class DashboardFragment extends Fragment implements LoadingFragment.Dissm
 
         binding = null;
         if(bluetoothService != null){
+            //Stops bluetooth service when this fragment screen has been destroyed
             bluetoothService.close();
             requireActivity().unbindService(serviceConnection);
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-
-        if(userdata >= threshold)
-        {
-
-        }
-        else if(userdata >= threshold-0.02f && userdata < threshold)
-        {
-
-            View red_triangle = (View) getView().findViewById(R.id.red_display);
-            red_triangle .setVisibility(View.INVISIBLE);
-        }
-        else
-        {
-            View red_triangle = (View) getView().findViewById(R.id.red_display);
-            red_triangle .setVisibility(View.INVISIBLE);
-            View orange_triangle = (View) getView().findViewById(R.id.orange_display);
-            orange_triangle .setVisibility(View.INVISIBLE);
-        }
-
+        Intent intent = new Intent(getActivity(), HomeFragment.class); //https://stackoverflow.com/questions/21953839/how-to-decide-which-activity-we-came-from
+        intent.putExtra("comesFrom", "Dashboard");
     }
+
 
     @Override
     public void onDismissAction() {

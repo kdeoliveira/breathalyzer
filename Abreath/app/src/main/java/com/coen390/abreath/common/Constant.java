@@ -3,6 +3,10 @@ package com.coen390.abreath.common;
 import java.util.HashMap;
 import java.util.UUID;
 
+
+/**
+ * Static enumeration for constant values used throughout the application
+ */
 public class Constant {
 
     public static class BleAttributes{
@@ -13,4 +17,7 @@ public class Constant {
         );
 
     }
+
+    public static final String BASE_URL = "https://628ea476dc478523653294a8.mockapi.io/";
+
 }

@@ -5,16 +5,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.PopupWindow;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -26,10 +21,9 @@ import com.coen390.abreath.databinding.FragmentSettingsBinding;
 import com.coen390.abreath.ui.ResetPasswordVerification;
 import com.coen390.abreath.ui.Login;
 import com.coen390.abreath.ui.Registration;
-import com.coen390.abreath.ui.model.SettingsViewModel;
+import com.coen390.abreath.ui.model.SharedPreferenceController;
 import com.coen390.abreath.ui.settings.pages.AboutPage;
 import com.coen390.abreath.ui.settings.pages.Account;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.coen390.abreath.ui.settings.pages.AppearancePage;
@@ -40,16 +34,23 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
+/**
+ * Fragment used for displaying app settings
+ * Each item of the settings are displayed using a List adapter class
+ */
 public class SettingsFragment extends Fragment {
 
     private FragmentSettingsBinding binding;
     protected ListView list;
+    private SharedPreferenceController sp;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        SettingsViewModel settingsViewModel = new ViewModelProvider(this).get(SettingsViewModel.class);
+
+
         binding = FragmentSettingsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        sp = new SharedPreferenceController(root.getContext());
         list = binding.listView;
         ArrayList<Category> al = new ArrayList<>();
         al.add(new Category(R.drawable.account, "Account"));
@@ -65,7 +66,7 @@ public class SettingsFragment extends Fragment {
         editor.putString("fragment", "settings");
         editor.apply();
 
-        SettingsAdapter sa = new SettingsAdapter(getActivity().getApplicationContext(), R.layout.row, al);
+        SettingsAdapter sa = new SettingsAdapter(requireContext(), R.layout.row, al);
         list.setAdapter(sa);
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -93,6 +94,7 @@ public class SettingsFragment extends Fragment {
                         openResetPass();
                         break;
                     case 6:
+                        sp.setUserData(0.0f);
                         FirebaseAuth.getInstance().signOut();
                         openSignIn();
                         break;

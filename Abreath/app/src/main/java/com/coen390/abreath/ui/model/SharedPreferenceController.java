@@ -3,10 +3,22 @@ package com.coen390.abreath.ui.model;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+
+/**
+ * Shared preference controller following the same specification provided in Assignment 1
+ * Provides and define handlers for settings and getting values stored via shared preferences
+ * The values defined here are essentially set in the Settings page and used across the application
+ */
 public class SharedPreferenceController {
     private final SharedPreferences units;
+    private final SharedPreferences night_mode;
+    private final SharedPreferences user_data;
+
+
     public SharedPreferenceController(Context context){
         units = context.getSharedPreferences("units", Context.MODE_PRIVATE);
+        night_mode = context.getSharedPreferences("night",Context.MODE_PRIVATE);
+        user_data = context.getSharedPreferences("UserData", Context.MODE_PRIVATE);
     }
 
     public boolean getWeight(){
@@ -15,6 +27,29 @@ public class SharedPreferenceController {
 
     public boolean getHeight(){
         return units.getBoolean("height", true);
+    }
+
+    public float getUserData(){return this.user_data.getFloat("value", 0.0f);}
+
+    public boolean getNightMode(){return night_mode.getBoolean("night_mode", false); }
+
+    public long getUserDateTime(){return user_data.getLong("time", 0);}
+
+    public void setUserData(float input){
+        SharedPreferences.Editor editor = user_data.edit();
+        editor.putFloat("value", input);
+        editor.apply();
+    }
+    private void setUserDateTime(long time){
+        SharedPreferences.Editor editor = user_data.edit();
+        editor.putLong("time", time);
+        editor.apply();
+    }
+
+    public void setNightMode(boolean value){
+        SharedPreferences.Editor editor = night_mode.edit();
+        editor.putBoolean("night_mode", value);
+        editor.apply();
     }
 
     public void setWeight(boolean value){

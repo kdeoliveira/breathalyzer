@@ -135,6 +135,9 @@
                 android:checked="false"
                 android:textOff="cm"
                 android:textOn="in"
+                android:textSize="14sp"
+                android:textAllCaps="true"
+                android:textAppearance="@style/Theme.Abreath"
                 android:focusable="false"
                 android:focusableInTouchMode="false" />
         </LinearLayout>
@@ -171,8 +174,9 @@
                     android:textOn="Lbs"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
-                    android:text="Checkout"
-                    android:textSize="12sp"/>
+                    android:textSize="14sp"
+                    android:textAllCaps="true"
+                    android:textAppearance="@style/Theme.Abreath"/>
             </LinearLayout>
 
 

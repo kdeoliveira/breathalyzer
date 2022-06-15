@@ -20,6 +20,9 @@ import com.coen390.abreath.ui.settings.pages.Account;
 
 import java.util.Objects;
 
+/**
+ * Activity used for allowing user to create new account
+ */
 public class Registration extends AppCompatActivity {
 
     protected EditText nameSignup, emailSignup, passwordSignup, passwordConfirmSignUp;
@@ -33,12 +36,6 @@ public class Registration extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
-        SharedPreferences night = getSharedPreferences("night",0);
-        boolean booleanValue = night.getBoolean("night_mode",true);
-        if (booleanValue){
-            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
-                    .getColor(R.color.primaryColor)));
-        }
 
         nameSignup = findViewById(R.id.signup_name);
         emailSignup = findViewById(R.id.signup_email);

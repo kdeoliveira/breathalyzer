@@ -24,6 +24,9 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
 
+/**
+ * Activity allowing user to log into the application using his email and password
+ */
 public class Login extends AppCompatActivity {
 
     protected EditText emailLogin, passwordLogin;
@@ -44,14 +47,7 @@ public class Login extends AppCompatActivity {
         sign_up = findViewById(R.id.signup_login);
         forgot_pword = findViewById(R.id.forgot_pword_text);
 
-        SharedPreferences night = getSharedPreferences("night",0);
-        boolean booleanValue = night.getBoolean("night_mode",true);
-        if (booleanValue){
-            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
-                    .getColor(R.color.primaryColor)));
-        }
         Objects.requireNonNull(getSupportActionBar()).setElevation(0f);
-        getSupportActionBar().setTitle(null);
 
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override

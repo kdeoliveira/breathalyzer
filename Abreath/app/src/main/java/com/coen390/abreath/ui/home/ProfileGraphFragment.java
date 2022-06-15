@@ -55,34 +55,16 @@ import java.util.Random;
  */
 
 //https://learntodroid.com/how-to-display-a-bar-chart-in-your-android-app/#:~:text=To%20display%20a%20bar%20chart%20in%20your%20Android%20app%20you,appearance%20of%20the%20bar%20chart
+
+/**
+ * Fragment used for displaying the Horizontal graphs
+ */
 public class ProfileGraphFragment extends Fragment {
-
-
-    private static final int MAX_X_VALUE = 7;
-    private static final int MAX_Y_VALUE = 50;
-    private static final int MIN_Y_VALUE = 5;
-    private static final String SET_LABEL = "App Downloads";
-    private static final String[] DAYS = { "SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT" };
 
     private TextView chart_no_data;
     private BarChart chart;
 
-    private BarData createChartData() {
-        ArrayList<BarEntry> values = new ArrayList<>();
-        for (int i = 0; i < MAX_X_VALUE; i++) {
-            float x = i;
-            // float y = new Util().randomFloatBetween(MIN_Y_VALUE, MAX_Y_VALUE);
-            float y = MIN_Y_VALUE + new Random().nextFloat() * (MAX_Y_VALUE - MIN_Y_VALUE);
-            values.add(new BarEntry(x, y));
-        }
 
-        BarDataSet set1 = new BarDataSet(values, SET_LABEL);
-
-        ArrayList<IBarDataSet> dataSets = new ArrayList<>();
-        dataSets.add(set1);
-
-        return new BarData(dataSets);
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -102,21 +84,19 @@ public class ProfileGraphFragment extends Fragment {
         chart.setRenderer(roundBarRender);
         chart.setNoDataText("");
 
-
-
-
         //Note that this should be moved into onViewCreated to ensure parent activity or this view has been created before setting ViewModels
         UserDataViewModel sampleModel = new ViewModelProvider(requireParentFragment()).get(UserDataViewModel.class);
 
         sampleModel.getUserData().observe(getViewLifecycleOwner(), this::onChanged);
 
-
         configureChartAppearance();
-
         return view;
     }
 
 
+    /*
+    Sets layout of graph based on the parameters provided by the MPAndroidChart Library
+     */
     private void configureChartAppearance() {
         XAxis xAxis = chart.getXAxis();
         xAxis.setDrawAxisLine(false);
@@ -157,9 +137,16 @@ public class ProfileGraphFragment extends Fragment {
 
     }
     //https://getridbug.com/android/plot-data-value-on-timeline-axis-in-bar-chart-using-mpandroidchart/
+
+    /**
+     * Sets graph data based on test results of user
+     */
     private void onChanged(List<TestResultEntity> dataList) {
 
         chart.getXAxis().setLabelCount(dataList.size() + 1, true);
+        /*
+        Checks if user has previous test results in the database
+         */
         if(dataList.size() > 0){
             chart.getXAxis().setValueFormatter(new GraphFormatter(dataList));
             chart_no_data.setVisibility(View.GONE);
@@ -169,17 +156,8 @@ public class ProfileGraphFragment extends Fragment {
         }
 
 
-
-//        chart.setXAxisRenderer(new XAxisRenderer(chart.getViewPortHandler(), this.chart.getXAxis(), chart.getTransformer(YAxis.AxisDependency.LEFT)){
-//            @Override
-//            protected void drawLabel(Canvas c, String formattedLabel, float x, float y, MPPointF anchor, float angleDegrees) {
-//                Utils.drawXAxisValue(c, formattedLabel, x+Utils.convertDpToPixel(50f), y+Utils.convertDpToPixel(1f), mAxisLabelPaint, anchor, 0);
-//            }
-//        });
-
         List<BarEntry> barEntries = new ArrayList<>();
         for(int i = 0; i < dataList.size() ; i++){
-            Log.d("DB", String.valueOf(dataList.get(i).getTestResult()));
             barEntries.add(new BarEntry(i, dataList.get(i).getTestResult()));
         }
 
@@ -187,6 +165,10 @@ public class ProfileGraphFragment extends Fragment {
         BarData barData = new BarData(dataSet);
 
         barData.setDrawValues(false);
+        /*
+        Sets width of HBar according to the amount of data present
+        This prevents the rendering of large horizontal bars when few data is displayed in the graph
+         */
         barData.setBarWidth(Utility.map(dataList.size(), 1f, 12f, 0.3f, 0.5f));
 
         chart.setData(barData);
