@@ -169,7 +169,7 @@ public class HomeFragment extends Fragment {
         });
 
         //FloatingActionButton help_button = (FloatingActionButton) getActivity().findViewById(R.id.help_button_home);
-      //  help_button.setOnClickListener(this::onClick);
+        //  help_button.setOnClickListener(this::onClick);
 
         return root;
 
@@ -202,48 +202,26 @@ public class HomeFragment extends Fragment {
         uploadImage();
         getProfilePicture();
 
-//        timer(sp.getUserData());
+        timer(sp.getUserData());
 
-//        Intent intent = null;
-
-//        try {
-//            intent = Intent.getIntentOld("comesFrom");
-//            checking = intent.getStringExtra("comesFrom");
-//            Log.d("HomeFragment", checking);
-//            if(!checking.equals("Dashboard"))
-//                counterTextView.setText("");
-//            else
-//            {
-//                SharedPreferences valueForTimer = requireContext().getSharedPreferences("UserData", Context.MODE_PRIVATE);
-//                timer(valueForTimer.getFloat("value", 0.0f));
-//            }
-//        } catch (URISyntaxException | NullPointerException e) {
-//            e.printStackTrace();
-//        }
-
-
-
-        /*
         Intent intent = null;
+
         try {
-            intent = Intent.getIntentOld("comesFrom");
+            intent = Intent.getIntentOld("comesFrom"); //https://stackoverflow.com/questions/21953839/how-to-decide-which-activity-we-came-from
             checking = intent.getStringExtra("comesFrom");
-        } catch (URISyntaxException e) {
+            Log.d("HomeFragment", checking);
+            if(!checking.equals("Dashboard"))
+                counterTextView.setText("");
+            else
+            {
+                SharedPreferences valueForTimer = requireContext().getSharedPreferences("UserData", Context.MODE_PRIVATE);
+                timer(valueForTimer.getFloat("value", 0.0f));
+            }
+        } catch (URISyntaxException | NullPointerException e) {
             e.printStackTrace();
         }
 
 
-        if(checking != "Dashboard")
-            counterTextView.setText("");
-        else
-        {
-            SharedPreferences valueForTimer = context.getSharedPreferences("UserData", Context.MODE_PRIVATE);
-            timer(valueForTimer.getFloat("value", 0.0f));
-        }
-
-         */
-
-        timer(0.15f);
 
     }
 
@@ -376,7 +354,7 @@ public class HomeFragment extends Fragment {
 
 
     @SuppressLint("NewApi")
-    public void timer(float bac)
+    public void timer(float a)
     {
         double bac = a;
         double time = ((-0.08 + bac) / 0.015);
@@ -419,53 +397,18 @@ public class HomeFragment extends Fragment {
 
                 }
                 @Override
-               public void onFinish() {
+                public void onFinish() {
                     String message = "Please breathe again before taking the wheel";
                     counterTextView.setText(message);
                     countDownStarted = false;
-                }
-            };
-            countDownTimer.start();
-        }
-        else
-       {
-            String message = "SEEK MEDICAL ASSISTANCE";
-           counterTextView.setText(message);
-       }
-
-
-            start = Instant.now();
-
-            if (mStartOfCounter != null && start != null)
-            {
-                long difference = timeDifferenceFromStart(mStartOfCounter, start);
-                if (difference > 0)
-                {
-                    time = time - (difference/1000f);
-                }
-            }
-            new CountDownTimer((long)time * 1000,1000)
-            {
-                @Override
-                public void onTick(long l) { // CODE FROM https://www.geeksforgeeks.org/countdowntimer-in-android-with-example/ Has been updated for this specific use.
-                    NumberFormat f = new DecimalFormat("00");
-                    long hour = (l/3600000) % 24;
-                    long minute = (l/60000) % 60;
-                    counterTextView.setText(f.format(hour) + " h, " + f.format(minute) + " m.");
-                }
-                @Override
-                public void onFinish() {
-                    String message = "Please breathe again before taking the wheel.";
-                    counterTextView.setText(message);
                 }
             }.start();
         }
         else
         {
-            String message = "SEEK MEDICAL ASSISTANCE.";
+            String message = "SEEK MEDICAL ASSISTANCE";
             counterTextView.setText(message);
         }
-
     }
 
     @SuppressLint("NewApi")
