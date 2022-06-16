@@ -29,9 +29,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-//https://gist.github.com/xanscale/e971cc4f2f0712a8a3bcc35e85325c27
+
+/**
+ * Overrides the current Rendering class used the Horizontal chart
+ * Renders curved horizontal bars and manages the state of bars when clicked
+ */
 public class RoundBarRender extends BarChartRenderer {
-    private RectF barShadowRectBuffer = new RectF();
+    private final RectF barShadowRectBuffer = new RectF();
 
     private static List<Integer> mArrayGradient;
 
@@ -46,6 +50,10 @@ public class RoundBarRender extends BarChartRenderer {
     }
 
     private float m_threashold;
+
+    /**
+     * Initializes the BarRenderer and sets the gradient colors used for horizontal bars
+     */
     public RoundBarRender(BarDataProvider chart, ChartAnimator animator, ViewPortHandler viewPortHandler){
         super(chart, animator, viewPortHandler);
         mArrayGradient = new ArrayList<>();
@@ -53,8 +61,10 @@ public class RoundBarRender extends BarChartRenderer {
         m_threashold = 0.08f;
     }
 
-
-
+    /**
+     * Both draw function overrides rendering of the graph when clicked and rendered the first time.
+     * Implementation based on https://gist.github.com/xanscale/e971cc4f2f0712a8a3bcc35e85325c27
+     */
 
     @Override
     public void drawHighlighted(Canvas c, Highlight[] indices) {
@@ -66,8 +76,6 @@ public class RoundBarRender extends BarChartRenderer {
         for (Highlight high : indices) {
 
             IBarDataSet set = barData.getDataSetByIndex(high.getDataSetIndex());
-
-
 
             if (set == null || !set.isHighlightEnabled())
                 continue;
@@ -159,6 +167,10 @@ public class RoundBarRender extends BarChartRenderer {
                 // is out of bounds, reuse colors.
                 BarEntry e = dataSet.getEntryForIndex(j/4);
                 float y = e.getY();
+
+                /*
+                Sets color based on y-value
+                 */
 
                 mRenderPaint.setColor(mArrayGradient.get((int)Utility.map(y, m_threashold* 0.4f,m_threashold*0.7f,0,mArrayGradient.size()-1)) );
 

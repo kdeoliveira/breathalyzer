@@ -22,6 +22,9 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
 
+/**
+ * Activity used for checking if user is properly logged in before performing his password reset
+ */
 public class ResetPasswordVerification extends AppCompatActivity {
 
     protected EditText confirmPword, confirmEmail;
@@ -62,6 +65,7 @@ public class ResetPasswordVerification extends AppCompatActivity {
 
     }
 
+    //resource: https://firebase.google.com/docs/auth/web/password-auth
     private void verifyPassword() {
         String checkPass = confirmPword.getText().toString();
 

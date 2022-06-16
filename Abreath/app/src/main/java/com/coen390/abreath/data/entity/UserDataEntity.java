@@ -2,20 +2,16 @@ package com.coen390.abreath.data.entity;
 
 import static android.content.ContentValues.TAG;
 
-import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
-import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
 import androidx.annotation.RequiresApi;
 
-import com.coen390.abreath.MainActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,9 +21,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.ktx.Firebase;
+
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -45,18 +39,17 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicMarkableReference;
 
 /**
- * Entity representing the data fetched from mock API
+ * Entity representing the data fetched from the database
  * The response body will be serialized to this class
  *
- * TODO to refactor
  */
 public class UserDataEntity {
     private String username;
     private float bac;
     @SerializedName("createdAt")
     private Date created_at;
-    private static String result[] = {"","","",""};
-    private static ArrayList<String> list = new ArrayList<>();
+    private static final String[] result = {"","","",""};
+    private static final ArrayList<String> list = new ArrayList<>();
 
     private int id;
     private String name;
@@ -65,6 +58,10 @@ public class UserDataEntity {
     private String email;
     private String password;
 
+    /*
+    GETTERS AND SETTERS
+    NOTE: Proper setters/getters required in order for firebase to properly convert its snapshot into this object
+     */
     public String getPhone() {
         return phone;
     }
@@ -79,10 +76,6 @@ public class UserDataEntity {
         return age;
     }
 
-
-//    public void setAge(int age) {
-//        this.age = age;
-//    }
     public void setAge(String age) {
         this.age = Integer.parseInt(age);
         this.ageString = age;
@@ -145,6 +138,10 @@ public class UserDataEntity {
         return id;
     }
 
+    /**
+     * Multiple constructor definition since used by firebase and mock up api
+     */
+
     public UserDataEntity(String username, float bac, Date created_at, int id, String name, String last_name, int age, int weight, float height) {
         this.username = username;
         this.bac = bac;
@@ -156,8 +153,6 @@ public class UserDataEntity {
         this.weight = weight;
         this.height = height;
     }
-
-
 
     public UserDataEntity(String email, String password, String name) //For sign up
     {
@@ -177,11 +172,8 @@ public class UserDataEntity {
         this.name = name;
         this.phone = phone;
         this.weightString = weight;
-        //this.weight = Integer.parseInt(weight); They create an error when the user does not enter this information
         this.ageString = age;
-        //this.age = Integer.parseInt(age);
         this.heightString = height;
-        //this.height = Float.parseFloat(height);
 
         this.last_name = lastname;
         try{
@@ -220,10 +212,6 @@ public class UserDataEntity {
 
     }
 
-
-
-
-
     public String getUsername() {
         return username;
     }
@@ -248,28 +236,15 @@ public class UserDataEntity {
         this.created_at = created_at;
     }
 
-    public ArrayList<String> getRecordingsArray()
-    {
-        ArrayList<String> returnArrayList = new ArrayList<>();
-        for(int i = list.size() - 1; 0 <= i; i--)
-        {
-            if (i == 12)
-                break;
-            returnArrayList.add(list.get(i));
-        }
-        return returnArrayList;
-    }
 
 
-<<<<<<< Updated upstream
-=======
     /** All the functions used below were created using the Google Firebase API documentation available at: https://firebase.google.com/docs/build
      * for Android Studio using Java
      *
      * Handler for created new account
      * Since this handelr is only used once, no need to move to domain
      */
->>>>>>> Stashed changes
+
     public void createAccount()
     {
         FirebaseAuth auth;
@@ -311,11 +286,19 @@ public class UserDataEntity {
         });
     }
 
+    /**
+     * Handler for signing out a user
+     * Since this handler is only used once, no need to move to domain
+     */
     public void signOut()
     {
         FirebaseAuth.getInstance().signOut();
     }
 
+    /**
+     * handler for updating user data
+     * Since this handelr is only used once, no need to move to domain
+     */
     public void updateDataSettings(Boolean[] control)
     {
         DatabaseReference dr;
@@ -352,57 +335,10 @@ public class UserDataEntity {
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void storelastLevels(double result)
-    {
-        DatabaseReference dr;
-        dr = FirebaseDatabase.getInstance().getReference().child("recordings").getRef();
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String uid = user.getUid();
-
-        if(user != null)
-        {
-            String dateTime = (java.time.LocalDateTime.now()).toString(); //Take system time and convert to string.
-            String date = dateTime.substring(0,10); //Take the first 11 characters and store them in date.
-            String time = dateTime.substring(11,19); //Take the last characters and store them in time.
-            dateTime = date+" @ "+time; //Format a string that is returned for use in other classes by setting a format date @ time
-
-            dateTime = dateTime + "," + result;
-
-            dr.child(uid).push().setValue(dateTime);
-        }
-        else
-            System.out.println("User is not signed in: null pointer reference");
-
-    }
-
-    public void getLastLevels()
-    {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String uid = user.getUid();
-        DatabaseReference auth = FirebaseDatabase.getInstance().getReference().child("recordings");
-
-        if(user != null)
-        {
-            auth.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for(DataSnapshot dataSnapshot: snapshot.getChildren()) {
-                        list.add(dataSnapshot.getValue(String.class));
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-        }
-        else
-            System.out.println("User is not signed in: null pointer reference");
-    }
-
+    /**
+     * Handler for deleting user account from the database
+     * Since this handelr is only used once, no need to move to domain
+     */
     public void deleteAccount()
     {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

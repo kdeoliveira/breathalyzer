@@ -21,6 +21,10 @@ import com.google.firebase.internal.InternalTokenResult;
 import java.util.Objects;
 import java.util.Observable;
 
+/**
+ * Fetch user information from Firebase repository
+ * Note that the given user must be authenticated
+ */
 public class GetUserInfoUseCase implements UseCase {
     private final DatabaseReference mFirebaseRepository;
 
@@ -29,12 +33,14 @@ public class GetUserInfoUseCase implements UseCase {
     }
     public MutableLiveData<UserDataEntity> call(@Nullable Object payload) {
         MutableLiveData<UserDataEntity> usersDataEntity = new MutableLiveData<>();
+        //Verifies if user is properly authenticated before accessing data
         FirebaseAuth.getInstance().addIdTokenListener((FirebaseAuth.IdTokenListener) firebaseAuth -> {
             if(firebaseAuth.getUid() != null){
                 mFirebaseRepository.child("user").child(firebaseAuth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         Log.d("GetUserCase", snapshot.toString());
+                        //Converts snapshot into an UserDataEntity instance
                         usersDataEntity.setValue(snapshot.getValue(UserDataEntity.class));
                     }
 

@@ -8,6 +8,10 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 
+/**
+ * Service API used for accessing the remote API
+ * Implementation based on the guidelines provided by retrofit
+ */
 public interface MockUpService extends Service {
 
     @GET("api/v1/bac_results?sortBy=createdAt&order=desc")

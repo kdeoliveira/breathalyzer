@@ -22,7 +22,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.Objects;
 
 
-
+/**
+ * Allows user to reset its password if forgotten
+ */
 public class ForgotPassword extends AppCompatActivity {
 
     protected EditText emailReset;

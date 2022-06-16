@@ -20,6 +20,9 @@ import com.coen390.abreath.ui.settings.pages.Account;
 
 import java.util.Objects;
 
+/**
+ * Activity used for allowing user to create new account
+ */
 public class Registration extends AppCompatActivity {
 
     protected EditText nameSignup, emailSignup, passwordSignup, passwordConfirmSignUp;

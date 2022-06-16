@@ -20,6 +20,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Fetch and returns list of the last 12 test results from the Firebase repository for a given user
+ */
 public class GetLastLevelsUseCase implements UseCase{
     private final DatabaseReference mFirebaseRepository;
 
@@ -30,10 +33,12 @@ public class GetLastLevelsUseCase implements UseCase{
     @Override
     public MutableLiveData<List<TestResultEntity>> call(@Nullable Object payload) {
         MutableLiveData<List<TestResultEntity>> testResultData = new MutableLiveData<>();
+        //Verifies if user is properly authenticated before accessing data
         FirebaseAuth.getInstance().addIdTokenListener((FirebaseAuth.IdTokenListener) firebaseAuth -> {
             if(firebaseAuth.getUid() != null){
                 List<TestResultEntity> testResultEntities = new ArrayList<>();
 //                mFirebaseRepository.child("recordings").getRef().child(firebaseAuth.getUid()).removeValue();
+
                 mFirebaseRepository.child("recordings").child(firebaseAuth.getUid()).limitToLast(12).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {

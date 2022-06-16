@@ -3,8 +3,12 @@ package com.coen390.abreath.ui.model;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import java.util.Date;
 
+/**
+ * Shared preference controller following the same specification provided in Assignment 1
+ * Provides and define handlers for settings and getting values stored via shared preferences
+ * The values defined here are essentially set in the Settings page and used across the application
+ */
 public class SharedPreferenceController {
     private final SharedPreferences units;
     private final SharedPreferences night_mode;
@@ -35,7 +39,6 @@ public class SharedPreferenceController {
         SharedPreferences.Editor editor = user_data.edit();
         editor.putFloat("value", input);
         editor.apply();
-        this.setUserDateTime((new Date().getTime()) + (long) (-0.08 + input) * 240000);
     }
     private void setUserDateTime(long time){
         SharedPreferences.Editor editor = user_data.edit();

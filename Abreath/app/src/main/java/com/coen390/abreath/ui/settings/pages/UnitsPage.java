@@ -15,6 +15,10 @@ import com.coen390.abreath.ui.model.SharedPreferenceController;
 
 import java.util.Objects;
 
+/**
+ * Changes unit used in this application
+ * The units set are stored using SharedPreference and can be accessed anywhere in the app
+ */
 public class UnitsPage extends AppCompatActivity {
 
     SharedPreferenceController sp;
@@ -26,7 +30,7 @@ public class UnitsPage extends AppCompatActivity {
 
         sp = new SharedPreferenceController(this);
 
-        //units.setText(test);
+        //Help from code : https://stackoverflow.com/questions/50902178/try-to-click-a-togglebutton-and-make-the-other-togglebutton-unchecked-android-s
         ToggleButton weight = (ToggleButton) findViewById(R.id.toggleWeight);
         weight.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

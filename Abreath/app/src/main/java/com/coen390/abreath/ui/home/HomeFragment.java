@@ -30,6 +30,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.coen390.abreath.R;
 import com.coen390.abreath.common.Utility;
 import com.coen390.abreath.databinding.FragmentHomeBinding;
+import com.coen390.abreath.ui.model.DashboardViewModel;
 import com.coen390.abreath.ui.model.SharedPreferenceController;
 import com.coen390.abreath.ui.model.UserDataViewModel;
 import com.github.mikephil.charting.charts.BarChart;
@@ -54,11 +55,16 @@ import java.text.NumberFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
+
 import java.util.Locale;
 import java.util.Random;
 
 //https://developer.android.com/guide/fragments/communicate
+
+/**
+ * Home screen (HBar chart) providing user access to its information and most recent test results, if any
+ */
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
@@ -77,6 +83,7 @@ public class HomeFragment extends Fragment {
     private Context context;
     private String checking;
     private long hour, minute;
+
     private static Instant start;
 
 
@@ -87,7 +94,6 @@ public class HomeFragment extends Fragment {
         sp = new SharedPreferenceController(requireContext());
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -128,9 +134,22 @@ public class HomeFragment extends Fragment {
 
 
         //Note that this should be moved into onViewCreated to ensure parent activity or this view has been created before setting ViewModels
-//        UserDataViewModel sampleModel = new ViewModelProvider(this, new ViewModelFactory(new MockUpRepository(MockUpServiceBuilder.create(MockUpService.class)))).get(UserDataViewModel.class);
-        UserDataViewModel sampleModel = new ViewModelProvider(this).get(UserDataViewModel.class);
+        //UserDataViewModel sampleModel = new ViewModelProvider(this, new ViewModelFactory(new MockUpRepository(MockUpServiceBuilder.create(MockUpService.class)))).get(UserDataViewModel.class);
 
+        /*
+        Creates or gets instance of the view models used by this fragment
+         */
+        UserDataViewModel sampleModel = new ViewModelProvider(requireActivity()).get(UserDataViewModel.class);
+        DashboardViewModel dashboardViewModel = new ViewModelProvider(requireActivity()).get(DashboardViewModel.class);
+
+        dashboardViewModel.getData().observe(getViewLifecycleOwner(), aFloat -> {
+            if(aFloat > 0.0f)
+                timer(aFloat);
+        });
+
+        /*
+        Sets UI components based on new values stored in the View Model
+         */
 
         sampleModel.getUserInfo().observe(getViewLifecycleOwner(), userDataEntity -> {
             nameTextView.setText(userDataEntity.getName());
@@ -163,25 +182,11 @@ public class HomeFragment extends Fragment {
         Fragment profileGraphFragment = new ProfileGraphFragment();
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
+        /*
+        Inflates the HBar graph fragment
+         */
         transaction.replace(R.id.fragmentContainerView, profileGraphFragment).commit();
 
-    }
-
-    private BarData createChartData() {
-        ArrayList<BarEntry> values = new ArrayList<>();
-        for (int i = 0; i < 7; i++) {
-            float x = i;
-
-            float y = 5 + new Random().nextFloat() * (50 - 5);
-            values.add(new BarEntry(x, y));
-        }
-
-        BarDataSet set1 = new BarDataSet(values, "Tests");
-
-        ArrayList<IBarDataSet> dataSets = new ArrayList<>();
-        dataSets.add(set1);
-
-        return new BarData(dataSets);
     }
 
     @Override
@@ -196,6 +201,25 @@ public class HomeFragment extends Fragment {
         super.onResume();
         uploadImage();
         getProfilePicture();
+
+//        timer(sp.getUserData());
+
+//        Intent intent = null;
+
+//        try {
+//            intent = Intent.getIntentOld("comesFrom");
+//            checking = intent.getStringExtra("comesFrom");
+//            Log.d("HomeFragment", checking);
+//            if(!checking.equals("Dashboard"))
+//                counterTextView.setText("");
+//            else
+//            {
+//                SharedPreferences valueForTimer = requireContext().getSharedPreferences("UserData", Context.MODE_PRIVATE);
+//                timer(valueForTimer.getFloat("value", 0.0f));
+//            }
+//        } catch (URISyntaxException | NullPointerException e) {
+//            e.printStackTrace();
+//        }
 
 
 
@@ -239,6 +263,9 @@ public class HomeFragment extends Fragment {
                 }
             });
 
+    /**
+     * Get and sets profile picture for user
+     */
     public void getProfilePicture()
     {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -326,10 +353,17 @@ public class HomeFragment extends Fragment {
         }
 
     }
+    //CODE FROM https://stackoverflow.com/questions/4927856/how-can-i-calculate-a-time-difference-in-java Has been updated for this specific use.
+    private long timeDifferenceFromStart(Instant start_of_counter, Instant start)
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return Duration.between(start_of_counter, start).toMillis();
+        }else{
+            return 0;
+        }
+    }
 
-<<<<<<< Updated upstream
 
-=======
     /**
      * Verifies input bac value and starts timer for user if required
      * Function for time required until user reaches value is based in a constant
@@ -339,20 +373,23 @@ public class HomeFragment extends Fragment {
      * J. Searle, “Alcohol calculations and their uncertainty” Medicine, science, and the law, Jan-2015.
      * [Online]. Available: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4361698/. [Accessed: 14-Jun-2022].
      */
->>>>>>> Stashed changes
+
+
     @SuppressLint("NewApi")
-    public void timer(float a)
+    public void timer(float bac)
     {
         double bac = a;
         double time = ((-0.08 + bac) / 0.015);
 
         System.out.println("This is the time" + time);
 
+
         time = time * 3600;
 
         if(bac < 0.08)
         {
-           String message = "You are safe to drive";
+            String message = "You are safe to drive.";
+
             counterTextView.setText(message);
         }
         else if (0.08 <= bac && bac <= 0.37)
@@ -368,12 +405,9 @@ public class HomeFragment extends Fragment {
                     time = (time - (difference / 1000));
                 }
             }
-<<<<<<< Updated upstream
-            countDownTimer = new CountDownTimer((long)time * 1000,1000)
-=======
+
             new CountDownTimer((long)time * 1000,1000) // CODE FROM https://www.geeksforgeeks.org/countdowntimer-in-android-with-example/
                     // Has been updated for this specific use.
->>>>>>> Stashed changes
             {
                 @Override
                 public void onTick(long l) {
@@ -398,6 +432,39 @@ public class HomeFragment extends Fragment {
             String message = "SEEK MEDICAL ASSISTANCE";
            counterTextView.setText(message);
        }
+
+
+            start = Instant.now();
+
+            if (mStartOfCounter != null && start != null)
+            {
+                long difference = timeDifferenceFromStart(mStartOfCounter, start);
+                if (difference > 0)
+                {
+                    time = time - (difference/1000f);
+                }
+            }
+            new CountDownTimer((long)time * 1000,1000)
+            {
+                @Override
+                public void onTick(long l) { // CODE FROM https://www.geeksforgeeks.org/countdowntimer-in-android-with-example/ Has been updated for this specific use.
+                    NumberFormat f = new DecimalFormat("00");
+                    long hour = (l/3600000) % 24;
+                    long minute = (l/60000) % 60;
+                    counterTextView.setText(f.format(hour) + " h, " + f.format(minute) + " m.");
+                }
+                @Override
+                public void onFinish() {
+                    String message = "Please breathe again before taking the wheel.";
+                    counterTextView.setText(message);
+                }
+            }.start();
+        }
+        else
+        {
+            String message = "SEEK MEDICAL ASSISTANCE.";
+            counterTextView.setText(message);
+        }
 
     }
 

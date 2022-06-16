@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -17,6 +18,9 @@ import com.coen390.abreath.ui.model.SharedPreferenceController;
 
 import java.util.Objects;
 
+/**
+ * Sets or unset night mode
+ */
 public class AppearancePage extends AppCompatActivity {
 
     private SharedPreferenceController sp;
@@ -36,15 +40,17 @@ public class AppearancePage extends AppCompatActivity {
 
         nightmode_switch.setChecked(sp.getNightMode());
 
-
+        //Help to set to Dark Mode : https://stackoverflow.com/questions/70804416/system-dark-mode-setting-problem-more-dark-mode-options
+        //Help to set to Dark Mode pt2 : https://www.youtube.com/watch?v=9G1ErQo6dBU&t=678s&ab_channel=CodingwithDev
         nightmode_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked){
-                    getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                     nightmode_switch.setChecked(true);
                     sp.setNightMode(true);
                 }else {
+                    getDelegate();
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                     nightmode_switch.setChecked(false);
                     sp.setNightMode(false);

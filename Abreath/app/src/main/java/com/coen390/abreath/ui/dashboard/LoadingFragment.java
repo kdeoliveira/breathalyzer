@@ -17,9 +17,8 @@ import com.coen390.abreath.databinding.FragmentLoadingBinding;
 import com.github.ybq.android.spinkit.SpinKitView;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link LoadingFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Loading dialog fragment used by the Dashboard screen when user is connecting to the remote device
+ * Provides informative text regarding the state of the connection
  */
 public class LoadingFragment extends DialogFragment {
     public final static String TAG = "coen390.dashboard.loading";
@@ -34,13 +33,7 @@ public class LoadingFragment extends DialogFragment {
     public LoadingFragment() {
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
 
-     * @return A new instance of fragment LoadingFragment.
-     */
     public static LoadingFragment newInstance(String param1) {
         LoadingFragment fragment = new LoadingFragment();
         Bundle args = new Bundle();
@@ -77,11 +70,10 @@ public class LoadingFragment extends DialogFragment {
         return view;
     }
 
-    public SpinKitView getSpinKit(){
 
-        return null;
-    }
-
+    /**
+     * Change the text switcher text value and allow user to go back to previous page
+     */
     public void setNotFound(String title){
         if(fragmentLoadingBinding == null) return;
         textSwitcher.setText(title);
@@ -110,6 +102,9 @@ public class LoadingFragment extends DialogFragment {
         textSwitcher.setText(text);
     }
 
+    /**
+     * Interface used to implement callback when this dialog fragment has been dismissed
+     */
     public interface Dissmissable {
         void onDismissAction();
     }

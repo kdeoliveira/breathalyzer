@@ -24,6 +24,9 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
 
+/**
+ * Activity allowing user to log into the application using his email and password
+ */
 public class Login extends AppCompatActivity {
 
     protected EditText emailLogin, passwordLogin;

@@ -22,6 +22,7 @@ import com.coen390.abreath.R;
 import com.coen390.abreath.common.Utility;
 import com.coen390.abreath.data.entity.UserDataEntity;
 
+import com.coen390.abreath.domain.GetUserInfoUseCase;
 import com.coen390.abreath.domain.UpdateDataSettingsUseCase;
 import com.coen390.abreath.ui.Login;
 import com.coen390.abreath.ui.model.SharedPreferenceController;
@@ -31,6 +32,10 @@ import com.coen390.abreath.ui.settings.SettingsFragment;
 
 import java.util.Locale;
 
+/**
+ * Activity allowing the user to modify its information
+ * Note that since this activity should be transformed into a fragment instead, in order to take advantage of the View Models defined for the Main Activities
+ */
 public class Account extends AppCompatActivity {
     private SharedPreferenceController sp;
     protected EditText height_text, weight_text, age_text, phone_text, name_text, lastname;
@@ -53,6 +58,7 @@ public class Account extends AppCompatActivity {
         delete = findViewById(R.id.delete_account);
 
         UserDataViewModel sampleModel = new ViewModelProvider(this).get(UserDataViewModel.class);
+        new GetUserInfoUseCase().call(null);
 
         sampleModel.getUserInfo().observe(this, userDataEntity -> {
             if(!sp.getHeight())

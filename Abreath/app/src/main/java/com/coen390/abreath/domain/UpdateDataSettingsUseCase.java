@@ -7,6 +7,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+/**
+ * Update user account data in the Firebase Repository
+ * User must be logged in for such operation to succeed
+ */
 public class UpdateDataSettingsUseCase implements UseCase{
     private final DatabaseReference mFirebaseRepository;
     private final Boolean[] mControl;

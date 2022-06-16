@@ -37,6 +37,9 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.Objects;
 
 
+/**
+ * Attempt to implement Single activity architecture in order to facilitate and bound the view models used by the other fragments
+ */
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
@@ -92,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        //floating action button : https://developer.android.com/guide/topics/ui/floating-action-button
         FloatingActionButton help_button = (FloatingActionButton) findViewById(R.id.help_button_settings);
         help_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,6 +127,9 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         NetworkManager.Builder.create(this).checkConnection(connectionNetworkCallback);
         SharedPreferenceController sp = new SharedPreferenceController(this);
+        /* *
+         * Sets the night mode if set
+         */
         if (sp.getNightMode()){
             getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
                     .getColor(R.color.primaryColor)));
