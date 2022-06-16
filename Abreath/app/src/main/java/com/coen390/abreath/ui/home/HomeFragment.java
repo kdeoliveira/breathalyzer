@@ -75,7 +75,15 @@ public class HomeFragment extends Fragment {
     private ImageView profileImage;
     private SharedPreferenceController sp;
     private Uri picture;
-    private static final Instant mStartOfCounter = Instant.now();
+    private CountDownTimer countDownTimer;
+    private boolean countDownStarted = false;
+    @SuppressLint("NewApi")
+    private static final Instant start_of_counter = Instant.now();
+    private Duration timeElapsed;
+    private Context context;
+    private String checking;
+    private long hour, minute;
+
     private static Instant start;
 
 
@@ -215,7 +223,27 @@ public class HomeFragment extends Fragment {
 
 
 
+        /*
+        Intent intent = null;
+        try {
+            intent = Intent.getIntentOld("comesFrom");
+            checking = intent.getStringExtra("comesFrom");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
 
+
+        if(checking != "Dashboard")
+            counterTextView.setText("");
+        else
+        {
+            SharedPreferences valueForTimer = context.getSharedPreferences("UserData", Context.MODE_PRIVATE);
+            timer(valueForTimer.getFloat("value", 0.0f));
+        }
+
+         */
+
+        timer(0.15f);
 
     }
 
@@ -252,6 +280,8 @@ public class HomeFragment extends Fragment {
 
             System.out.println(storageRef);
 
+            //CODE FROM https://www.youtube.com/watch?v=7p4MBsz__ao&list=LL&index=2&t=43s&ab_channel=CodewithLove%28RSTechnoSmart%29
+            //has been adapted to work with the requirements of this project. The google firebase documentation has also been used.
             try {
                 File localFile = File.createTempFile("images", "temp");
                 storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
@@ -259,8 +289,7 @@ public class HomeFragment extends Fragment {
                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                         Uri uri = Uri.fromFile(localFile);
                         profileImage.setImageURI(uri);
-                    } //CODE FROM https://www.youtube.com/watch?v=7p4MBsz__ao&list=LL&index=2&t=43s&ab_channel=CodewithLove%28RSTechnoSmart%29
-                    //has been adapted to work with the requirements of this project.
+                    }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
@@ -288,7 +317,7 @@ public class HomeFragment extends Fragment {
     }
 
     //CODE FROM https://www.youtube.com/watch?v=7p4MBsz__ao&list=LL&index=2&t=43s&ab_channel=CodewithLove%28RSTechnoSmart%29
-    //has been adapted to work with the requirements of this project.
+    //has been adapted to work with the requirements of this project. The google firebase documentation has also been used.
     public void uploadImage()
     {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -334,25 +363,76 @@ public class HomeFragment extends Fragment {
         }
     }
 
+
     /**
      * Verifies input bac value and starts timer for user if required
      * Function for time required until user reaches value is based in a constant
      * However, ideally this equation should take in account the user's weight, age and height
+     * It is set to equal to 0.08% BAC which is the legal limit in Quebec and was rearanged to find the time.
+     * The equation is derived from the Widmark's formula:
+     * J. Searle, “Alcohol calculations and their uncertainty” Medicine, science, and the law, Jan-2015.
+     * [Online]. Available: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4361698/. [Accessed: 14-Jun-2022].
      */
+
+
     @SuppressLint("NewApi")
     public void timer(float bac)
     {
-        double time = (-0.08 + bac) / 0.015;
+        double bac = a;
+        double time = ((-0.08 + bac) / 0.015);
+
+        System.out.println("This is the time" + time);
+
 
         time = time * 3600;
 
         if(bac < 0.08)
         {
             String message = "You are safe to drive.";
+
             counterTextView.setText(message);
         }
         else if (0.08 <= bac && bac <= 0.37)
         {
+            start = Instant.now();
+            if (start_of_counter != null && start != null)
+            {
+                System.out.println("This is the start: " + start);
+                System.out.println("This is the start: " + start_of_counter);
+                long difference = timeDifferenceFromStart();
+                if (difference > 0)
+                {
+                    time = (time - (difference / 1000));
+                }
+            }
+
+            new CountDownTimer((long)time * 1000,1000) // CODE FROM https://www.geeksforgeeks.org/countdowntimer-in-android-with-example/
+                    // Has been updated for this specific use.
+            {
+                @Override
+                public void onTick(long l) {
+                    NumberFormat f = new DecimalFormat("00");
+                    long hour, minute;
+                    hour = (l/3600000) % 24;
+                    minute = (l/60000) % 60;
+                    counterTextView.setText(f.format(hour) + " h, " + f.format(minute) + " m.");
+
+                }
+                @Override
+               public void onFinish() {
+                    String message = "Please breathe again before taking the wheel";
+                    counterTextView.setText(message);
+                    countDownStarted = false;
+                }
+            };
+            countDownTimer.start();
+        }
+        else
+       {
+            String message = "SEEK MEDICAL ASSISTANCE";
+           counterTextView.setText(message);
+       }
+
 
             start = Instant.now();
 
@@ -388,8 +468,17 @@ public class HomeFragment extends Fragment {
 
     }
 
+    @SuppressLint("NewApi")
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause()
+    {
+        super.onPause();
+    }
+
+    @SuppressLint("NewApi")
+    public long timeDifferenceFromStart() //CODE FROM https://stackoverflow.com/questions/4927856/how-can-i-calculate-a-time-difference-in-java Has been updated for this specific use.
+    {
+        timeElapsed = Duration.between(start_of_counter, start);
+        return timeElapsed.toMillis();
     }
 }
