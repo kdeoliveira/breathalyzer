@@ -34,10 +34,6 @@ import com.coen390.abreath.ui.model.DashboardViewModel;
 import com.coen390.abreath.ui.model.SharedPreferenceController;
 import com.coen390.abreath.ui.model.UserDataViewModel;
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -75,14 +71,8 @@ public class HomeFragment extends Fragment {
     private ImageView profileImage;
     private SharedPreferenceController sp;
     private Uri picture;
-    private CountDownTimer countDownTimer;
-    private boolean countDownStarted = false;
     @SuppressLint("NewApi")
     private static final Instant start_of_counter = Instant.now();
-    private Duration timeElapsed;
-    private Context context;
-    private String checking;
-    private long hour, minute;
 
     private static Instant start;
 
@@ -202,20 +192,18 @@ public class HomeFragment extends Fragment {
         uploadImage();
         getProfilePicture();
 
-        timer(sp.getUserData());
 
         Intent intent = null;
 
         try {
             intent = Intent.getIntentOld("comesFrom"); //https://stackoverflow.com/questions/21953839/how-to-decide-which-activity-we-came-from
-            checking = intent.getStringExtra("comesFrom");
+            String checking = intent.getStringExtra("comesFrom");
             Log.d("HomeFragment", checking);
             if(!checking.equals("Dashboard"))
                 counterTextView.setText("");
             else
             {
-                SharedPreferences valueForTimer = requireContext().getSharedPreferences("UserData", Context.MODE_PRIVATE);
-                timer(valueForTimer.getFloat("value", 0.0f));
+                timer(sp.getUserData());
             }
         } catch (URISyntaxException | NullPointerException e) {
             e.printStackTrace();
@@ -400,7 +388,6 @@ public class HomeFragment extends Fragment {
                 public void onFinish() {
                     String message = "Please breathe again before taking the wheel";
                     counterTextView.setText(message);
-                    countDownStarted = false;
                 }
             }.start();
         }
@@ -421,7 +408,7 @@ public class HomeFragment extends Fragment {
     @SuppressLint("NewApi")
     public long timeDifferenceFromStart() //CODE FROM https://stackoverflow.com/questions/4927856/how-can-i-calculate-a-time-difference-in-java Has been updated for this specific use.
     {
-        timeElapsed = Duration.between(start_of_counter, start);
+        Duration timeElapsed = Duration.between(start_of_counter, start);
         return timeElapsed.toMillis();
     }
 }
